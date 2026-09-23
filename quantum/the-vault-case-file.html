@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault Case File</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#05070f; --ink-2:#0a0f1e; --panel:#0d1326; --paper:#111830;
+  --edge:rgba(255,255,255,.10); --edge-2:rgba(255,255,255,.20);
+  --gold:#F5C451; --gold-dim:#8a6d25;
+  --cyan:#45E3FF; --cyan-dim:#1d6a80;
+  --violet:#A594FF;
+  --stamp:#E2495C;
+  --good:#3DFFA8; --warn:#FFA23D; --bad:#FF6B7E;
+  --txt:#EAEEFC; --txt-2:#AAB4D4; --txt-3:#6E7796;
+  --fdisp:'Fraunces',Georgia,'Times New Roman',serif;
+  --fbody:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --fmono:'IBM Plex Mono','SF Mono',Consolas,monospace;
+  --rail-w:248px;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--ink); color:var(--txt); font-family:var(--fbody);
+  line-height:1.6; padding:0 0 0 0; min-height:100%;
+}
+.wrap{display:flex; align-items:flex-start; max-width:1280px; margin:0 auto;}
+img{max-width:100%}
+
+/* texture */
+.texture{position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 40% at 15% 8%, rgba(165,148,255,.14), transparent 60%),
+    radial-gradient(ellipse 45% 35% at 88% 20%, rgba(69,227,255,.10), transparent 60%),
+    radial-gradient(ellipse 50% 45% at 50% 100%, rgba(245,196,81,.07), transparent 60%);
+}
+
+/* ── nav rail ─────────────────────────────────────────── */
+.rail{
+  position:sticky; top:0; align-self:flex-start; width:var(--rail-w); flex-shrink:0;
+  height:100vh; overflow-y:auto; padding:22px 14px 30px; z-index:5;
+  border-right:1px solid var(--edge);
+  scrollbar-width:thin;
+}
+.rail::-webkit-scrollbar{width:6px}
+.rail::-webkit-scrollbar-thumb{background:var(--edge-2); border-radius:4px}
+.brand{padding:4px 10px 18px; border-bottom:1px solid var(--edge); margin-bottom:14px}
+.brand .k{font-family:var(--fmono); font-size:.62rem; letter-spacing:.24em; color:var(--gold); font-weight:600}
+.brand h1{font-family:var(--fdisp); font-size:1.5rem; font-weight:600; margin:5px 0 3px; letter-spacing:-.01em}
+.brand .s{font-size:.76rem; color:var(--txt-3); line-height:1.45}
+.navlist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+.navlist a{
+  display:flex; gap:9px; align-items:baseline; padding:8px 10px; border-radius:9px;
+  color:var(--txt-2); text-decoration:none; font-size:.86rem; font-weight:500;
+  border-left:2px solid transparent; transition:background .15s,color .15s,border-color .15s;
+}
+.navlist a:hover{background:var(--panel); color:var(--txt)}
+.navlist a.on{background:rgba(245,196,81,.09); color:var(--gold); border-left-color:var(--gold); font-weight:600}
+.navlist .tag{font-family:var(--fmono); font-size:.64rem; color:var(--txt-3); min-width:20px}
+.navlist a.on .tag{color:var(--gold)}
+.railfoot{margin-top:18px; padding:12px 10px; font-size:.72rem; color:var(--txt-3); border-top:1px solid var(--edge)}
+
+/* ── main ─────────────────────────────────────────────── */
+.main{flex:1; min-width:0; position:relative; z-index:1; padding:0 28px 90px}
+@media(min-width:640px){.main{padding:0 44px 100px}}
+
+.hero{padding:56px 0 34px; max-width:760px}
+.hero .stamp-row{display:flex; gap:10px; align-items:center; margin-bottom:18px; flex-wrap:wrap}
+.stamp{
+  font-family:var(--fmono); font-size:.66rem; font-weight:700; letter-spacing:.14em;
+  border:1.5px solid var(--stamp); color:var(--stamp); padding:4px 10px; border-radius:4px;
+  transform:rotate(-2deg); text-transform:uppercase;
+}
+.stamp.gold{border-color:var(--gold); color:var(--gold); transform:rotate(1.5deg)}
+.hero h1{font-family:var(--fdisp); font-size:clamp(2.1rem,5.4vw,3.2rem); font-weight:700; line-height:1.04; letter-spacing:-.02em; text-wrap:balance; margin-bottom:14px}
+.hero .lede{font-size:1.06rem; color:var(--txt-2); max-width:62ch; margin-bottom:18px}
+.hero .who{display:flex; gap:22px; flex-wrap:wrap; font-size:.82rem; color:var(--txt-3); font-family:var(--fmono)}
+.hero .who b{color:var(--txt-2)}
+
+section.sect{padding:40px 0 8px; max-width:800px; border-top:1px solid var(--edge)}
+section.sect:first-of-type{border-top:none}
+.eyebrow{font-family:var(--fmono); font-size:.68rem; font-weight:700; letter-spacing:.2em; color:var(--cyan); text-transform:uppercase; margin-bottom:8px}
+.eyebrow.v{color:var(--violet)}
+h2.title{font-family:var(--fdisp); font-size:clamp(1.5rem,3.6vw,2rem); font-weight:600; letter-spacing:-.01em; margin-bottom:6px; text-wrap:balance}
+.subtitle{color:var(--txt-3); font-size:.92rem; margin-bottom:22px}
+h3{font-family:var(--fbody); font-size:1.02rem; font-weight:700; color:var(--txt); margin:22px 0 9px}
+p{margin:0 0 13px; color:var(--txt-2); font-size:.96rem}
+p b, li b{color:var(--txt); font-weight:600}
+p.lead{color:var(--txt); font-size:1rem}
+
+/* on-screen quote block — verbatim from vault.html */
+.onscreen{
+  background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid var(--edge); border-left:3px solid var(--gold); border-radius:12px;
+  padding:16px 17px; margin:14px 0; position:relative;
+}
+.onscreen .lab{font-family:var(--fmono); font-size:.6rem; letter-spacing:.18em; color:var(--gold-dim); margin-bottom:8px; text-transform:uppercase}
+.onscreen p{color:var(--txt-2); font-size:.92rem; margin-bottom:8px}
+.onscreen p:last-child{margin-bottom:0}
+.onscreen .who{font-family:var(--fmono); font-weight:700; color:var(--cyan); font-size:.66rem; letter-spacing:.1em}
+.onscreen code, .onscreen .mono{font-family:var(--fmono)}
+
+/* annotation card — facilitator-only commentary */
+.note{
+  background:rgba(165,148,255,.07); border:1px solid rgba(165,148,255,.28); border-radius:12px;
+  padding:15px 17px; margin:14px 0;
+}
+.note .lab{font-family:var(--fmono); font-size:.62rem; font-weight:700; letter-spacing:.16em; color:var(--violet); margin-bottom:7px; text-transform:uppercase; display:flex; align-items:center; gap:6px}
+.note p{color:var(--txt-2); font-size:.92rem; margin-bottom:8px}
+.note p:last-child{margin-bottom:0}
+
+.warn-box{
+  background:rgba(255,162,61,.08); border:1px solid rgba(255,162,61,.32); border-radius:12px;
+  padding:15px 17px; margin:14px 0;
+}
+.warn-box .lab{font-family:var(--fmono); font-size:.62rem; font-weight:700; letter-spacing:.16em; color:var(--warn); margin-bottom:7px; text-transform:uppercase}
+.warn-box p{color:var(--txt-2); font-size:.92rem; margin-bottom:0}
+
+code, .mono{font-family:var(--fmono); background:rgba(255,255,255,.06); padding:1px 6px; border-radius:5px; font-size:.86em; color:var(--cyan)}
+
+/* redacted / declassify toggle */
+.declass{margin:18px 0}
+.declass-bar{
+  display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none;
+  background:repeating-linear-gradient(135deg,#1a0f13,#1a0f13 8px,#200f14 8px,#200f14 16px);
+  border:1.5px dashed var(--stamp); border-radius:10px; padding:13px 16px;
+  transition:filter .15s;
+}
+.declass-bar:hover{filter:brightness(1.15)}
+.declass-bar .ico{font-family:var(--fmono); font-weight:800; color:var(--stamp); font-size:.78rem; letter-spacing:.12em}
+.declass-bar .txt{font-size:.84rem; color:#e8b9c0; font-family:var(--fmono)}
+.declass-bar .chev{margin-left:auto; color:var(--stamp); transition:transform .25s}
+.declass.open .declass-bar .chev{transform:rotate(90deg)}
+.declass.open .declass-bar{border-style:solid; background:rgba(61,255,168,.06); border-color:var(--good)}
+.declass.open .declass-bar .ico, .declass.open .declass-bar .txt{color:var(--good)}
+.declass-body{display:none; padding:16px 4px 4px}
+.declass.open .declass-body{display:block; animation:reveal .35s ease both}
+@keyframes reveal{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
+
+/* answer key table */
+table{border-collapse:collapse; width:100%; margin:12px 0 6px; font-size:.86rem}
+th, td{border:1px solid var(--edge); padding:8px 10px; text-align:left; vertical-align:top}
+th{background:var(--panel); color:var(--gold); font-family:var(--fmono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600}
+td{color:var(--txt-2)}
+td.ok{color:var(--good)} td.bad{color:var(--bad)}
+.tablewrap{overflow-x:auto; margin:12px 0}
+
+/* citation tags */
+.cite{
+  font-family:var(--fmono); font-size:.68rem; color:var(--cyan); cursor:pointer;
+  background:rgba(69,227,255,.12); border:1px solid rgba(69,227,255,.35); border-radius:5px;
+  padding:0 5px; vertical-align:super; line-height:1; text-decoration:none;
+}
+.cite:hover{background:rgba(69,227,255,.24)}
+
+/* vs comparison */
+.vs{display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:stretch; margin:16px 0}
+@media(max-width:480px){.vs{grid-template-columns:1fr}}
+.vs-side{background:rgba(0,0,0,.28); border:1px solid var(--edge); border-radius:12px; padding:14px; text-align:center}
+.vs-side.classic{border-color:rgba(255,107,126,.35)}
+.vs-side.quantum{border-color:rgba(69,227,255,.4)}
+.vs-side .k{font-family:var(--fmono); font-size:.6rem; letter-spacing:.14em; color:var(--txt-3); margin-bottom:6px; text-transform:uppercase}
+.vs-side .n{font-family:var(--fmono); font-weight:700; font-size:1.7rem}
+.vs-side.classic .n{color:var(--bad)} .vs-side.quantum .n{color:var(--cyan)}
+.vs-side .s{font-size:.74rem; color:var(--txt-3)}
+.vs-mid{display:flex; align-items:center; font-family:var(--fmono); font-size:.7rem; color:var(--txt-3)}
+
+/* Grover calculator */
+.calc{
+  background:var(--paper); border:1px solid var(--edge); border-radius:16px; padding:20px 20px 22px; margin:18px 0;
+}
+.calc .lab{font-family:var(--fmono); font-size:.62rem; letter-spacing:.16em; color:var(--cyan); text-transform:uppercase; margin-bottom:4px}
+.calc h4{font-family:var(--fdisp); font-size:1.15rem; font-weight:600; margin-bottom:12px}
+.calc-row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px}
+@media(max-width:480px){.calc-row{grid-template-columns:1fr}}
+.calc-field label{display:block; font-family:var(--fmono); font-size:.66rem; color:var(--txt-3); letter-spacing:.06em; margin-bottom:6px; text-transform:uppercase}
+.calc-field input[type=range]{width:100%; accent-color:var(--cyan)}
+.calc-field .val{font-family:var(--fmono); font-weight:700; color:var(--txt); font-size:1rem}
+.calc-out{display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-top:6px}
+.calc-n{font-family:var(--fmono); font-weight:700; font-size:2.1rem; color:var(--cyan); font-variant-numeric:tabular-nums}
+.calc-rail{flex:1; min-width:140px; height:12px; border-radius:7px; background:rgba(0,0,0,.5); overflow:hidden; box-shadow:inset 0 0 0 1px var(--edge)}
+.calc-fill{height:100%; background:linear-gradient(90deg,var(--cyan),var(--good)); border-radius:7px; transition:width .35s}
+.calc-note{font-size:.82rem; color:var(--txt-3); margin-top:10px}
+.calc-btn{
+  font-family:var(--fmono); font-size:.76rem; font-weight:600; color:var(--ink); background:var(--gold);
+  border:none; border-radius:8px; padding:8px 14px; cursor:pointer; margin-top:4px;
+}
+.calc-btn:hover{filter:brightness(1.08)}
+
+/* glossary */
+.gloss-search{width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--edge-2); background:var(--panel); color:var(--txt); font-family:var(--fbody); font-size:.92rem; margin-bottom:16px}
+.gloss-search:focus{outline:2px solid var(--cyan); outline-offset:1px}
+.gloss-grid{display:grid; gap:10px}
+.gterm{background:var(--paper); border:1px solid var(--edge); border-radius:11px; padding:13px 15px}
+.gterm .t{font-family:var(--fmono); font-weight:700; color:var(--gold); font-size:.88rem; margin-bottom:4px}
+.gterm.q .t{color:var(--cyan)}
+.gterm .d{font-size:.87rem; color:var(--txt-2)}
+.gloss-empty{color:var(--txt-3); font-size:.9rem; padding:14px 2px; display:none}
+
+/* quiz cards */
+.qcard{background:var(--paper); border:1px solid var(--edge); border-radius:12px; padding:15px 16px; margin-bottom:10px; cursor:pointer}
+.qcard .qq{font-weight:600; color:var(--txt); font-size:.94rem; margin-bottom:4px}
+.qcard .hint{font-family:var(--fmono); font-size:.66rem; color:var(--txt-3); letter-spacing:.06em}
+.qcard .ans{display:none; margin-top:10px; padding-top:10px; border-top:1px solid var(--edge)}
+.qcard.open .ans{display:block; animation:reveal .3s ease both}
+.qcard .ans .correct{color:var(--good); font-weight:700; font-size:.9rem; margin-bottom:5px}
+.qcard .ans .why{font-size:.87rem; color:var(--txt-2)}
+
+/* delivery notes list */
+.dnote{display:flex; gap:12px; margin-bottom:14px; align-items:flex-start}
+.dnote .ic{font-size:1.1rem; line-height:1.4; flex-shrink:0}
+.dnote .b b{color:var(--txt)}
+.dnote .b{font-size:.93rem; color:var(--txt-2)}
+
+/* references */
+.reflist{list-style:none; margin:0; padding:0; counter-reset:refs}
+.reflist li{
+  counter-increment:refs; padding:11px 0 11px 34px; border-bottom:1px solid var(--edge);
+  font-size:.87rem; color:var(--txt-2); position:relative; scroll-margin-top:20px;
+}
+.reflist li::before{
+  content:counter(refs); position:absolute; left:0; top:11px;
+  font-family:var(--fmono); font-weight:700; color:var(--cyan); font-size:.78rem;
+  width:22px; height:22px; border:1px solid rgba(69,227,255,.4); border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+}
+.reflist li.flash{background:rgba(69,227,255,.1)}
+.reflist a{color:var(--cyan)}
+.reflist .caveat{display:block; margin-top:5px; color:var(--warn); font-size:.83rem}
+
+footer.end{padding:40px 0 20px; color:var(--txt-3); font-size:.8rem; border-top:1px solid var(--edge); margin-top:30px}
+
+/* mobile rail collapse */
+.railtoggle{display:none}
+@media(max-width:860px){
+  .wrap{display:block}
+  .rail{
+    position:sticky; top:0; width:100%; height:auto; max-height:none; border-right:none;
+    border-bottom:1px solid var(--edge); z-index:20; background:var(--ink); padding:12px 14px;
+  }
+  .brand{border-bottom:none; padding:2px 4px 8px; margin-bottom:0; display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .brand h1{font-size:1.1rem; margin:0}
+  .brand .s{display:none}
+  .railtoggle{
+    display:block; font-family:var(--fmono); font-size:.7rem; color:var(--gold);
+    background:rgba(245,196,81,.12); border:1px solid rgba(245,196,81,.35); border-radius:8px;
+    padding:7px 11px; cursor:pointer;
+  }
+  .navlist{display:none; padding-top:10px; max-height:60vh; overflow-y:auto}
+  .rail.open .navlist{display:flex}
+  .railfoot{display:none}
+  .main{padding:0 18px 70px}
+  .hero{padding:30px 0 24px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important; transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+
+
+<div class="texture"></div>
+<div class="wrap">
+
+<nav class="rail" id="rail">
+  <div class="brand">
+    <div>
+      <div class="k">CASE FILE · RESTRICTED</div>
+      <h1>The Vault</h1>
+      <div class="s">Facilitator &amp; admin edition</div>
+    </div>
+    <button class="railtoggle" id="railToggle">MENU ▾</button>
+  </div>
+  <ul class="navlist" id="navlist">
+    <li><a href="#briefing"><span class="tag">00</span>Briefing</a></li>
+    <li><a href="#clock"><span class="tag">01</span>Choice &amp; the clock</a></li>
+    <li><a href="#task1"><span class="tag">02</span>Outer Door</a></li>
+    <li><a href="#task2"><span class="tag">03</span>Room One</a></li>
+    <li><a href="#task3"><span class="tag">04</span>Rooms Two &amp; Three</a></li>
+    <li><a href="#task4"><span class="tag">05</span>The Ledger</a></li>
+    <li><a href="#close"><span class="tag">06</span>Debrief &amp; quiz</a></li>
+    <li><a href="#realm"><span class="tag">07</span>Quantum Playground</a></li>
+    <li><a href="#glossary"><span class="tag">08</span>Glossary</a></li>
+    <li><a href="#delivery"><span class="tag">09</span>Running it</a></li>
+    <li><a href="#refs"><span class="tag">10</span>Evidence log</a></li>
+  </ul>
+  <div class="railfoot">Everything here matches <span class="mono" style="color:var(--txt-2)">vault.html</span> exactly — figures independently recomputed for this file.</div>
+</nav>
+
+<main class="main">
+
+<div class="hero">
+  <div class="stamp-row"><span class="stamp">Not for learner distribution</span><span class="stamp gold">Unredacted</span></div>
+  <h1>Everything under the story, unlocked.</h1>
+  <p class="lede">The learner never sees this page. It's the annotated version of
+  <span class="mono">vault.html</span> — every task's exact answer key, the programming and quantum
+  concept underneath it, why the build is shaped the way it is, and a citation for every factual
+  claim on screen, in case someone in the room asks a sharp question.</p>
+  <div class="who"><span><b>Audience</b> — you, running the session</span><span><b>Reading time</b> — ~22 min</span><span><b>Companion PDF</b> — same content, printable</span></div>
+</div>
+
+<!-- 00 BRIEFING -->
+<section class="sect" id="briefing">
+  <div class="eyebrow">00 · Before you start</div>
+  <h2 class="title">Why it's built this way</h2>
+  <p class="subtitle">Three deliberate design decisions, and the learning-science reasoning behind each one.</p>
+
+  <h3>The story is the delivery mechanism, not decoration</h3>
+  <p>A heist with a six-minute clock is what makes "you need somewhere to keep that number" feel
+  like a real problem instead of a definition to memorise. This follows <b>cognitive load theory</b>
+  — working memory is scarce and easily overloaded, so instruction should minimise effort spent on
+  anything other than the concept itself<span class="cite" data-ref="1">1</span> — and
+  <b>anchored instruction / situated learning</b> — abstract ideas are learned faster and retained
+  longer when embedded in a concrete, meaningful problem<span class="cite" data-ref="2">2</span>.</p>
+  <div class="note">
+    <div class="lab">◆ Facilitator note</div>
+    <p>A 2024 study on narrative-led instructional video found measurably better short-term retention
+    than lecture-style delivery of the same content<span class="cite" data-ref="3">3</span> — that
+    study wasn't run on adult career-changers learning to code, so treat it as support for the
+    <i>shape</i> of the design, not proof this exact audience behaves identically.</p>
+  </div>
+
+  <h3>Every blank is filled by choosing, never by typing or dragging</h3>
+  <p>The wrong choices are real wrong choices with real consequences on screen — picking
+  <code>x</code> as a variable name still runs, and the activity explains exactly why nobody will
+  thank you for it in three weeks. This is the <b>worked-example effect</b>: novices learn a
+  procedure better from studying correct <i>and incorrect</i> worked steps than from unconstrained
+  trial and error<span class="cite" data-ref="4">4</span>. It's also why every gate in the build
+  (Valid/Invalid buttons, Run buttons, Next-room buttons) stays visibly and honestly locked until
+  its real condition is met, rather than looking clickable and silently refusing.</p>
+
+  <h3>Nobody can be hard-locked out by the clock</h3>
+  <p>If the six minutes run out, Okonjo buys ninety seconds with a line of dialogue — and if that
+  also runs out, Vale buys a further thirty as a named, on-screen favour. This is now a hard
+  guarantee, not a two-strike allowance: if a learner needs <i>more</i> rescuing than that (an early
+  build genuinely let this happen, and a tester reached negative time by Act 2–3 — unacceptable for a
+  first-time coder), the clock keeps rescuing indefinitely — a rotating pool of small, randomised,
+  in-fiction excuses ("the guards just clocked on for a coffee break," "a pigeon set off a motion
+  sensor two floors up," and more) each buy a further 20–39 seconds, never repeating twice in a row.
+  The clock is structurally incapable of going negative on any playthrough. A tool for absolute
+  beginners who describe themselves as anxious about technology cannot have a failure state that ends
+  the activity. The tension is motivational, never punitive.</p>
+
+  <h3>Every job ends by naming the career it feeds into</h3>
+  <p>After each task, a "job complete" screen names the construct just used and a specific bank tech
+  role that genuinely runs on it (full detail in each task's own section, and in §06). Tying new
+  material to its future personal relevance is a documented <b>utility-value intervention</b> — one
+  of the few motivational interventions with experimental evidence of improving both interest
+  <i>and</i> measured performance in a technical subject, not just self-reported
+  enjoyment<span class="cite" data-ref="14">14</span>. The four flashbacks were also made harder to
+  miss in the September 2026 revision — a screen-flash, a numbered "idea 2 of 4" progress dial, and a
+  gold tag now mark each one as a named learning beat rather than a scene transition.</p>
+</section>
+
+<!-- 01 CLOCK -->
+<section class="sect" id="clock">
+  <div class="eyebrow">01 · Before Act 0</div>
+  <h2 class="title">The opening choice, and the clock underneath the story</h2>
+  <div class="onscreen">
+    <div class="lab">On screen, first</div>
+    <p>A title card with two cards side by side: <b>Quantum Heist</b> (the full story below, start to
+    finish) and <b>Quantum Playground</b> (skip straight to the seven-card open-ended sandbox, §07 —
+    renamed from "Quantum Realm," same destination, much larger menu). The Playground starts no clock
+    and touches none of the story state — it's a complete, self-contained activity, not a locked
+    "advanced mode." Point anyone short on time, or repeating the session, at it directly.</p>
+  </div>
+  <div class="onscreen">
+    <div class="lab">On screen, once Quantum Heist is chosen</div>
+    <p><span class="who">VALE —</span> "You're in. Good. Behind that door is a vault floor with three
+    rooms, and in the last one is a ledger that puts four people in prison. I can't open any of it.
+    <b>You can.</b>"</p>
+    <p><span class="who">YOU —</span> "I have never written a line of code in my life."</p>
+    <p><span class="who">VALE —</span> "You will have, in about twenty minutes. Touch that door and
+    the alarm starts. <b>Six minutes</b> from then."</p>
+  </div>
+  <h3>The mechanics</h3>
+  <p>The clock is 360 seconds and only starts once "Touch the door" is pressed. Every action costs
+  time: opening a box by hand costs 4s, a search step costs 8s, a missed room attempt costs 20s, each
+  ledger account read costs roughly 1s. Trying different shift numbers on the first door — and the
+  until-loop door right after it — costs nothing at all; both are deliberately free to experiment
+  with. Every deduction pulses the clock and pops a small floating "&minus;Ns" tag, so the cost
+  actually registers. If time would go negative, <b>Okonjo buys ninety seconds once</b>, with a
+  toast — and if it would go negative <i>again</i>, <b>Vale buys a further thirty seconds</b>, once.
+  If a learner needs still more rescuing than that, an open-ended pool of randomised, non-repeating
+  in-fiction excuses each buy a further 20–39 seconds, indefinitely — the clock cannot go negative on
+  <i>any</i> playthrough, however slowly someone works. The debrief stays light for a clean run ("Out,
+  with [time] to spare.") versus a rescued one ("Out — by the skin of your teeth."), and names how
+  many close calls happened.</p>
+  <div class="warn-box">
+    <div class="lab">⏱ Timing reality check</div>
+    <p>Six minutes is a narrative device, not a session-length promise. A facilitated run — reading
+    dialogue aloud, letting people actually think through each picker, pausing at flashbacks, running
+    the quiz — comfortably takes <b>20–35 minutes</b>. Don't let the on-screen clock set your pace.
+    See §09.</p>
+  </div>
+</section>
+
+<!-- 02 TASK 1 -->
+<section class="sect" id="task1">
+  <div class="eyebrow">02 · Exhibit A</div>
+  <h2 class="title">The Outer Door</h2>
+  <p class="subtitle">Teaches: <b>variable</b>, <b>until loop</b>. Wrapped in: a shift cipher.</p>
+
+  <div class="onscreen">
+    <div class="lab">On screen</div>
+    <p>Intercepted combination: <code>CHBSA</code>. Vale: "It's a shift cipher. Every letter moved
+    along the alphabet by the same amount… nobody knows how far. That number is the whole secret."</p>
+  </div>
+
+  <h3>The concept: variable</h3>
+  <p>A named location that holds a value you're allowed to change — that's the whole definition. The
+  pedagogical point is <b>naming</b>, not mechanics: <code>x = 7</code> and <code>shift = 7</code>
+  run identically and read completely differently three weeks later.</p>
+
+  <div class="declass" data-key="t1">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE 1-A</span><span class="txt">Answer key — the decoder</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>Name the box</b> — <code>shift</code> / <code>shift_amount</code> = correct (solid green).
+      <code>x</code> / <code>thing</code> = accepted, with a tip — a dashed green border and a 💡
+      mark, not amber (amber was dropped; testers read it as a rejection when the actual message is
+      "this works, here's a style tip"): "it runs, but in a month nobody reading <code>x</code> knows
+      what x <i>is</i>."</p>
+      <p><b>Put a number in it</b> — options are 3, 5, 7, 11, 19, explicitly framed as free guesses.
+      <b>Only 7 is correct</b> — the secret word is <code>VAULT</code> shifted by 7 to give
+      <code>CHBSA</code>. Any other number decodes to gibberish, and costs nothing — the per-guess
+      time cost was removed to match the until-loop door right after it, which never charged per
+      guess either.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="t1b">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE 1-B</span><span class="txt">Answer key — the until loop</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p>Second door, secret word <code>LEDGER</code> shifted by 14. The picker <i>accepts</i> any
+      option — that's deliberate, "code as thought" lets a wrong choice run so its failure is
+      instructive — but only one combination actually opens the door:</p>
+      <div class="tablewrap"><table>
+        <tr><th>Blank</th><th>Option</th><th>What actually happens</th><th>Correct?</th></tr>
+        <tr><td rowspan="3">Stop test</td><td><code>it_is_a_word</code></td><td>Stops the instant the decode succeeds</td><td class="ok">✓ Correct</td></tr>
+        <tr><td><code>shift == 25</code></td><td>Runs all 25 regardless, then stops anyway — "did it work? The loop has no idea."</td><td class="bad">✗ Runs out, doesn't succeed</td></tr>
+        <tr><td><code>never</code></td><td>No stop condition — infinite loop, shown live</td><td class="bad">✗ Never terminates</td></tr>
+        <tr><td rowspan="3">Step size</td><td><code>1</code></td><td>Checks every integer 1–25 — guaranteed to land on 14</td><td class="ok">✓ Correct</td></tr>
+        <tr><td><code>0</code></td><td><code>shift</code> never changes → same failure as <code>never</code></td><td class="bad">✗ Dead counter</td></tr>
+        <tr><td><code>5</code></td><td>Checks 1, 6, 11, 16, 21 — <b>skips straight past 14</b></td><td class="bad">✗ Overshoots</td></tr>
+      </table></div>
+      <p>Only <code>it_is_a_word</code> + <code>1</code> works. A learner picking
+      <code>shift == 25</code> because it superficially sounds like a valid stop condition fails for
+      an instructive reason: counting down to zero isn't the same as checking success.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="lab">◆ Technical accuracy note</div>
+    <p>A shift (Caesar) cipher is a teaching prop, not real cryptography — 25 possible keys, broken
+    in antiquity. The "real encryption" claim belongs to the closing screen (§06) and is about modern
+    public-key cryptography, a completely different problem. Keep the two separate in your own
+    explanations.</p>
+  </div>
+
+  <div class="note">
+    <div class="lab">◆ The career thread — Data Analyst</div>
+    <p>The job-complete screen after this task names <b>Data Analyst</b>. Low-tech-sounding on
+    purpose: naming a variable sensibly and looping until a query has what it needs is the daily
+    texture of that job, not a stretch analogy. If asked for the exact line: <i>"every dashboard a
+    bank runs starts with a named variable holding today's number, and a loop that keeps pulling
+    records until the query is done."</i></p>
+  </div>
+</section>
+
+<!-- 03 TASK 2 -->
+<section class="sect" id="task2">
+  <div class="eyebrow">03 · Exhibit B</div>
+  <h2 class="title">Room One</h2>
+  <p class="subtitle">Teaches: <b>sequence</b> / linear search. Introduces: superposition, measurement, interference, the first real Grover step.</p>
+
+  <div class="onscreen">
+    <div class="lab">On screen</div>
+    <p>"The key to room two is in one of those four. Open them. That is all you can do — and it is
+    all the house computer can do either." Then: "A coin on the table is heads or tails. Spin it and
+    ask again — while it spins it is not secretly one of them. It is <b>genuinely both</b>."</p>
+  </div>
+
+  <h3>Linear search (classical)</h3>
+  <p>Opening boxes one at a time from the top is a <b>linear search</b> — what every ordinary
+  computer does to find an unindexed item, billions of times a second. Worst case for 4 boxes: 4
+  opens.</p>
+
+  <h3>Superposition and measurement</h3>
+  <p>A qubit can hold a weighted mix of 0 and 1 at once; <b>measuring it forces one definite
+  outcome</b>, collapsing that mix<span class="cite" data-ref="5">5</span>. The spinning-coin analogy
+  is fair provided you don't push it further: don't say a qubit "is" both 0 and 1 — say it has a
+  <i>probability</i> of being found in either state until measured.</p>
+  <div class="note">
+    <div class="lab">◆ The trap this activity avoids</div>
+    <p>Spinning all four boxes and grabbing one still gives <b>25% odds</b> — the activity says so
+    explicitly ("lovely, and useless"). <b>Superposition alone searches nothing.</b> This matters
+    because it's set up before the actual mechanism, not glossed over.</p>
+  </div>
+
+  <h3>Interference — the real mechanism (Mark + Boost)</h3>
+  <p>The most common wrong popular explanation of quantum computing is "it tries every answer at
+  once." This build is careful not to teach that. The real mechanism is <b>amplitude
+  amplification</b><span class="cite" data-ref="6">6</span><span class="cite" data-ref="7">7</span>:
+  <b>Mark</b> flips the phase of the correct answer's amplitude; <b>Boost</b> reflects every
+  amplitude about the average, growing the marked one and shrinking the rest. Repeat, and the correct
+  answer's probability climbs toward certainty. Superposition creates possibilities; <b>interference
+  is what steers the measurement</b> toward the right one.</p>
+
+  <div class="declass" data-key="t2">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE 2-A</span><span class="txt">The verified numbers</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <div class="vs">
+        <div class="vs-side classic"><div class="k">1 step</div><div class="n">100%</div><div class="s">sin²(3 × 30°) = sin²(90°), exactly</div></div>
+        <div class="vs-mid">→</div>
+        <div class="vs-side quantum"><div class="k">2 steps</div><div class="n">25%</div><div class="s">sin²(5 × 30°) = sin²(150°) — it fell</div></div>
+      </div>
+      <p>"Press it again and watch the odds fall" is a real, checkable property of the algorithm for
+      N=4, not a game-balance choice. This periodic overshoot is explored properly at scale in the
+      next task.</p>
+    </div>
+  </div>
+
+  <div class="note flash">
+    <div class="lab">⚡ Flash-forward — "You just ran Grover's algorithm"</div>
+    <p>Right after this win, a full-screen "flash-forward" names the mechanism outright. Its wording
+    was substantially simplified in a later revision, after feedback that the original was too dense
+    for both children and adult learners with zero tech background — the facts didn't change, only
+    the language: <i>"Spin, mark, boost, look. What you just did has a real name: Grover's algorithm,
+    worked out by a scientist called Lov Grover in 1996<span class="cite" data-ref="8">8</span>. It's
+    a genuine way to search through a big pile of unsorted things — and it beats checking one at a
+    time."</i> One concrete before/after number replaces the earlier "quadratically faster" phrasing —
+    <i>"Check a million things one at a time: a million steps. Hand the same search to a quantum
+    computer: about a thousand steps"</i> — then it closes on a single concrete stakes example (banks
+    already exploring this exact idea for one suspicious transaction out of millions — tying directly
+    into the Ledger task next) rather than a list of three, tying back to the same bank research-team
+    claim below<span class="cite" data-ref="15">15</span>. Same overlay mechanics as the four
+    flashbacks (typewriter reveal, tap to finish, a progress dial, a back button) but on a cool
+    cyan/violet theme with its own sound cue and a confetti burst, so it reads as a bigger, more
+    electric beat than the calm sepia-toned flashbacks.</p>
+  </div>
+
+  <div class="note">
+    <div class="lab">◆ The career thread — Quantum Computing Researcher</div>
+    <p>The job-complete screen after this task names <b>Quantum Computing Researcher</b>, paired with
+    a checkable claim: <i>"Several major banks — HSBC, Barclays, Goldman Sachs and JPMorgan among
+    them — now run dedicated quantum computing research teams."</i> Accurate as of the most recent
+    sector survey<span class="cite" data-ref="15">15</span>: HSBC has a Group Head of Quantum
+    Technologies and has trialled quantum-enabled algorithmic trading with IBM and Quantinuum;
+    Barclays has run quantum research since 2017 out of its Chief Technology Office; Goldman Sachs
+    runs a named quantum research team; JPMorgan Chase has demonstrated certified quantum randomness
+    and QAOA speedups and operates its own quantum-secured inter-datacentre network. None of this
+    means Grover's algorithm is in production anywhere today — it isn't — only that the research
+    capability named is real and current, not aspirational.</p>
+  </div>
+</section>
+
+<!-- 04 TASK 3 -->
+<section class="sect" id="task3">
+  <div class="eyebrow">04 · Exhibit C</div>
+  <h2 class="title">Rooms Two and Three</h2>
+  <p class="subtitle">Teaches: <b>counted loop</b>. Deepens: Grover's algorithm at scale — the learner now chooses the step count.</p>
+
+  <div class="onscreen">
+    <div class="lab">On screen — ROOM.PY</div>
+    <p><code>all_boxes.spin()</code><br><code>repeat ‹how many› times:</code><br>&nbsp;&nbsp;<code>mark(); boost()</code><br><code>look()</code></p>
+  </div>
+
+  <p>The build computes the true optimum live with the closed-form estimate
+  <code>k ≈ round((π/4)/asin(1/√N) − 0.5)</code> — not a brute-force max search, which can land on a
+  later, coincidentally-higher periodic peak and give a worse (and slower) answer than checking by
+  hand. This was a real bug caught in development.</p>
+
+  <div class="declass" data-key="t3">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE 3-A</span><span class="txt">Answer key — best step counts</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <div class="tablewrap"><table>
+        <tr><th>Room</th><th>N</th><th>Options offered</th><th>Best k</th><th>Odds at best k</th></tr>
+        <tr><td>Room Two</td><td>16</td><td>1, 2, 3, 5</td><td class="ok">3</td><td>96.1%</td></tr>
+        <tr><td>Room Three</td><td>64</td><td>2, 4, 6, 12</td><td class="ok">6</td><td>99.7%</td></tr>
+      </table></div>
+      <p>Fewer than best under-amplifies; <b>more than best overshoots and odds swing back down</b> —
+      genuinely, not a demo quirk, for the same periodic reason as Task 2's second press.</p>
+    </div>
+  </div>
+
+  <div class="calc">
+    <div class="lab">Live tool</div>
+    <h4>Grover odds calculator</h4>
+    <p style="font-size:.86rem;color:var(--txt-3);margin-bottom:14px">Drag N or k to demonstrate the
+    overshoot live, for any size box wall — not just 16 or 64.</p>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label for="calcN">Boxes (N) — <span class="val" id="calcNVal">64</span></label>
+        <input type="range" id="calcN" min="2" max="8" step="1" value="6">
+      </div>
+      <div class="calc-field">
+        <label for="calcK">Search steps (k) — <span class="val" id="calcKVal">6</span></label>
+        <input type="range" id="calcK" min="1" max="20" step="1" value="6">
+      </div>
+    </div>
+    <div class="calc-out">
+      <div class="calc-n" id="calcPct">99.7%</div>
+      <div class="calc-rail"><div class="calc-fill" id="calcFill" style="width:99.7%"></div></div>
+    </div>
+    <div class="calc-note">Best k for this N is <b><span id="calcBest">6</span></b>. Classical worst
+    case: <b><span id="calcClassical">64</span></b> checks. Average case: <b><span id="calcAvg">32</span></b>.</div>
+    <button class="calc-btn" id="calcJump">Jump to best k</button>
+  </div>
+
+  <h3>Classical vs quantum, stated precisely</h3>
+  <p>Worst-case classical is <b>N</b>. Grover needs on the order of <b>√N</b> oracle calls — this is
+  a <i>quadratic</i> speedup, not exponential, and it is <b>provably optimal</b>: no quantum
+  algorithm can search an unstructured list faster than roughly √N queries<span class="cite" data-ref="8">8</span>.
+  Quadratic sounds modest next to popular quantum-computing hype; it is genuinely what the published
+  mathematics says, and the honest framing is what makes this activity trustworthy.</p>
+
+  <div class="note">
+    <div class="lab">◆ The career thread — Automation Engineer</div>
+    <p>The job-complete screen after this task names <b>Automation Engineer</b>. A direct link, not an
+    analogy: anywhere a bank repeats a known number of steps a known number of times — reconciling
+    accounts, end-of-day batch jobs, retrying a failed payment a fixed number of times before
+    escalating — a counted loop is doing the work a person used to do by hand. No citation needed;
+    it's a plain description of what the job is.</p>
+  </div>
+</section>
+
+<!-- 05 TASK 4 -->
+<section class="sect" id="task4">
+  <div class="eyebrow">05 · Exhibit D</div>
+  <h2 class="title">The Ledger</h2>
+  <p class="subtitle">Teaches: <b>conditional</b>. Closes the loop on: the <b>oracle</b> — the learner's own <code>if</code> becomes the thing the quantum machine searches for.</p>
+
+  <div class="onscreen">
+    <div class="lab">On screen — LEDGER.PY</div>
+    <p><code>for account in ledger:</code><br>&nbsp;&nbsp;<code>if amount ‹op1› ‹lim› and country ‹op2› ‹ctry›:</code><br>&nbsp;&nbsp;&nbsp;&nbsp;<code>flag(account)</code></p>
+  </div>
+
+  <div class="declass" data-key="t4">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE 4-A</span><span class="txt">Answer key — the rule</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <div class="tablewrap"><table>
+        <tr><th>Slot</th><th>Correct</th><th>Why the traps are traps</th></tr>
+        <tr><td><code>op1</code></td><td class="ok"><code>&gt;</code></td><td><code>&lt;</code> finds small movements, not large. <code>==</code> matches only exactly £10,000.</td></tr>
+        <tr><td><code>lim</code></td><td class="ok"><code>10000</code></td><td><code>100</code> flags everything; <code>1000000</code> flags nothing.</td></tr>
+        <tr><td><code>op2</code></td><td class="ok"><code>!=</code></td><td><code>=</code> is the <b>label maker</b> — it would overwrite <code>country</code> instead of asking a question, and can't sit inside a test at all. The single most common real-world beginner bug in conditional logic.</td></tr>
+        <tr><td><code>ctry</code></td><td class="ok"><code>"UK"</code></td><td><code>UK</code> unquoted is a reference to a <i>variable</i> called UK, which was never created. <code>"10000"</code> answers the wrong question in text form.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="lab">◆ The <code>=</code> / <code>==</code> / <code>!=</code> picker, redesigned</div>
+    <p>An earlier version only explained this via a one-line legend plus a beat that fired after a
+    right or wrong guess — feedback was that it wasn't landing, and part of the problem was the
+    picker's own layout: a single row labelled "COMPARISONS" had the assignment operator <code>=</code>
+    sitting in the middle of it, undermining the very distinction being taught. The picker is now built
+    around the distinction itself: a plain-language line sits above both groups —
+    <i>"<code>=</code> is a label maker — it sticks a value onto something and changes it.
+    <code>==</code> and <code>!=</code> don't change anything at all; they just ask a yes-or-no
+    question. Only a question belongs in an <code>if</code>."</i> — followed by two visually separate
+    groups: <b>ASKS A QUESTION</b> (<code>&gt;</code> <code>&lt;</code> <code>==</code> <code>!=</code>,
+    "true or false — nothing changes") and <b>SETS A VALUE</b> (<code>=</code> alone, its own accent
+    colour, "not a question — changes what's stored"). The same wording now appears in three places a
+    learner meets it — this picker, the pre-Ledger flashback, and the in-puzzle beat — rather than
+    three different explanations of the same thing.</p>
+  </div>
+
+  <div class="vs" style="margin-bottom:18px">
+    <div class="vs-side classic"><div class="k">Classical scan</div><div class="n">≤64</div><div class="s">accounts read, one at a time</div></div>
+    <div class="vs-mid">VS</div>
+    <div class="vs-side quantum"><div class="k">Quantum scan</div><div class="n">6</div><div class="s">search steps · 99.7% certain</div></div>
+  </div>
+  <p style="font-size:.9rem;color:var(--txt-3);margin-top:-10px">The quantum scan now shows that
+  99.7% climbing live, step by step, on the same odds-meter component Room One already taught the
+  learner to read — not all 64 boxes glowing at once with no explanation.</p>
+
+  <h3>The oracle, made literal</h3>
+  <p>The build's own line does real technical work, not just narrative flourish: <i>"You did not
+  learn a second language. You wrote one rule, and handed it to a different machine… Your
+  <code>if</code> became the Mark. That is all an oracle is: a rule that recognises the answer when
+  it sees it."</i> A Grover <b>oracle</b> is a subroutine that flips the phase of any state
+  satisfying a predicate — exactly the boolean condition already written, realised as a phase-flip
+  instead of a True/False return<span class="cite" data-ref="6">6</span>. This isn't a simplification
+  for beginners; it's the literally correct relationship.</p>
+
+  <div class="declass" data-key="t4b">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE 4-B</span><span class="txt">Task 4b — an actual period-finding mechanic</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p>Flagging the account used to be the end of Task 4. It no longer is: pressing "Flagged. Now
+      unmask the account →" moves to a new scene (<code>s4b</code>) where the learner is told the
+      flagged account's real reference is masked behind a number, <code>N = 91</code>, and cracks it
+      themselves rather than being told about it afterward — Shor's algorithm, not narrated this time
+      but actually run, at a scale small enough to do by hand.</p>
+      <p><b>The mechanic:</b> the learner repeatedly presses "Try the next power of 3," each press
+      computing <code>3^x mod 91</code> and appending it to a visible chip sequence. The true
+      sequence — verified independently before this was built — is <b>3, 9, 27, 81, 61, 1</b>: six
+      presses, 3 seconds each, until the remainder loops back to 1. That loop-length (6) is the
+      <b>period</b>. The activity halves it (3), compares <code>3³−1</code> and <code>3³+1</code>
+      against 91 — <code>gcd(3³−1,91)=13</code>, <code>gcd(3³+1,91)=7</code> — and the two hidden
+      factors fall out: <b>91 = 7 × 13</b>, revealed with a decrypted routing code. No player choice
+      or failure state, deliberately — like Mark+Boost in Room One, one new idea introduced guided,
+      not a puzzle with wrong answers.</p>
+      <p>A genuine, correct worked example (a=3, N=91=7×13, r=6), chosen and verified before any of
+      this was built precisely because it's classroom-tractable by hand while still being real
+      arithmetic. The build is explicit about the scaling gap, in the beat that fires once the pattern
+      is found: <i>"By hand, you multiplied this out step by step; a real bank reference number is
+      hundreds of digits longer, and 'step by step' stops being an option long before you get
+      there."</i></p>
+    </div>
+  </div>
+
+  <div class="note flash">
+    <div class="lab">⚡ Flash-forward — "You just found a period. That is Shor's algorithm."</div>
+    <p>Once Task 4b is complete, a second flash-forward fires right before the closing screen — this
+    is where the Grover-≠-Shor distinction is made explicitly, on screen, by name. Unlike the first
+    draft of this flash-forward (written before the period-finding mechanic existed), it now ties
+    directly to what the learner just did: <i>"Worth being precise here: the shift cipher on that
+    first door was brute force, not quantum — you just tried every shift until one made a word. And
+    Grover's algorithm, the search you ran twice tonight, does not break encryption either; at best it
+    roughly halves the effective strength of a key."</i> It then names what the learner just did by
+    hand — hunting for where <code>3^x mod 91</code> looped back to 1, then splitting that loop-length
+    in half to reveal 91 = 7 × 13 — as <b>the actual method behind Shor's algorithm</b>, published by
+    Peter Shor in 1994<span class="cite" data-ref="17">17</span>: <i>"You did it by hand because 91 is
+    tiny. A real encryption key is a number hundreds of digits long… A large enough quantum computer
+    would not do anything different to what you just did; it would just find that same repeating
+    pattern almost instantly, for a number that size."</i> It closes on the same harvest-now-decrypt-later
+    / post-quantum-migration framing as the sourced note below — a second, more detailed pass at the
+    same warning, not a replacement for it.</p>
+  </div>
+
+  <div class="warn-box">
+    <div class="lab">⚠ Read before anyone technical asks</div>
+    <p><b>Grover's algorithm and "harvest now, decrypt later" are still not the same threat</b>, even
+    now that both are named — and one of them actually run — on screen. Grover gives a
+    <i>quadratic</i> speedup against brute-force search — practically, symmetric keys (like AES) just
+    need roughly double the length to stay safe, a known, manageable mitigation; the flash-forward now
+    states this precisely ("at best it roughly halves the effective strength of a key") rather than
+    leaving it implied. The far bigger threat behind harvest-now-decrypt-later is <b>Shor's
+    algorithm</b>, which gives an <i>exponential</i> speedup at factoring — the hard problem today's
+    public-key cryptography (RSA, ECC) relies on. If asked "is this Shor's algorithm?" — yes, in the
+    sense that matters: the learner performed real period-finding arithmetic by hand, on a genuine
+    worked example (a=3, N=91=7×13, r=6), which is precisely the classical arithmetic step Shor's
+    algorithm accelerates. What the build does <i>not</i> claim is that a quantum computer was
+    involved, or that this scales to a real key — it's explicit about both, and the direct search
+    puzzles throughout the rest of the build (Rooms One–Three, the Ledger's scan) remain Grover's
+    algorithm, unchanged. The underlying warning is correct regardless of which algorithm eventually
+    does the breaking, and is now demonstrated as well as named.</p>
+  </div>
+
+  <h3>"Save now, decrypt later" — sourced</h3>
+  <ul style="color:var(--txt-2); font-size:.94rem; padding-left:20px; margin-bottom:14px">
+    <li style="margin-bottom:8px">The concept and its stakes for institutions with long
+    data-confidentiality needs — exactly this finance-sector framing — are examined in a 2025
+    Federal Reserve working paper<span class="cite" data-ref="9">9</span>.</li>
+    <li style="margin-bottom:8px">NIST finalised the first three post-quantum cryptography standards
+    — FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA) — in August 2024, specifically to give
+    organisations something to migrate to<span class="cite" data-ref="10">10</span>.</li>
+    <li>The US NSA's CNSA 2.0 suite sets a concrete national-security-system migration timeline:
+    mandatory by end of 2031<span class="cite" data-ref="11">11</span>. A US timeline, not a UK
+    financial-services requirement — cite it as evidence of urgency, not as a rule that applies here.</li>
+  </ul>
+
+  <div class="note">
+    <div class="lab">◆ The career thread — Risk &amp; Financial Crime Analyst</div>
+    <p>The job-complete screen after this task names <b>Risk &amp; Financial Crime Analyst</b> — the
+    closest of the five tie-ins to a literal match rather than an illustrative one. Fraud and AML
+    monitoring genuinely runs on rules of exactly this shape: a threshold amount, a jurisdiction
+    check, an "and" between them, flagging the transaction that breaks it. The learner wrote a real
+    instance of that rule, not a simplified stand-in for it.</p>
+  </div>
+</section>
+
+<!-- 06 CLOSE -->
+<section class="sect" id="close">
+  <div class="eyebrow">06 · Act 5</div>
+  <h2 class="title">The debrief, and the quiz</h2>
+
+  <div class="note">
+    <div class="lab">◆ A bigger finale, plus a printable certificate — new this round</div>
+    <p>On Mark's own request ("finishing the heist is an incredible achievement for attendees"): the
+    completion screen now pops a trophy banner and the biggest confetti burst anywhere in the build (26
+    particles), on top of the existing sound and stat summary. A new "🎓 Get your certificate →" button
+    leads to a dedicated certificate screen — type a name, see a fixed congratulatory line and all six
+    construct tiles, then "Print / save as PDF" calls the browser's own native print dialog. No external
+    PDF library, nothing sent anywhere. Styled in the heist's own gold palette, not the Playground's
+    cyan — it reads as belonging to the heist. Worth flagging to a group in advance if you want everyone
+    to actually generate one before they leave.</p>
+  </div>
+
+  <div class="warn-box">
+    <div class="lab">⚠ The UK quantum statistic — read this before anyone asks</div>
+    <p>On screen: <i>"About 3,000 people work in quantum in the UK… aiming for 100,000-plus jobs…
+    Source: National Quantum Computing Centre (NQCC)."</i> (The citation used to read "UK Quantum
+    Skills Taskforce / NQCC" — narrowed to NQCC alone because, as below, the Taskforce's own report
+    doesn't actually support this pairing of numbers.) There's a real discrepancy worth knowing:</p>
+    <p>The exact <b>"~3,000 now / 100,000+ target"</b> pairing traces to a March 2026 blog post by
+    the NQCC's Director<span class="cite" data-ref="12">12</span> — legitimate and attributable, but
+    a blog post with no sourcing given for either number. The more rigorously sourced <b>UK Quantum
+    Skills Taskforce report</b> (a formal government publication) gives a different figure — around
+    <b>1,700</b>, from 2022–23 HMRC data — and sets <b>no UK-specific 100,000 target</b> at all,
+    citing global projections instead<span class="cite" data-ref="13">13</span>.</p>
+    <p><b>If pressed:</b> both figures are genuine, from credible UK sources, measuring slightly
+    different things. "A UK national body puts today's figure at around three thousand, government's
+    own labour-market data puts it nearer seventeen hundred, and either way it's a very small, very
+    young field with enormous room to grow" — which if anything strengthens the activity's point.</p>
+  </div>
+
+  <h3>Quiz answer key</h3>
+  <p style="font-size:.88rem;color:var(--txt-3)">Already answer-locked and explained on screen — tap
+  a card for quick reference.</p>
+  <div id="quizList"></div>
+
+  <h3>Then — the Big Picture screen</h3>
+  <p>Once all five quiz questions are answered, a button — "See what it all builds to" — reveals a
+  second, final screen. It re-lists all six constructs as tiles and all five career tie-ins as one
+  grid, and adds a sixth role that doesn't map to a single task: <b>Software Engineer</b>, framed as
+  the one that "threads through all of it" — assembling separate constructs into one working program
+  in the right order is itself the skill, distinct from knowing any one construct alone. A closing
+  note on this screen now also points explicitly at the Quantum Playground (§07) — "seven more
+  mini-labs… the same head-to-head search up to 4096 boxes, plus encryption, true randomness, and
+  every construct from tonight" — before the learner can run the story again or jump straight into it.</p>
+</section>
+
+<!-- 07 QUANTUM PLAYGROUND -->
+<section class="sect" id="realm">
+  <div class="eyebrow">07 · Optional module</div>
+  <h2 class="title">The Quantum Playground — seven mini-labs</h2>
+  <p class="subtitle">Not part of the story. Reachable from the opening card (§01) or the Big Picture
+  screen (§06). No clock, no narrative — seven independent mini-labs, each pairing a classical machine
+  against a quantum one on the same job, each showing both sides' real code, each closing on a named
+  bank tech role.</p>
+
+  <h3>What it is, why it's now seven cards, and its history</h3>
+  <p>Every task in the main story is a fixed, single worked example — a deliberate scaffold (§00,
+  worked-example effect), and scaffolds are meant to come off. The Playground is the un-scaffolded
+  version: the learner sets the problem, watches a by-hand approach and a quantum approach run side by
+  side, at whatever scale or configuration they choose, with both versions' actual code shown for
+  direct comparison. This is <b>learner-controlled, variable practice</b> — rerunning an
+  already-learned concept at a self-chosen scale, one of the better-evidenced ways to build a skill
+  that transfers beyond the exact example it was learned on<span class="cite" data-ref="16">16</span>.</p>
+
+  <div class="note">
+    <div class="lab">◆ Fourth build, third full rebuild — and the biggest jump yet</div>
+    <p>Two earlier approaches — a build-it-yourself sandbox with staged construct introduction and a
+    bidirectional Convert feature, then a full-screen circuit-canvas rebuild of that same drag-and-drop
+    premise — were both tried and both explicitly rejected: assembling a program yourself, however
+    presented, was the wrong fit for a closing activity. The third build removed the building entirely
+    and landed as intended — unreserved positive feedback, plus the code panels and the extended
+    4–4096 range added on request. <b>This round went further, on Mark's own ask</b>: rename "Quantum
+    Realm" to "Quantum Playground"; fold in the heist's own four programming constructs, not just the
+    search comparison; add encryption/decryption; randomise the target instead of always fixing it at
+    the last box; make every card always show a classical-vs-quantum visual and always name a real
+    role; research and add one genuinely new quantum concept the heist doesn't cover anywhere else.
+    The original head-to-head comparison — the third build's entire sandbox — is untouched at the code
+    level and now sits in the menu as one card among seven, renamed <b>Search</b>; six new cards were
+    added alongside it. The existing layout was also checked across five screen sizes/orientations
+    before any of this was built on top of it — zero overflow, so the same full-screen shell was
+    reused for all seven cards, and re-verified with the same sweep after the rebuild.</p>
+  </div>
+
+  <div class="note">
+    <div class="lab">◆ How the randomised target works, and why it's not just cosmetic</div>
+    <p>Previously the target was always the last box in the wall, and the classical side always
+    animated a full N-box scan regardless. Now, on every wall-based card (Search, Conditional,
+    Encryption, and the quantum side of Until Loop/Variable), the target is genuinely randomised every
+    run (<code>randInt(N)</code>) — and the classical wall animation <b>stops the moment it reaches
+    this run's randomised target</b>, so the reported "this run" figure is honest and actually varies,
+    not a relocated dot inside an animation that still ran to completion. The "worst case" figure
+    alongside it stays a separate, honest caption that is always N, exactly as before. The point this
+    sharpens: <b>the quantum step count never varies with where the target happens to be, but the
+    classical count does</b> — a real difference, not just a randomised visual. All wall-based cards
+    share the same underlying <code>runClassicWall()</code>/<code>runQuantumWall()</code> pair rather
+    than each reimplementing this.</p>
+  </div>
+
+  <div class="declass" data-key="realm-v">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-1</span><span class="txt">Card 1 — Variable</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>On screen:</b> a qubit-count slider (1–10) showing the equivalent register size (2ᵠ) live.
+      "Load the variable / register" runs both sides: classical assigns <code>x = 7</code>, then
+      reassigns <code>x = 42</code> — genuinely only ever holds one thing. Quantum puts all 2ᵠ values
+      into superposition at once, then measures, collapsing to one random value.</p>
+      <p><b>The point:</b> a classical variable holds exactly one value, full stop; a quantum register
+      in superposition genuinely holds many together until measured. Insight line: <i>"that 'many
+      values, held together' state is the raw material every quantum algorithm — including the search
+      you ran tonight — works with, before interference steers it toward one answer."</i></p>
+      <p><b>Career tie-in — Quantitative Analyst:</b> a classical risk model updates one market
+      scenario at a time; banks exploring quantum computing are looking at holding many scenarios at
+      once for Monte Carlo-style simulation — the same idea just demonstrated in miniature.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="realm-l">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-2</span><span class="txt">Card 2 — Until loop</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>On screen:</b> 16 boxes, one hidden key, re-randomised every run. Two independent buttons:
+      "Guess until found" (classical — genuinely guesses in random order until it hits, 1–16 guesses)
+      and "Commit & run" (quantum — a "steps to commit" slider, 1–8, is locked in <i>before</i> the run
+      starts; disabled while it runs).</p>
+      <p><b>The point, and why the layout is asymmetric on purpose:</b> classical can keep going for as
+      long as it takes; quantum must commit to a step count in advance — reading the answer early would
+      collapse the superposition. The insight line draws the direct parallel to Room One's own "press
+      it twice and the odds fall" lesson: overshoot the committed count and, just like Mark+Boost
+      pressed twice, the odds swing back down.</p>
+      <p><b>Career tie-in — IT Operations Engineer:</b> a classical retry-until-it-works loop is exactly
+      how much banking infrastructure recovers from a failed payment or dropped connection; quantum
+      programs can't do that yet — every run today is a fixed, pre-planned job.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="realm-k">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-3</span><span class="txt">Card 3 — Counted loop</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>On screen — the one card with no wall animation at all, by design:</b> a pure, live odds
+      calculator reusing the same odds-meter component as Room One and the Ledger. Two sliders — boxes
+      (N, same eleven stops as elsewhere) and search steps (k) — drive a live odds % and fill bar, plus
+      a "Jump to best k" button.</p>
+      <p><b>The point:</b> drag k below the best value and the message says the odds haven't peaked
+      yet; land on it and it states the real odds/ratio; overshoot it and it says so explicitly —
+      <i>"the odds have swung back down, exactly like pressing Mark + Boost twice in Room One"</i> —
+      the same overshoot lesson taught three different ways across this build.</p>
+      <p><b>Career tie-in — Automation Engineer:</b> sizing a batch job by a repeat count is real,
+      everyday work; unlike a classical batch job, overshooting a quantum search's step count actively
+      makes the result <i>worse</i>, not just slower.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="realm-c">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-4</span><span class="txt">Card 4 — Conditional</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>On screen:</b> the learner picks a rule — "IF AMOUNT <code>&gt;</code>/<code>&lt;</code>/<code>==</code>
+      10,000" — from a picker built like the Ledger's own operator picker (§05), then a size slider,
+      then "Run the rule." Both sides run the shared wall animation with the code panels generated live
+      to show the learner's own chosen rule baked into both the classical <code>if</code> and the
+      quantum oracle call.</p>
+      <p><b>The point:</b> the learner's own condition becomes the literal thing being searched for —
+      the insight line states it outright: <i>"the quantum oracle IS the condition you picked."</i> The
+      clearest card in the Playground for making "the oracle, made literal" (§05) land.</p>
+      <p><b>Career tie-in — Risk &amp; Financial Crime Analyst:</b> fraud/AML rules are exactly this
+      shape — a condition flagging the one record out of thousands that breaks it.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="realm-s">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-5</span><span class="txt">Card 5 — Search (the original comparison, now with company)</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>On screen:</b> unchanged in its mechanics from the third build — the full 4–4096 size
+      slider, live code-panel previews before "Run both" is pressed, the same side-by-side wall race,
+      now with a genuinely randomised target rather than a fixed one. The independently-verified table
+      still applies — the <b>worst case</b> column was never affected by the randomisation, only the
+      newly-varying "this run" figure was added alongside it:</p>
+      <div class="tablewrap"><table>
+        <tr><th>N</th><th>Best k</th><th>Odds</th><th>Classical ÷ quantum (worst case)</th></tr>
+        <tr><td>4</td><td>1</td><td>100.0%</td><td>~4.0×</td></tr>
+        <tr><td>8</td><td>2</td><td>94.5%</td><td>~4.0×</td></tr>
+        <tr><td>16</td><td>3</td><td>96.1%</td><td>~5.3×</td></tr>
+        <tr><td>32</td><td>4</td><td>99.9%</td><td>~8.0×</td></tr>
+        <tr><td>64</td><td>6</td><td>99.7%</td><td>~10.7×</td></tr>
+        <tr><td>128</td><td>8</td><td>99.6%</td><td>~16.0×</td></tr>
+        <tr><td>256</td><td>12</td><td>99.99%</td><td>~21.3×</td></tr>
+        <tr><td>512</td><td>17</td><td>99.9%</td><td>~30.1×</td></tr>
+        <tr><td>1024</td><td>25</td><td>99.95%</td><td>~41.0×</td></tr>
+        <tr><td>2048</td><td>35</td><td>100.0%</td><td>~58.5×</td></tr>
+        <tr><td>4096</td><td>50</td><td>99.99%</td><td>~81.9×</td></tr>
+      </table></div>
+      <p>The insight line now explicitly frames the randomisation's point: <i>"that position-blindness
+      is the real advantage, not luck."</i> A facilitator-only note on the top of the range still
+      applies unchanged: per-box/per-step delay tapers down as N and k grow so even 4096 boxes stays a
+      watchable few seconds.</p>
+      <p><b>Career tie-in — Quantum Computing Researcher:</b> several major banks now run dedicated
+      quantum computing research teams exploring search problems like this, at far larger scale — same
+      claim and sourcing as §03's career thread<span class="cite" data-ref="15">15</span>.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="realm-e">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-6</span><span class="txt">Card 6 — Encryption</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>On screen:</b> a fixed "intercepted" ciphertext (<code>"QGSNU VKPX ZLHOT"</code>), a
+      keyspace-size slider (4–4096), then "Run both": classical brute-forces keys one at a time,
+      quantum runs its usual <code>bestK(N)</code>-step amplification. On completion the message
+      decrypts to <code>"THE SIGNAL IS CLEAR"</code>.</p>
+      <p><b>The point, stated honestly on screen:</b> this demonstrates the <i>mechanic</i> of a keyed
+      brute-force race, not a real cipher-breaking algorithm — it reuses the same generic wall search,
+      relabelled. A note after running makes the real cryptographic point correctly: <b>Grover only
+      gives a quadratic speedup</b> against brute-forcing a key like this, which is why symmetric keys
+      just need to get longer; it's <b>Shor's algorithm</b> (the one already used against the Ledger's
+      account number, Task 4b, §05) that actually threatens <i>public-key</i> encryption, which is why
+      NIST finalised new post-quantum standards in August 2024<span class="cite" data-ref="10">10</span>.
+      The same Grover-≠-Shor distinction this guide is careful about throughout — a second, hands-on
+      place it gets made.</p>
+      <p><b>Career tie-in — Security / Cryptography Engineer:</b> deciding how long a key needs to be,
+      and against which attack, is real and current work — exactly why NIST's post-quantum standards
+      exist.</p>
+    </div>
+  </div>
+
+  <div class="declass" data-key="realm-q">
+    <div class="declass-bar" onclick="toggleDeclass(this)">
+      <span class="ico">◈ FILE P-7</span><span class="txt">Card 7 — True randomness (QRNG) — the new concept</span><span class="chev">▸</span>
+    </div>
+    <div class="declass-body">
+      <p><b>This is the genuinely new addition Mark asked for</b> — a quantum idea the heist itself
+      never touches anywhere else. Researched via web search, using the same outlet (The Quantum
+      Insider) already cited for the banking career-thread claim<span class="cite" data-ref="15">15</span>,
+      so the sourcing style stays consistent.</p>
+      <p><b>On screen:</b> a seed field (numeric, or any text — hashed if non-numeric) and "Generate 12
+      numbers" on the classical side; a second, unseeded "Generate 12 numbers" on the quantum side.
+      Classical is a genuinely seeded, deterministic PRNG (<code>mulberry32</code>) — the same seed
+      twice gives the same 12 numbers, which the on-screen line invites the learner to try and then
+      confirms. Quantum has no seed field at all, because there's nothing to seed.</p>
+      <p><b>Honestly caveated, not overclaimed — read this before anyone technical asks.</b> The build
+      cannot reach real quantum hardware, and says so directly: <i>"The numbers above all still come
+      from your browser, not a real quantum chip — this page can't reach one."</i> Under the hood,
+      "quantum" stands in using <code>Math.random()</code>. The note correctly describes what a
+      <i>real</i> QRNG exploits: <i>"measuring a qubit in superposition is fundamentally unpredictable,
+      not just hard to predict — no seed, no formula, nothing to replay, even in principle."</i> Same
+      honesty practice as Task 1's shift-cipher note.</p>
+      <p><b>The sourcing, verified and corrected for this guide.</b> The on-screen citation reads
+      "March 2026" — <b>this is a one-year date error</b>; the real dates are March 2025 and September
+      2024 (below). Two real claims sit behind the card's banking note: a <b>certified-randomness
+      demonstration</b> (March 26, 2025) — JPMorgan Chase, Quantinuum, and three US national
+      laboratories (Argonne, Oak Ridge, Lawrence Berkeley) plus UT Austin, published in
+      <i>Nature</i>, 71,313 bits of validated entropy, more randomness generated than
+      consumed<span class="cite" data-ref="18">18</span>; and <b>HSBC's tokenised-gold pilot</b>
+      (announced September 19, 2024) — Quantinuum's "Quantum Origin" quantum randomness deployed
+      alongside post-quantum cryptography to guard against "store now, decrypt later"
+      attacks<span class="cite" data-ref="19">19</span> — a genuine randomness claim, not only a
+      post-quantum-cryptography one.</p>
+      <p><b>Career tie-in — Security / Cryptography Engineer</b> (same role as the Encryption card,
+      deliberately — randomness and encryption are two halves of the same job): every encryption key
+      starts from a random number generator; a predictable one weakens every key built from it.</p>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <div class="lab">◆ Delivery note</div>
+    <p>No clock and no wrong path out anywhere in the Playground — well suited to "free practice" time,
+    or as its own standalone activity for someone who's already done the full heist. Every card resets
+    to a fresh state on entry, so a second visit never opens on someone else's stale result. Nothing to
+    get stuck on in any of the seven: no construct to assemble, nothing that can be built incorrectly.</p>
+  </div>
+</section>
+
+<!-- 08 GLOSSARY -->
+<section class="sect" id="glossary">
+  <div class="eyebrow">08 · Reference</div>
+  <h2 class="title">Glossary</h2>
+  <input class="gloss-search" id="glossSearch" type="text" placeholder="Filter terms — try &quot;loop&quot; or &quot;oracle&quot;…" autocomplete="off">
+  <div class="gloss-grid" id="glossGrid"></div>
+  <div class="gloss-empty" id="glossEmpty">Nothing matches that.</div>
+</section>
+
+<!-- 09 DELIVERY -->
+<section class="sect" id="delivery">
+  <div class="eyebrow">09 · Running the session</div>
+  <h2 class="title">Delivery notes</h2>
+
+  <div class="dnote"><span class="ic">⏱</span><div class="b"><b>Realistic timing.</b> A facilitated
+  run with dialogue, discussion and the quiz takes 20–35 minutes, not six. Budget accordingly.</div></div>
+  <div class="dnote"><span class="ic">🔒</span><div class="b"><b>Locked gates are working as
+  intended.</b> If a button "isn't doing anything," check whether the builder above it is actually
+  complete — every gate is genuinely disabled with a lock note until its condition is met.</div></div>
+  <div class="dnote"><span class="ic">🎯</span><div class="b"><b>"I picked an option and it didn't
+  work" is a feature.</b> In Task 1's loop and Task 3's step-count screens, the picker accepts any
+  offered option — filling the blank isn't the same as it being functionally correct. That's only
+  revealed on Run. This is "code as thought, not clicks" in practice.</div></div>
+  <div class="dnote"><span class="ic">📈</span><div class="b"><b>The top sticking point is "why
+  isn't more always better?"</b> Have the exact percentages from §04 ready — the live calculator is
+  the fastest way to show it.</div></div>
+  <div class="dnote"><span class="ic">🟰</span><div class="b"><b>The second is <code>=</code> vs
+  <code>==</code>/<code>!=</code></b> in the Ledger. It's the most common real beginner bug in the
+  world — say so, it's reassuring. The picker is now built around the distinction itself (two
+  visually separate groups — "asks a question" vs. "sets a value," §05), so pointing at the two
+  groups directly tends to land faster than re-explaining it verbally.</div></div>
+  <div class="dnote"><span class="ic">♿</span><div class="b"><b>Accessibility.</b> Every interaction
+  in the entire build — the main heist (Acts 0–5) and the seven-card Quantum Playground (§07) alike —
+  is click/tap based; there is no drag-and-drop anywhere in the current build. The build respects
+  <code>prefers-reduced-motion</code>. No external fonts or scripts, so it runs on locked-down
+  machines.</div></div>
+  <div class="dnote"><span class="ic">🎬</span><div class="b"><b>Going deeper.</b> The four
+  flashbacks each carry a worked code example independent of the heist — the fastest way to show
+  someone the idea in isolation if the story framing isn't landing for them personally. The Quantum
+  Playground (§07) is the equivalent option for going deeper by <i>doing</i> rather than reading —
+  seven independent open-ended cards.</div></div>
+</section>
+
+<!-- 10 REFS -->
+<section class="sect" id="refs">
+  <div class="eyebrow">10 · Evidence log</div>
+  <h2 class="title">References</h2>
+  <p class="subtitle">Every citation tag in this file points here. Click a tag to jump.</p>
+  <ol class="reflist" id="reflist">
+    <li id="ref1">Sweller, J. (1988). "Cognitive load during problem solving: Effects on learning." <i>Cognitive Science</i>, 12(2), 257–285.</li>
+    <li id="ref2">Cognition and Technology Group at Vanderbilt (1990). "Anchored Instruction and Its Relationship to Situated Cognition." <i>Educational Researcher</i>, 19(6), 2–10. See also Lave, J., &amp; Wenger, E. (1991). <i>Situated Learning</i>. Cambridge University Press.</li>
+    <li id="ref3">Ginting, D. et al. (2024). "The Effects of Digital Storytelling on the Retention and Transferability of Student Knowledge." <i>SAGE Open</i>.<span class="caveat">Study population: n=41 pre-service teachers, early 20s — general evidence, not programming-specific or age-matched.</span></li>
+    <li id="ref4">Sweller, J., &amp; Cooper, G. A. (1985). "The Use of Worked Examples as a Substitute for Problem Solving in Learning Algebra." <i>Cognition and Instruction</i>, 2(1), 59–89.<span class="caveat">Original domain is algebra, extrapolated here to programming.</span></li>
+    <li id="ref5">IBM, "What is a qubit?" ibm.com/think (2024, updated 2026). <a href="https://www.ibm.com/think/topics/qubit" target="_blank" rel="noopener">ibm.com/think/topics/qubit</a> — see also NIST, "What Is Superposition?"</li>
+    <li id="ref6">IBM Quantum Learning, "Grover's algorithm" module. <a href="https://quantum.cloud.ibm.com/learning/en/modules/computer-science/grovers" target="_blank" rel="noopener">quantum.cloud.ibm.com</a></li>
+    <li id="ref7">Pavlus, J. "Why Is Quantum Computing So Hard to Explain?" <i>Quanta Magazine</i>, June 8, 2021 (quoting Scott Aaronson on the "central fallacy" of popular explanations).</li>
+    <li id="ref8">Grover, L. K. (1996). "A fast quantum mechanical algorithm for database search." <i>STOC '96</i>, 212–219. Optimality of the √N bound: Bennett, Bernstein, Brassard &amp; Vazirani (1997), <i>SIAM J. Computing</i>, 26(5).</li>
+    <li id="ref9">Federal Reserve. "'Harvest Now, Decrypt Later': Examining Post-Quantum [Cryptography Migration]." FEDS Working Paper, 2025.</li>
+    <li id="ref10">NIST. "NIST Releases First 3 Finalized Post-Quantum Encryption Standards." Aug 13, 2024. (FIPS 203/ML-KEM, FIPS 204/ML-DSA, FIPS 205/SLH-DSA.)</li>
+    <li id="ref11">NSA. "Commercial National Security Algorithm Suite 2.0" FAQ.<span class="caveat">Applies to US National Security Systems — cited as urgency evidence, not a UK requirement.</span></li>
+    <li id="ref12">Cuthbert, M. (Director, NQCC). "The UK has thrown down the gauntlet on quantum." NQCC blog, March 20, 2026.<span class="caveat">Blog post, no sourcing given for either figure inside it.</span></li>
+    <li id="ref13">UK Quantum Skills Taskforce Report. gov.uk, first published May 13, 2025 (updated June 24, 2025).<span class="caveat">More rigorously sourced (cites HMRC data) — gives ~1,700, no UK-specific 100k target.</span></li>
+    <li id="ref14">Hulleman, C. S., &amp; Harackiewicz, J. M. (2009). "Promoting Interest and Performance in High School Science Classes." <i>Science</i>, 326(5958), 1410–1412.<span class="caveat">Utility-value intervention: connecting material to personal/future relevance measurably improved both interest and grades, not just self-reported enjoyment.</span></li>
+    <li id="ref15">Rehman, M. U. "Top Global Banks Exploring Quantum Technologies in 2026." <i>The Quantum Insider</i>, March 27, 2026. <a href="https://thequantuminsider.com/2026/03/27/15-plus-global-banks-probing-the-wonderful-world-of-quantum-technologies/" target="_blank" rel="noopener">thequantuminsider.com</a> — HSBC, Barclays, Goldman Sachs and JPMorgan Chase quantum research programmes independently verified in this source as of publication.</li>
+    <li id="ref16">Schmidt, R. A., &amp; Bjork, R. A. (1992). "New Conceptualizations of Practice: Common Principles in Three Paradigms Suggest New Concepts for Training." <i>Psychological Science</i>, 3(4), 207–217.<span class="caveat">Varied, learner-directed practice produces better retention and transfer than fixed repeated drills, even though it often feels harder during the practice itself.</span></li>
+    <li id="ref17">Shor, P. W. (1994). "Algorithms for quantum computation: discrete logarithms and factoring." <i>Proceedings 35th Annual Symposium on Foundations of Computer Science</i>, 124–134. See also Shor, P. W. (1997), "Polynomial-Time Algorithms for Prime Factorization and Discrete Logarithms on a Quantum Computer," <i>SIAM J. Computing</i>, 26(5), 1484–1509.<span class="caveat">Cited for Task 4b's interactive period-finding mechanic and the Shor's-algorithm flash-forward (§05) — the build runs a genuine worked example (a=3, N=91=7×13, r=6) by hand, at a scale small enough for a learner to complete; it never claims to run this algorithm on quantum hardware or at real-key scale.</span></li>
+    <li id="ref18">"Joint Research Team Achieves Certified Quantum Randomness…" <i>The Quantum Insider</i>, March 26, 2025. <a href="https://thequantuminsider.com/2025/03/26/joint-research-team-achieves-certified-quantum-randomness-makes-once-theoretical-experiments-into-real-world-quantum-computing-uses/" target="_blank" rel="noopener">thequantuminsider.com</a> — JPMorganChase, Quantinuum, Argonne National Laboratory, Oak Ridge National Laboratory, Lawrence Berkeley National Laboratory and the University of Texas at Austin; published in <i>Nature</i>; 71,313 bits of certified entropy validated on Quantinuum's 56-qubit "H2" system.<span class="caveat">Cited for the Playground's True Randomness card (§07). The on-screen citation reads "March 2026," a one-year date error against this source's actual publication date — flagged here rather than silently corrected on screen.</span></li>
+    <li id="ref19">HSBC, "HSBC pilots quantum-safe technology for tokenised gold," media release, September 19, 2024. <a href="https://www.hsbc.com/news-and-views/news/media-releases/2024/hsbc-pilots-quantum-safe-technology-for-tokenised-gold" target="_blank" rel="noopener">hsbc.com</a> — confirms Quantinuum's "Quantum Origin" quantum randomness technology was piloted alongside (not instead of) post-quantum cryptography, to protect tokenised gold transactions against "store now, decrypt later" attacks.<span class="caveat">Cited for the Playground's True Randomness card (§07).</span></li>
+  </ol>
+</section>
+
+<footer class="end">THE VAULT — Facilitator &amp; Admin Edition. Cross-checked against
+<span class="mono">vault.html</span>'s own logic and maths; figures independently recomputed for
+this file. Not for learner distribution.</footer>
+
+</main>
+</div>
+
+<script>
+/* ── nav scroll-spy + mobile toggle ─────────────────────── */
+const sections = [...document.querySelectorAll('section.sect')];
+const links = [...document.querySelectorAll('.navlist a')];
+function onScroll(){
+  let cur = sections[0];
+  for (const s of sections){ if (s.getBoundingClientRect().top - 90 <= 0) cur = s; }
+  links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur.id));
+}
+document.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+document.getElementById('railToggle')?.addEventListener('click', () => {
+  document.getElementById('rail').classList.toggle('open');
+});
+links.forEach(a => a.addEventListener('click', () => document.getElementById('rail').classList.remove('open')));
+
+/* ── declassify toggles ─────────────────────────────────── */
+function toggleDeclass(bar){
+  const box = bar.parentElement;
+  const txtEl = bar.querySelector('.txt');
+  if (!txtEl.dataset.orig) txtEl.dataset.orig = txtEl.textContent;
+  const isOpen = box.classList.toggle('open');
+  txtEl.textContent = isOpen ? 'Declassified — ' + txtEl.dataset.orig : txtEl.dataset.orig;
+}
+
+/* ── citation tags → scroll to reference, flash it ──────── */
+document.querySelectorAll('.cite').forEach(c => {
+  c.addEventListener('click', () => {
+    const el = document.getElementById('ref' + c.dataset.ref);
+    if (!el) return;
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+    el.classList.add('flash');
+    setTimeout(() => el.classList.remove('flash'), 1400);
+  });
+});
+
+/* ── Grover live calculator (mirrors vault.html's own conf/bestK) ── */
+const NVALS = [2,4,8,16,32,64,128,256].map(n=>n); // slider index -> N via 2^(idx+1)
+function nFromSlider(v){ return Math.pow(2, +v); }
+function conf(N,k){ const th = Math.asin(1/Math.sqrt(N)); return Math.pow(Math.sin((2*k+1)*th),2); }
+function bestK(N){ const th = Math.asin(1/Math.sqrt(N)); return Math.max(1, Math.round((Math.PI/4)/th - 0.5)); }
+
+const calcN = document.getElementById('calcN'), calcK = document.getElementById('calcK');
+function renderCalc(){
+  const N = nFromSlider(calcN.value);
+  const k = +calcK.value;
+  const p = conf(N,k) * 100;
+  document.getElementById('calcNVal').textContent = N;
+  document.getElementById('calcKVal').textContent = k;
+  document.getElementById('calcPct').textContent = p.toFixed(1) + '%';
+  document.getElementById('calcFill').style.width = Math.min(100,p) + '%';
+  document.getElementById('calcBest').textContent = bestK(N);
+  document.getElementById('calcClassical').textContent = N;
+  document.getElementById('calcAvg').textContent = Math.round(N/2);
+}
+calcN.addEventListener('input', renderCalc);
+calcK.addEventListener('input', renderCalc);
+document.getElementById('calcJump').addEventListener('click', () => {
+  const N = nFromSlider(calcN.value);
+  calcK.value = bestK(N);
+  renderCalc();
+});
+renderCalc();
+
+/* ── glossary ────────────────────────────────────────────── */
+const GLOSS = [
+  {t:'Sequence', q:false, d:'Instructions carried out in the order they’re written — the most basic property any program has.'},
+  {t:'Variable', q:false, d:'A named location holding a value that can change. The name is for the next human reader, not the computer.'},
+  {t:'Loop (counted)', q:false, d:'Repeats a block a known number of times — “repeat N times.”'},
+  {t:'Loop (until)', q:false, d:'Repeats until a condition is met — used when you don’t know the number of repeats in advance.'},
+  {t:'Conditional', q:false, d:'A question the program asks about one piece of data, branching on the answer (“if …”).'},
+  {t:'Comparison vs assignment', q:false, d:'= assigns a value into something. == and != ask whether two things are equal or different. Confusing them is the most common beginner conditional bug.'},
+  {t:'Qubit', q:true, d:'The quantum unit of information — unlike a classical bit, it can be placed in a superposition of 0 and 1.'},
+  {t:'Superposition', q:true, d:'A state representing a weighted mix of outcomes at once. Not a hidden, predetermined answer.'},
+  {t:'Measurement / collapse', q:true, d:'Observing a qubit forces one definite classical outcome, ending the superposition.'},
+  {t:'Amplitude', q:true, d:'The quantum-mechanical quantity (not a plain probability — it can be effectively “positive” or “negative”) whose square gives the probability of an outcome.'},
+  {t:'Interference', q:true, d:'Amplitudes combining to reinforce (constructive) or cancel (destructive). The real mechanism behind Grover’s speedup — not parallel trial of every answer.'},
+  {t:'Oracle', q:true, d:'In Grover’s algorithm, a subroutine that flips the phase of any state satisfying a condition. Formally the same kind of object as a classical boolean if-test.'},
+  {t:'Grover’s algorithm', q:true, d:'A quantum search algorithm giving a quadratic speedup for unstructured search — roughly √N oracle calls instead of a classical N (worst case) or N/2 (average). Proven optimal.'},
+  {t:'Quadratic speedup', q:true, d:'Time scales with the square root of the classical time — not a fixed multiple, and not exponential.'},
+  {t:'Shor’s algorithm', q:true, d:'A different quantum algorithm (Peter Shor, 1994) giving an exponential speedup at factoring large numbers and discrete logarithms — the hard problems RSA, Diffie-Hellman and ECC rely on. As of Task 4b (§05), a real worked example of its period-finding method (a=3, N=91=7×13, r=6) is run by hand on screen, not just narrated, before a flash-forward names it directly. Not the same algorithm as Grover’s — the direct search puzzles (Rooms One–Three, the Ledger’s scan) remain Grover’s algorithm, unchanged.'},
+  {t:'Period-finding', q:true, d:'The classical arithmetic step at the heart of Shor’s algorithm: repeatedly computing powers of a chosen number modulo N until the remainders repeat, then using the repeat length (the period) to split N into its factors. A quantum computer finds the period almost instantly for numbers too large to do by hand; Task 4b (§05) is this same method, done by hand, at a scale small enough to actually complete.'},
+  {t:'Pseudorandom number generator (PRNG)', q:false, d:'A deterministic formula that produces a sequence that looks random but is fully reproducible from its starting value (its “seed”) — the same seed always gives the same sequence. Almost all “random” numbers in ordinary software, including the classical side of the Playground’s True Randomness card (§07), are this.'},
+  {t:'Quantum random number generator (QRNG)', q:true, d:'A device generating randomness from a genuinely unpredictable quantum process (such as measuring a qubit in superposition), not a formula — no seed, nothing to reproduce even in principle. The Playground’s True Randomness card (§07) teaches the distinction but can’t itself run on real quantum hardware; see that section for the exact caveat and sourcing.'},
+];
+const grid = document.getElementById('glossGrid'), empty = document.getElementById('glossEmpty');
+function renderGloss(filter){
+  const f = (filter||'').toLowerCase().trim();
+  grid.innerHTML = '';
+  let shown = 0;
+  GLOSS.forEach(g => {
+    if (f && !(g.t.toLowerCase().includes(f) || g.d.toLowerCase().includes(f))) return;
+    shown++;
+    const el = document.createElement('div');
+    el.className = 'gterm' + (g.q ? ' q' : '');
+    el.innerHTML = `<div class="t">${g.t}</div><div class="d">${g.d}</div>`;
+    grid.appendChild(el);
+  });
+  empty.style.display = shown ? 'none' : 'block';
+}
+document.getElementById('glossSearch').addEventListener('input', e => renderGloss(e.target.value));
+renderGloss('');
+
+/* ── quiz cards (verbatim from vault.html's QUIZ array) ─── */
+const QUIZ = [
+  { q:'You wrote <code>shift = 7</code>. What is <code>shift</code>?', a:'A variable — a named box holding a value you can change.', why:'Not a loop or a function. You changed the value and the whole program behaved differently.' },
+  { q:'Trying keys with no idea how many it will take — which loop?', a:'An until loop — keep going until it opens.', why:'A counted loop either runs out early or carries on after it has already won.' },
+  { q:'Why doesn’t <code>country = "UK"</code> belong inside an <code>if</code>?', a:'A single = assigns a value; it doesn’t ask a question.', why:'Not simply “it should be != instead” — the reason is the assignment/comparison distinction itself.' },
+  { q:'64 boxes, 6 search steps — why so few?', a:'Each step tips the odds, and it takes about √64 of them.', why:'Not “quantum computers are just faster,” and explicitly not “it checks every box at once and returns the answer” — that’s the myth this whole guide rules out.' },
+  { q:'The ledger rule found the account in 6 steps instead of 64 reads — what changed?', a:'Nothing about the rule — the same condition became the Mark.', why:'Not rewritten in a quantum language, and not “the rule got simpler.”' },
+];
+const quizList = document.getElementById('quizList');
+QUIZ.forEach((item,i) => {
+  const c = document.createElement('div');
+  c.className = 'qcard';
+  c.innerHTML = `<div class="qq">${i+1}. ${item.q}</div><div class="hint">tap to reveal answer</div>
+    <div class="ans"><div class="correct">✓ ${item.a}</div><div class="why">${item.why}</div></div>`;
+  c.addEventListener('click', () => c.classList.toggle('open'));
+  quizList.appendChild(c);
+});
+</script>
+
+</body>
+</html>
