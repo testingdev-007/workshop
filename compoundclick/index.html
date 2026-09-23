@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Compound Click — Build your first programme in 30 minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #0F1626;
+    --panel: #16203A;
+    --panel-2: #1C2846;
+    --hairline: #2C3A5E;
+    --paper: #EDEEF2;
+    --paper-dim: #A9B2C9;
+    --gold: #D9A93B;
+    --gold-dim: #8A7238;
+    --teal: #4FA88F;
+    --rust: #E2733A;
+
+    --c-events: #E8B34A;
+    --c-variables: #E2733A;
+    --c-looks: #8D7CDB;
+    --c-sound: #C56AAE;
+    --c-control: #D9922E;
+
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top: 90px;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; color:#FBFAF7;}
+  p{margin:0 0 1em 0; color:var(--paper-dim);}
+  a{color:var(--gold);}
+
+  .layout{
+    display:grid;
+    grid-template-columns: 240px minmax(0,1fr);
+    max-width:1180px;
+    margin:0 auto;
+  }
+
+  /* ---------- Rail nav ---------- */
+  nav.rail{
+    position: sticky;
+    top:0;
+    align-self:start;
+    height:100vh;
+    padding:28px 18px;
+    border-right:1px solid var(--hairline);
+    overflow-y:auto;
+  }
+  .rail .brand{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.06em;
+    color:var(--paper-dim);
+    margin-bottom:22px;
+  }
+  .rail ol{list-style:none; margin:0; padding:0;}
+  .rail li{margin-bottom:2px;}
+  .rail a.step-link{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:9px 10px;
+    border-radius:8px;
+    text-decoration:none;
+    color:var(--paper-dim);
+    font-size:13.5px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .rail a.step-link:hover{ background:var(--panel-2); color:var(--paper);}
+  .rail a.step-link.active{ background:var(--panel-2); color:#FBFAF7;}
+  .rail .num{
+    font-family:var(--mono);
+    font-size:12px;
+    width:20px;
+    flex:0 0 20px;
+    color:var(--gold);
+  }
+  .rail .check{
+    margin-left:auto;
+    width:14px; height:14px;
+    border-radius:3px;
+    border:1px solid var(--hairline);
+    flex:0 0 14px;
+  }
+  .rail .check.done{ background:var(--teal); border-color:var(--teal);}
+  .rail .progress-track{
+    height:3px; background:var(--hairline); border-radius:2px; margin:18px 0 22px 0; overflow:hidden;
+  }
+  .rail .progress-fill{ height:100%; width:0%; background:var(--gold); transition:width .3s ease;}
+
+  /* ---------- Main column ---------- */
+  main{ padding: 0 40px 100px 40px; min-width:0;}
+
+  .hero{
+    padding: 64px 0 40px 0;
+    border-bottom:1px solid var(--hairline);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--teal);
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height:1.08;
+    max-width:14ch;
+  }
+  .hero .sub{
+    max-width:52ch;
+    font-size:16.5px;
+    margin-top:16px;
+    color:var(--paper-dim);
+  }
+
+  .timer-card{
+    margin-top:32px;
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:14px;
+    padding:22px 26px;
+    display:flex;
+    align-items:center;
+    gap:26px;
+    flex-wrap:wrap;
+  }
+  .timer-digits{
+    font-family:var(--mono);
+    font-size:44px;
+    font-weight:500;
+    color:#FBFAF7;
+    letter-spacing:.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-meta{ display:flex; flex-direction:column; gap:4px;}
+  .timer-meta .label{ font-family:var(--mono); font-size:11px; color:var(--paper-dim); letter-spacing:.04em;}
+  .timer-meta .now-on{ font-size:14px; color:var(--gold); font-family:var(--mono);}
+  .timer-controls{ display:flex; gap:8px; margin-left:auto;}
+  .btn{
+    font-family:var(--sans);
+    font-size:13.5px;
+    font-weight:500;
+    padding:10px 16px;
+    border-radius:8px;
+    border:1px solid var(--hairline);
+    background:var(--panel-2);
+    color:var(--paper);
+    cursor:pointer;
+    display:inline-block;
+    text-decoration:none;
+    line-height:1.3;
+  }
+  .btn:hover{ border-color:var(--gold-dim); }
+  .btn.primary{ background:var(--gold); color:#231A05; border-color:var(--gold); font-weight:600;}
+  .btn.primary:hover{ filter:brightness(1.06);}
+
+  /* ---------- Step sections ---------- */
+  section.step{
+    padding: 56px 0;
+    border-bottom:1px solid var(--hairline);
+    scroll-margin-top: 90px;
+  }
+  section.step:last-of-type{ border-bottom:none; }
+
+  .step-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:10px;
+  }
+  .step-num{
+    font-family:var(--mono);
+    color:var(--gold);
+    font-size:15px;
+  }
+  .step-time{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--paper-dim);
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    padding:3px 9px;
+    border-radius:20px;
+    margin-left:auto;
+  }
+  section.step h2{ font-size: 26px; }
+  .step-intro{ max-width:60ch; margin-top:10px; font-size:15.5px;}
+
+  .callout{
+    display:flex;
+    gap:12px;
+    background: rgba(79,168,143,0.08);
+    border:1px solid rgba(79,168,143,0.35);
+    border-radius:10px;
+    padding:14px 16px;
+    margin:22px 0;
+    max-width:64ch;
+  }
+  .callout .tag{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--teal);
+    letter-spacing:.04em;
+    white-space:nowrap;
+    padding-top:2px;
+  }
+  .callout p{ margin:0; font-size:14px; color:#D7DCE6;}
+
+  /* ---------- Block mockups ---------- */
+  .stack{ margin: 24px 0; }
+  .block{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    color:#1A1408;
+    padding:10px 16px 10px 22px;
+    border-radius:6px;
+    margin-bottom:3px;
+    max-width: 90%;
+  }
+  .block::before{
+    content:"";
+    position:absolute;
+    left:12px; top:-6px;
+    width:16px; height:6px;
+    border-radius:2px 2px 0 0;
+    background:inherit;
+  }
+  .block.hat::before{ display:none; }
+  .block.hat{ border-radius:14px 14px 6px 6px; }
+  .block-list{ display:flex; flex-direction:column; align-items:flex-start; padding-left:4px; border-left:2px solid var(--hairline); margin-left:6px;}
+
+  .b-events{ background:var(--c-events); }
+  .b-variables{ background:var(--c-variables); color:#2A1000;}
+  .b-looks{ background:var(--c-looks); color:#180F33;}
+  .b-sound{ background:var(--c-sound); color:#2A0E20;}
+  .b-control{ background:var(--c-control); color:#2A1600;}
+
+  .try-it{
+    margin-top:22px;
+    font-size:14.5px;
+    color:var(--paper);
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:14px 18px;
+    max-width:64ch;
+  }
+  .try-it strong{ color:#FBFAF7; }
+
+  .ext-grid{
+    margin-top:24px;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap:12px;
+    max-width:820px;
+  }
+  .ext-card{
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .ext-card .title{ font-family:var(--serif); font-size:16px; color:#FBFAF7; margin-bottom:6px;}
+  .ext-card .desc{ font-size:13.5px; color:var(--paper-dim); margin-bottom:8px;}
+  .ext-card .uses{ font-family:var(--mono); font-size:11px; color:var(--teal);}
+
+  .stuck{
+    margin-top:16px;
+    max-width:64ch;
+    border:1px solid rgba(226,115,58,0.4);
+    background: rgba(226,115,58,0.07);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .stuck summary{
+    list-style:none;
+    cursor:pointer;
+    padding:12px 16px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--rust);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .stuck summary::-webkit-details-marker{ display:none; }
+  .stuck summary::before{ content:"+"; font-size:15px; line-height:1;}
+  .stuck[open] summary::before{ content:"–"; }
+  .stuck .stuck-body{ padding:0 16px 16px 16px; font-size:14px; color:#D7DCE6;}
+  .stuck .stuck-body p{ color:#D7DCE6; margin-bottom:0.6em;}
+  .stuck code{ font-family:var(--mono); background:var(--panel-2); padding:1px 5px; border-radius:4px; font-size:13px;}
+
+  .mark-done{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13.5px;
+    color:var(--paper-dim);
+    cursor:pointer;
+    user-select:none;
+    width:max-content;
+  }
+  .mark-done input{ width:16px; height:16px; accent-color:var(--teal);}
+
+  /* ---------- Preview / closing ---------- */
+  .preview-frame{
+    margin-top:26px;
+    background: linear-gradient(180deg, #1B2A46, #101A30);
+    border:1px solid var(--hairline);
+    border-radius:12px;
+    padding:26px;
+    max-width:420px;
+    text-align:center;
+  }
+  .preview-frame .crystal{
+    width:46px; height:46px;
+    margin:0 auto 14px auto;
+    background: linear-gradient(135deg, #F2D27A, var(--gold) 55%, var(--gold-dim));
+    clip-path: polygon(50% 0%, 90% 30%, 78% 100%, 22% 100%, 10% 30%);
+  }
+  .preview-frame .figure{ font-family:var(--mono); font-size:30px; color:#FBFAF7; }
+  .preview-frame .cap{ font-family:var(--mono); font-size:11px; color:var(--paper-dim); margin-top:6px;}
+
+  .closing{ padding: 56px 0 20px 0; }
+  .closing h2{ font-size:26px; margin-bottom:12px; }
+  .closing p{ max-width:62ch; }
+  .closing .cheat{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap:10px;
+    max-width:800px;
+  }
+  .cheat .card{
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .cheat .card .k{ font-family:var(--mono); font-size:12px; color:var(--gold); margin-bottom:6px;}
+  .cheat .card .v{ font-size:13px; color:var(--paper-dim);}
+
+  footer{ padding: 30px 0 60px 0; font-family:var(--mono); font-size:11.5px; color:var(--paper-dim);}
+
+  /* ---------- Mobile rail becomes top bar ---------- */
+  .mobile-progress{ display:none; }
+
+  @media (max-width: 860px){
+    .layout{ grid-template-columns: 1fr; }
+    nav.rail{ display:none; }
+    main{ padding: 0 20px 80px 20px; }
+    .mobile-progress{
+      display:block;
+      position:sticky; top:0; z-index:5;
+      background:var(--ink);
+      padding:14px 4px;
+      border-bottom:1px solid var(--hairline);
+    }
+    .mobile-progress .progress-track{ margin:0; }
+    .mobile-progress .now-on{ font-family:var(--mono); font-size:12px; color:var(--gold); margin-top:8px;}
+    .timer-card{ padding:18px; }
+    .timer-digits{ font-size:34px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <nav class="rail" aria-label="Session steps">
+    <div class="brand">THE COMPOUND CLICK</div>
+    <div class="progress-track"><div class="progress-fill" id="railProgress"></div></div>
+    <ol id="railList">
+      <li><a class="step-link" href="#welcome" data-step="0"><span class="num">00</span><span>Welcome</span></a></li>
+      <li><a class="step-link" href="#step-1" data-step="1"><span class="num">01</span><span>Clear the stage</span><span class="check" data-check="1"></span></a></li>
+      <li><a class="step-link" href="#step-2" data-step="2"><span class="num">02</span><span>Give it a memory</span><span class="check" data-check="2"></span></a></li>
+      <li><a class="step-link" href="#step-3" data-step="3"><span class="num">03</span><span>Start at zero</span><span class="check" data-check="3"></span></a></li>
+      <li><a class="step-link" href="#step-4" data-step="4"><span class="num">04</span><span>Make it respond</span><span class="check" data-check="4"></span></a></li>
+      <li><a class="step-link" href="#step-5" data-step="5"><span class="num">05</span><span>Make it yours</span><span class="check" data-check="5"></span></a></li>
+      <li><a class="step-link" href="#step-6" data-step="6"><span class="num">06</span><span>Stretch goal</span><span class="check" data-check="6"></span></a></li>
+      <li><a class="step-link" href="#extend" data-step="7"><span class="num">+</span><span>Finished early?</span></a></li>
+      <li><a class="step-link" href="#closing" data-step="8"><span class="num">08</span><span>What this was</span></a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <div class="mobile-progress">
+      <div class="progress-track"><div class="progress-fill" id="railProgressMobile"></div></div>
+      <div class="now-on" id="mobileNowOn">Session not started</div>
+    </div>
+
+    <section class="hero" id="welcome">
+      <div class="eyebrow">30 MINUTES · SCRATCH · NO EXPERIENCE NEEDED</div>
+      <h1>Build your first programme in the time it takes to have a coffee.</h1>
+      <p class="sub">Today you'll build a small, working piece of software — a clickable "savings" simulator that grows a number, plays a sound and reacts to you. It's the same trigger → logic → feedback pattern running inside every banking app, trading screen and fintech product you've ever used. By the end, it's yours: built, tested, and complete.</p>
+
+      <div class="timer-card">
+        <div>
+          <div class="timer-meta"><span class="label">SESSION TIME</span></div>
+          <div class="timer-digits" id="timerDigits">00:00</div>
+        </div>
+        <div class="timer-meta">
+          <span class="label">YOU SHOULD BE ON</span>
+          <span class="now-on" id="nowOn">Not started yet</span>
+        </div>
+        <div class="timer-controls">
+          <a class="btn primary" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">Open Scratch ↗</a>
+          <button class="btn" id="timerStart">Start session</button>
+          <button class="btn" id="timerReset">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" id="step-1">
+      <div class="step-head">
+        <span class="step-num">01</span>
+        <h2>Clear the stage</h2>
+        <span class="step-time">~3 min</span>
+      </div>
+      <p class="step-intro">Every Scratch project starts with a blank cat. First job: get rid of it and bring in something that fits what we're building.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>Sprites are UI components. Every screen, button and icon in the apps you use started as a piece someone chose or designed, just like you're about to.</p>
+      </div>
+
+      <div class="try-it">
+        <strong>Do this:</strong> Right-click the cat sprite in the sprite list and delete it. Click <strong>Choose a Sprite</strong> — it's below the stage, on the right of the screen — and add the <strong>Crystal</strong> sprite. Then choose any backdrop you like from the button next to it.
+      </div>
+
+      <label class="mark-done"><input type="checkbox" data-mark="1"> Mark this step done</label>
+    </section>
+
+    <section class="step" id="step-2">
+      <div class="step-head">
+        <span class="step-num">02</span>
+        <h2>Give it a memory</h2>
+        <span class="step-time">~2 min</span>
+      </div>
+      <p class="step-intro">A programme that can't remember anything can't do much. We'll create one number for it to hold onto: your running total.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>This is exactly what a database field or an app's "state" is. Your bank balance, right now, is a variable sitting on a server somewhere — conceptually no different from the one you're about to make.</p>
+      </div>
+
+      <div class="stack">
+        <div class="block-list">
+          <div class="block b-variables">Make a Variable → name it <strong>&nbsp;Savings</strong></div>
+        </div>
+      </div>
+
+      <div class="try-it">
+        <strong>Do this:</strong> Open the <strong>Variables</strong> category in the block palette, click <strong>Make a Variable</strong>, and name it <code>Savings</code>. Tick the checkbox next to it so it shows on the stage.
+      </div>
+
+      <label class="mark-done"><input type="checkbox" data-mark="2"> Mark this step done</label>
+    </section>
+
+    <section class="step" id="step-3">
+      <div class="step-head">
+        <span class="step-num">03</span>
+        <h2>Start at zero — and add an explicit reset</h2>
+        <span class="step-time">~3 min</span>
+      </div>
+      <p class="step-intro">Whenever the programme runs, it should reset — nobody wants last time's total still sitting there. We'll also give it a dedicated reset you can trigger any time, not just when the programme first starts.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>The green flag is an event — a trigger. Every time you open a banking app, it runs its own version of this: load the account, reset the screen, start clean.</p>
+      </div>
+
+      <div class="stack">
+        <div class="block-list">
+          <div class="block hat b-events">when green flag clicked</div>
+          <div class="block b-variables">set Savings to <strong>&nbsp;0</strong></div>
+        </div>
+      </div>
+
+      <div class="try-it">
+        <strong>Do this:</strong> Drag <strong>when green flag clicked</strong> into the scripts area. Snap <strong>set Savings to 0</strong> underneath it. Click the green flag (top right) to test — your Savings should show 0.
+      </div>
+
+      <p style="font-size:13.5px; color:var(--paper-dim); max-width:64ch; margin-top:20px;">The green flag resets it too, but it's a shared button that also (re)starts everything else in the programme. It's worth having a reset that's just a reset — and does nothing else:</p>
+
+      <div class="stack">
+        <div class="block-list">
+          <div class="block hat b-events">when key <strong>&nbsp;r&nbsp;</strong> pressed</div>
+          <div class="block b-variables">set Savings to <strong>&nbsp;0</strong></div>
+        </div>
+      </div>
+
+      <div class="try-it">
+        <strong>Do this:</strong> From <strong>Events</strong>, drag a second <strong>when key [space] pressed</strong> block into the scripts area, and change "space" to "r" using its dropdown. Snap another <strong>set Savings to 0</strong> underneath it (drag a fresh one from Variables — don't try to reuse the one from the first script). Press the <strong>R</strong> key on your keyboard to test.
+      </div>
+
+      <details class="stuck">
+        <summary>Stuck? Open this</summary>
+        <div class="stuck-body">
+          <p>Most likely the two blocks in either script aren't actually snapped together — there's a small gap. Drag the <code>set Savings to 0</code> block so its top edge touches the bottom of the hat block above it until you see it click into place.</p>
+          <p>If the variable checkbox on the stage isn't ticked yet, you won't see the number at all even though it's working — go back to the Variables category and tick the box next to <code>Savings</code>.</p>
+          <p>If pressing R does nothing, check the dropdown on the key-press block actually says "r" and not still "space".</p>
+        </div>
+      </details>
+
+      <label class="mark-done"><input type="checkbox" data-mark="3"> Mark this step done</label>
+    </section>
+
+    <section class="step" id="step-4">
+      <div class="step-head">
+        <span class="step-num">04</span>
+        <h2>Make it respond</h2>
+        <span class="step-time">~7 min</span>
+      </div>
+      <p class="step-intro">This is the main build. When you click the crystal, three things should happen: your total goes up, a sound plays, and the crystal gives a little pulse. Three lines of feedback for one click — that's UX design, and you're about to write it.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>"When this sprite clicked" is an event handler — the exact mechanism behind every button in every app you've ever tapped. The response you build here is what separates software that feels responsive from software that feels broken.</p>
+      </div>
+
+      <div class="stack">
+        <div class="block-list">
+          <div class="block hat b-events">when this sprite clicked</div>
+          <div class="block b-variables">change Savings by <strong>&nbsp;10</strong></div>
+          <div class="block b-sound">play sound <strong>&nbsp;(whatever's on your sprite)</strong></div>
+          <div class="block b-looks">change size by <strong>&nbsp;10</strong></div>
+          <div class="block b-control">wait <strong>&nbsp;0.1</strong> seconds</div>
+          <div class="block b-looks">change size by <strong>&nbsp;-10</strong></div>
+        </div>
+      </div>
+      <p style="font-size:13px; color:var(--paper-dim); max-width:60ch; margin-top:-8px;">Why the wait? Without it, the grow and shrink happen back to back so fast that Scratch never actually shows the bigger size — the pulse would be invisible. The 0.1-second pause is what makes the animation something you can actually see.</p>
+
+      <div class="try-it">
+        <strong>Do this:</strong> Build the stack above on your crystal sprite. For the sound block, check its <strong>Sounds</strong> tab first — most library sprites already come with one built in — and pick that, or add any short one from the sound library if it's empty. Six blocks, snapped in order. Click the crystal on the stage to test — watch Savings climb, listen for the sound, and see the little pulse. If nothing happens, check every block is actually snapped together with no gaps.
+      </div>
+
+      <details class="stuck">
+        <summary>Stuck? Open this</summary>
+        <div class="stuck-body">
+          <p>This is the fiddliest step in the whole session — everyone slows down here, so don't worry if it's taking longer than Step 3 did.</p>
+          <p>If you're running short on time or patience, it's completely fine to build a smaller version first and come back to the sound and pulse later:</p>
+          <p><code>when this sprite clicked</code><br><code>change Savings by 10</code></p>
+          <p>That's a real, complete, working programme on its own — click the crystal, watch the number go up. Add the sound and pulse back in once that's working, or during Step 5.</p>
+        </div>
+      </details>
+
+      <label class="mark-done"><input type="checkbox" data-mark="4"> Mark this step done</label>
+    </section>
+
+    <section class="step" id="step-5">
+      <div class="step-head">
+        <span class="step-num">05</span>
+        <h2>Make it yours</h2>
+        <span class="step-time">~4 min</span>
+      </div>
+      <p class="step-intro">You have a working programme. Now put your own stamp on it — this stops being "the exercise" and starts being something you built.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>No two working products are identical, even when the underlying logic is the same. Personalisation and product decisions are where a lot of real tech and product careers actually live.</p>
+      </div>
+
+      <div class="try-it">
+        <strong>Try any of these:</strong> Change the backdrop. Give the crystal a different costume. Change <strong>10</strong> in "change Savings by 10" to a different number. Rename the variable display, or add a second sprite that reacts differently when clicked.
+      </div>
+
+      <div class="preview-frame">
+        <div class="crystal"></div>
+        <div class="figure">Savings: 140</div>
+        <div class="cap">what your stage should look and feel like by now</div>
+      </div>
+
+      <label class="mark-done"><input type="checkbox" data-mark="5"> Mark this step done</label>
+    </section>
+
+    <section class="step" id="step-6">
+      <div class="step-head">
+        <span class="step-num">06</span>
+        <h2>Stretch goal — celebrate a milestone</h2>
+        <span class="step-time">~3 min, if there's time</span>
+      </div>
+      <p class="step-intro">Optional: make the programme notice when you've hit a target, and say something about it.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>This is business logic — the same shape as the rules that decide interest, fraud flags, or loan eligibility inside a real financial system: <em>if</em> a condition is true, <em>then</em> do something.</p>
+      </div>
+
+      <div class="stack">
+        <div class="block-list">
+          <div class="block b-control">if <strong>&nbsp;Savings &gt; 100&nbsp;</strong> then</div>
+          <div class="block b-looks" style="margin-left:18px;">say <strong>&nbsp;"You just built your first fintech feature!"&nbsp;</strong> for 2 seconds</div>
+        </div>
+      </div>
+
+      <div class="try-it">
+        <strong>Do this:</strong> From <strong>Control</strong>, drag an <strong>if / then</strong> block into the click script, after the pulse. From <strong>Operators</strong>, drag a <strong>&gt;</strong> block into the if's slot, put the <strong>Savings</strong> variable on the left and <strong>100</strong> on the right. Inside the if, add <strong>say ... for 2 seconds</strong> from Looks.
+      </div>
+
+      <label class="mark-done"><input type="checkbox" data-mark="6"> Mark this step done</label>
+    </section>
+
+    <section class="step" id="extend">
+      <div class="step-head">
+        <span class="step-num">EXT</span>
+        <h2>Finished early? Here's more</h2>
+        <span class="step-time">pick any</span>
+      </div>
+      <p class="step-intro">If you're done and the room's still going, try one of these. All of them build on blocks you've already used — no new interface, just new combinations.</p>
+
+      <div class="ext-grid">
+        <div class="ext-card">
+          <div class="title">Real returns</div>
+          <div class="desc">Swap the fixed <code>change Savings by 10</code> for <code>change Savings by (pick random 5 to 15)</code> — no two clicks pay out the same, like an actual investment.</div>
+          <div class="uses">USES: OPERATORS → PICK RANDOM</div>
+        </div>
+        <div class="ext-card">
+          <div class="title">Real compound interest</div>
+          <div class="desc">Add a second script: <code>forever</code> → <code>wait 2 seconds</code> → <code>change Savings by (Savings × 0.01)</code>. Now Savings grows on its own, 1% at a time — the thing this whole project is named after.</div>
+          <div class="uses">USES: CONTROL, OPERATORS</div>
+        </div>
+        <div class="ext-card">
+          <div class="title">Add expenses</div>
+          <div class="desc">Add a second sprite that <em>subtracts</em> from Savings when clicked. Now you've got income and outgoings — a first taste of a real budget.</div>
+          <div class="uses">USES: EVERYTHING FROM STEP 4</div>
+        </div>
+        <div class="ext-card">
+          <div class="title">Milestone upgrade</div>
+          <div class="desc">Extend Step 6: when Savings crosses your threshold, broadcast a message that also swaps the backdrop and plays a fanfare sound, not just a text bubble.</div>
+          <div class="uses">USES: EVENTS → BROADCAST</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" id="closing">
+      <div class="eyebrow">WHAT YOU ACTUALLY JUST DID</div>
+      <h2>You didn't just "try coding." You built the core loop of software engineering.</h2>
+      <p>A trigger, a stored value, and a response — that pattern, repeated and combined thousands of times, is what every fintech app, trading dashboard and banking system is made of. You just proved to yourself, in 30 minutes, that you can pick this up.</p>
+
+      <div class="cheat">
+        <div class="card"><div class="k">Sprites &amp; costumes</div><div class="v">→ UI components: the buttons and screens in every app</div></div>
+        <div class="card"><div class="k">Variables</div><div class="v">→ app "state" — your bank balance is a variable somewhere</div></div>
+        <div class="card"><div class="k">Event blocks</div><div class="v">→ every button you've ever tapped is wired to a handler like this</div></div>
+        <div class="card"><div class="k">Sound &amp; animation</div><div class="v">→ UX design — telling the user something happened</div></div>
+        <div class="card"><div class="k">If / then</div><div class="v">→ business logic — the rules behind interest, fraud checks, eligibility</div></div>
+      </div>
+
+      <p style="margin-top:26px;">Want to keep going? Everything you built lives at <a href="https://scratch.mit.edu" target="_blank" rel="noopener">scratch.mit.edu</a> — free, and open to anyone.</p>
+    </section>
+
+    <footer>The Compound Click — a 30-minute introduction to programming, built for a women-in-tech session.</footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Timer ----------
+  var digits = document.getElementById('timerDigits');
+  var nowOn = document.getElementById('nowOn');
+  var mobileNowOn = document.getElementById('mobileNowOn');
+  var startBtn = document.getElementById('timerStart');
+  var resetBtn = document.getElementById('timerReset');
+
+  var segments = [
+    { label: "Welcome & tour", start: 0, end: 7 },
+    { label: "Step 1 — Clear the stage", start: 7, end: 10 },
+    { label: "Step 2 — Give it a memory", start: 10, end: 12 },
+    { label: "Step 3 — Start at zero (+ reset)", start: 12, end: 15 },
+    { label: "Step 4 — Make it respond", start: 15, end: 22 },
+    { label: "Step 5 — Make it yours", start: 22, end: 26 },
+    { label: "Step 6 — Stretch goal", start: 26, end: 28 },
+    { label: "Wrap-up", start: 28, end: 999 }
+  ];
+
+  var elapsedSec = 0;
+  var running = false;
+  var tickHandle = null;
+
+  function fmt(sec){
+    var m = Math.floor(sec/60);
+    var s = sec%60;
+    return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+  }
+
+  function currentSegment(mins){
+    for (var i=0;i<segments.length;i++){
+      if (mins >= segments[i].start && mins < segments[i].end) return segments[i];
+    }
+    return segments[segments.length-1];
+  }
+
+  function render(){
+    digits.textContent = fmt(elapsedSec);
+    var mins = elapsedSec/60;
+    var seg = currentSegment(mins);
+    nowOn.textContent = seg.label;
+    mobileNowOn.textContent = running || elapsedSec>0 ? seg.label : "Session not started";
+  }
+
+  function tick(){
+    elapsedSec++;
+    render();
+  }
+
+  startBtn.addEventListener('click', function(){
+    if (!running){
+      running = true;
+      startBtn.textContent = "Pause";
+      tickHandle = setInterval(tick, 1000);
+    } else {
+      running = false;
+      startBtn.textContent = "Resume";
+      clearInterval(tickHandle);
+    }
+  });
+
+  resetBtn.addEventListener('click', function(){
+    running = false;
+    clearInterval(tickHandle);
+    elapsedSec = 0;
+    startBtn.textContent = "Start session";
+    render();
+  });
+
+  render();
+
+  // ---------- Step checkboxes (persisted per browser) ----------
+  var STORAGE_KEY = "compound-click-progress";
+  var state = {};
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = JSON.parse(raw);
+  } catch(e){ state = {}; }
+
+  var checkboxes = document.querySelectorAll('[data-mark]');
+  var railChecks = document.querySelectorAll('[data-check]');
+  var railProgress = document.getElementById('railProgress');
+  var railProgressMobile = document.getElementById('railProgressMobile');
+  var totalSteps = checkboxes.length;
+
+  function persist(){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function updateProgressBar(){
+    var done = 0;
+    for (var k in state){ if (state[k]) done++; }
+    var pct = totalSteps ? Math.round((done/totalSteps)*100) : 0;
+    railProgress.style.width = pct + "%";
+    railProgressMobile.style.width = pct + "%";
+  }
+
+  function syncRailCheck(stepNum, isDone){
+    var el = document.querySelector('[data-check="'+stepNum+'"]');
+    if (el){ el.classList.toggle('done', !!isDone); }
+  }
+
+  checkboxes.forEach(function(cb){
+    var key = cb.getAttribute('data-mark');
+    cb.checked = !!state[key];
+    syncRailCheck(key, cb.checked);
+    cb.addEventListener('change', function(){
+      state[key] = cb.checked;
+      persist();
+      syncRailCheck(key, cb.checked);
+      updateProgressBar();
+    });
+  });
+
+  updateProgressBar();
+
+  // ---------- Rail active-section highlighting ----------
+  var stepLinks = document.querySelectorAll('.step-link');
+  var sections = [];
+  stepLinks.forEach(function(link){
+    var id = link.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) sections.push({ link: link, el: el });
+  });
+
+  function updateActive(){
+    var pos = window.scrollY + 120;
+    var activeIdx = 0;
+    for (var i=0;i<sections.length;i++){
+      if (sections[i].el.offsetTop <= pos) activeIdx = i;
+    }
+    sections.forEach(function(s, i){
+      s.link.classList.toggle('active', i === activeIdx);
+    });
+  }
+
+  window.addEventListener('scroll', updateActive, { passive:true });
+  updateActive();
+
+})();
+</script>
+
+</body>
+</html>
