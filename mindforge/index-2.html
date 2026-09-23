@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MindForge — Sixth Form Cognitive Training</title>
+<meta name="description" content="A card-based cognitive warm-up for sixth form, with unlockable trophies and levels. Works on tablet and desktop.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F3F4FB;
+    --surface: #FFFFFF;
+    --surface-2: #F7F7FD;
+    --ink: #1C1836;
+    --ink-soft: #635F7C;
+    --line: #E6E5F2;
+    --primary: #5B4FE9;
+    --primary-dark: #4038B4;
+    --primary-tint: #EEEBFF;
+    --mint: #12B8A6;
+    --mint-tint: #E3FBF7;
+    --coral: #FF6B5B;
+    --coral-tint: #FFEBE8;
+    --gold: #F5A623;
+    --gold-dark: #B9780E;
+    --gold-tint: #FFF3DC;
+    --locked: #D6D6E4;
+    --danger: #E5484D;
+    --shadow-sm: 0 1px 2px rgba(28,24,54,0.06), 0 1px 1px rgba(28,24,54,0.04);
+    --shadow-md: 0 8px 24px rgba(28,24,54,0.08), 0 2px 6px rgba(28,24,54,0.05);
+    --shadow-lg: 0 20px 48px rgba(28,24,54,0.16), 0 4px 12px rgba(28,24,54,0.08);
+    --display: 'Lexend', 'Segoe UI', sans-serif;
+    --body: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  h1,h2,h3{ font-family:var(--display); margin:0; }
+  button{ font-family:inherit; }
+  ::selection{ background:var(--primary); color:#fff; }
+  button:focus-visible, [tabindex]:focus-visible, input:focus-visible{
+    outline:3px solid var(--primary); outline-offset:2px;
+  }
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+  /* ---------- Header ---------- */
+  header.topbar{
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:30;
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:center; gap:18px;
+    padding:14px 20px;
+    flex-wrap:wrap;
+  }
+  .wordmark{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--display); font-weight:700; font-size:1.25rem;
+    color:var(--ink);
+    flex-shrink:0;
+  }
+  .wordmark .mark{
+    width:34px; height:34px; border-radius:10px;
+    background:linear-gradient(135deg, var(--primary), #8B7FFF);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; flex-shrink:0;
+  }
+  .stat-cluster{ display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:wrap; }
+  .stat-pill{
+    display:flex; align-items:center; gap:7px;
+    background:var(--surface-2); border:1px solid var(--line);
+    border-radius:999px; padding:7px 13px;
+    font-size:0.85rem; font-weight:600; color:var(--ink);
+    white-space:nowrap;
+  }
+  .stat-pill.streak{ background:var(--coral-tint); border-color:#FFD9D2; color:#C9432F; }
+  .stat-pill.xp{ background:var(--gold-tint); border-color:#F5DFAE; color:var(--gold-dark); }
+  .trophy-btn{
+    display:flex; align-items:center; gap:8px;
+    background:var(--primary); color:#fff; border:none;
+    border-radius:999px; padding:11px 16px 11px 13px;
+    font-weight:700; font-size:0.88rem; cursor:pointer;
+    box-shadow:var(--shadow-sm);
+    min-height:44px;
+  }
+  .trophy-btn:hover{ background:var(--primary-dark); }
+
+  .level-track{ display:flex; align-items:center; gap:9px; min-width:150px; }
+  .level-badge{
+    width:30px; height:30px; border-radius:50%;
+    background:var(--primary-tint); color:var(--primary-dark);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:0.78rem; flex-shrink:0;
+  }
+  .level-bar{ flex:1; height:8px; border-radius:99px; background:var(--line); overflow:hidden; min-width:70px; }
+  .level-bar-fill{ height:100%; background:linear-gradient(90deg, var(--primary), #8B7FFF); border-radius:99px; transition:width .5s ease; }
+
+  /* ---------- Main / dashboard ---------- */
+  main{ max-width:1180px; margin:0 auto; padding:28px 20px 20px; }
+  .hero{ margin-bottom:22px; }
+  .hero h1{ font-size:clamp(1.5rem,3.4vw,2.05rem); margin-bottom:6px; }
+  .hero p{ color:var(--ink-soft); margin:0; max-width:62ch; line-height:1.55; }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:16px;
+  }
+  .activity-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:20px;
+    text-align:left;
+    cursor:pointer;
+    box-shadow:var(--shadow-sm);
+    display:flex; flex-direction:column; gap:12px;
+    min-height:190px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .activity-card:hover, .activity-card:focus-visible{ transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .activity-card:active{ transform:translateY(0); }
+  .card-icon{
+    width:46px; height:46px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .card-icon svg{ width:24px; height:24px; }
+  .card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .card-tag{
+    font-size:0.68rem; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;
+    padding:4px 9px; border-radius:999px; flex-shrink:0;
+  }
+  .activity-card h3{ font-size:1.08rem; margin-top:2px; }
+  .activity-card p.desc{ color:var(--ink-soft); font-size:0.87rem; line-height:1.45; margin:0; flex:1; }
+  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
+  .card-best{ font-size:0.78rem; color:var(--ink-soft); font-weight:600; }
+  .card-best b{ color:var(--ink); }
+  .card-cta{
+    font-size:0.82rem; font-weight:700; color:var(--primary);
+    display:flex; align-items:center; gap:4px;
+  }
+
+  /* palette per category */
+  .cat-memory .card-icon{ background:var(--primary-tint); color:var(--primary-dark); }
+  .cat-memory .card-tag{ background:var(--primary-tint); color:var(--primary-dark); }
+  .cat-attention .card-icon{ background:var(--mint-tint); color:#0E8C7D; }
+  .cat-attention .card-tag{ background:var(--mint-tint); color:#0E8C7D; }
+  .cat-logic .card-icon{ background:#EFF0FF; color:#4A46C4; }
+  .cat-logic .card-tag{ background:#EFF0FF; color:#4A46C4; }
+  .cat-word .card-icon{ background:var(--gold-tint); color:var(--gold-dark); }
+  .cat-word .card-tag{ background:var(--gold-tint); color:var(--gold-dark); }
+  .cat-reasoning .card-icon{ background:#FDEBFB; color:#A6339F; }
+  .cat-reasoning .card-tag{ background:#FDEBFB; color:#A6339F; }
+  .cat-flexibility .card-icon{ background:#E0F5FF; color:#0B7FAE; }
+  .cat-flexibility .card-tag{ background:#E0F5FF; color:#0B7FAE; }
+
+  /* ---------- Modal shell (activity + trophy case) ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(20,16,40,0.45);
+    display:flex; align-items:center; justify-content:center;
+    padding:16px; z-index:100;
+    backdrop-filter:blur(2px);
+  }
+  .modal-backdrop[hidden]{ display:none; }
+  .modal-panel{
+    background:var(--surface);
+    border-radius:var(--radius-lg);
+    width:100%; max-width:640px;
+    max-height:min(88vh, 780px);
+    display:flex; flex-direction:column;
+    box-shadow:var(--shadow-lg);
+    overflow:hidden;
+  }
+  .modal-header{
+    display:flex; align-items:center; gap:12px;
+    padding:16px 20px;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .modal-header-icon{ width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .modal-header-icon svg{ width:20px; height:20px; }
+  .modal-title{ flex:1; min-width:0; }
+  .modal-title h2{ font-size:1.08rem; }
+  .modal-title .sub{ font-size:0.8rem; color:var(--ink-soft); }
+  .modal-close{
+    width:44px; height:44px; border-radius:10px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--ink-soft); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
+  }
+  .modal-close:hover{ background:var(--line); color:var(--ink); }
+  .modal-body{ padding:22px 20px 26px; overflow-y:auto; flex:1; }
+
+  .g-substat{ display:flex; gap:18px; font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px; flex-wrap:wrap; font-weight:600; }
+  .g-substat b{ color:var(--ink); }
+  .g-box{
+    border:1.5px solid var(--line); border-radius:var(--radius-md);
+    background:var(--surface-2);
+    padding:32px 18px; text-align:center;
+    font-family:var(--display); font-weight:700; font-size:1.7rem; color:var(--ink);
+    user-select:none;
+  }
+  .g-box.go{ background:var(--mint-tint); border-color:var(--mint); color:#0E8C7D; }
+  .g-box.hit{ background:var(--primary-tint); border-color:var(--primary); color:var(--primary-dark); }
+  .g-box.miss{ background:var(--coral-tint); border-color:var(--coral); color:#C9432F; }
+
+  .g-choices{ display:flex; flex-direction:column; gap:9px; margin-top:16px; }
+  .g-choice{
+    display:flex; align-items:center; gap:10px;
+    background:var(--surface); border:1.5px solid var(--line);
+    border-radius:var(--radius-sm); padding:12px 14px;
+    font-family:inherit; font-size:0.95rem; font-weight:600; color:var(--ink);
+    text-align:left; cursor:pointer;
+  }
+  .g-choice:hover{ border-color:var(--primary); background:var(--primary-tint); }
+  .g-choice[disabled]{ cursor:default; }
+  .g-choice.correct{ border-color:var(--mint); background:var(--mint-tint); color:#0E8C7D; }
+  .g-choice.wrong{ border-color:var(--coral); background:var(--coral-tint); color:#C9432F; }
+  .g-choice .swatch{ width:13px; height:13px; border-radius:50%; flex-shrink:0; }
+
+  .g-timerbar{ height:6px; border-radius:99px; background:var(--line); overflow:hidden; margin-top:14px; }
+  .g-timerbar-fill{ height:100%; background:var(--coral); border-radius:99px; }
+
+  .g-tilegrid{ display:grid; gap:8px; max-width:340px; margin:0 auto; }
+  .g-tile{
+    aspect-ratio:1; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--surface-2); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem; color:var(--ink); -webkit-tap-highlight-color:transparent;
+  }
+  .g-tile:hover{ border-color:var(--primary); }
+  .g-tile.lit{ background:var(--primary); border-color:var(--primary-dark); }
+  .g-tile.confirmed{ background:var(--mint-tint); border-color:var(--mint); color:#0E8C7D; }
+  .g-tile.wrongpick{ background:var(--coral-tint); border-color:var(--coral); color:#C9432F; }
+  .g-tile[disabled]{ cursor:default; }
+
+  .tier-chips{ display:flex; gap:8px; justify-content:center; margin-bottom:18px; flex-wrap:wrap; }
+  .tier-chip{
+    background:var(--surface-2); border:1.5px solid var(--line); color:var(--ink-soft);
+    font-weight:700; font-size:0.85rem; padding:8px 16px; border-radius:999px; cursor:pointer;
+  }
+  .tier-chip.selected{ background:var(--primary); border-color:var(--primary); color:#fff; }
+
+  .g-input-row{ display:flex; gap:10px; justify-content:center; margin-top:16px; }
+  .g-input{
+    font-family:var(--display); font-size:1.2rem; text-align:center; letter-spacing:2px;
+    text-transform:uppercase;
+    padding:11px 14px; border-radius:var(--radius-sm); border:1.5px solid var(--line);
+    width:200px; outline:none;
+  }
+  .g-input:focus{ border-color:var(--primary); }
+  .g-submit{
+    font-family:var(--display); font-weight:700; background:var(--primary); color:#fff;
+    border:none; border-radius:var(--radius-sm); padding:11px 20px; cursor:pointer; font-size:0.95rem;
+  }
+  .g-submit:hover{ background:var(--primary-dark); }
+
+  .g-intro{ text-align:center; }
+  .g-intro p{ color:var(--ink-soft); line-height:1.55; margin:0 0 20px; }
+  .g-start{
+    font-family:var(--display); font-weight:700; background:var(--primary); color:#fff;
+    border:none; border-radius:999px; padding:13px 28px; cursor:pointer; font-size:1rem;
+    box-shadow:var(--shadow-sm);
+  }
+  .g-start:hover{ background:var(--primary-dark); }
+
+  .g-lives{ text-align:center; margin-top:14px; letter-spacing:6px; color:var(--coral); font-size:1.05rem; }
+
+  /* ---------- results ---------- */
+  .g-results{ text-align:center; }
+  .g-medal{
+    display:inline-block; font-size:0.72rem; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+    color:var(--gold-dark); background:var(--gold-tint); border-radius:999px; padding:5px 14px; margin-bottom:10px;
+  }
+  .g-headline{ font-family:var(--display); font-weight:800; font-size:2.2rem; margin:0 0 6px; }
+  .g-substats-row{ display:flex; justify-content:center; gap:24px; margin:14px 0 22px; flex-wrap:wrap; }
+  .g-substats-row .lbl{ font-size:0.68rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.6px; }
+  .g-substats-row .val{ font-family:var(--display); font-weight:700; font-size:1.15rem; }
+  .g-xp-gain{ font-weight:700; color:var(--gold-dark); font-size:0.9rem; margin-bottom:18px; }
+  .g-actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .g-ghost{
+    background:var(--surface-2); border:1px solid var(--line); color:var(--ink); font-weight:700;
+    border-radius:999px; padding:12px 20px; cursor:pointer; font-size:0.9rem;
+  }
+  .g-ghost:hover{ background:var(--line); }
+
+  /* ---------- trophy case ---------- */
+  .trophy-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(130px,1fr));
+    gap:14px;
+  }
+  .trophy-tile{
+    border:1px solid var(--line); border-radius:var(--radius-md);
+    padding:16px 10px; text-align:center; background:var(--surface-2);
+  }
+  .trophy-tile.unlocked{ background:var(--gold-tint); border-color:#F0D08B; }
+  .trophy-medal{
+    width:52px; height:52px; margin:0 auto 8px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--locked); color:#fff;
+  }
+  .trophy-tile.unlocked .trophy-medal{
+    background:linear-gradient(135deg, var(--gold), #FFD37A);
+    box-shadow:0 4px 12px rgba(245,166,35,0.4);
+  }
+  .trophy-medal svg{ width:24px; height:24px; }
+  .trophy-name{ font-size:0.78rem; font-weight:700; line-height:1.3; }
+  .trophy-tile:not(.unlocked) .trophy-name{ color:var(--ink-soft); }
+  .trophy-desc{ font-size:0.7rem; color:var(--ink-soft); margin-top:3px; line-height:1.3; }
+  .trophy-progress-note{ color:var(--ink-soft); font-size:0.85rem; margin-bottom:16px; }
+
+  /* ---------- toast ---------- */
+  #toastLayer{ position:fixed; top:16px; right:16px; z-index:200; display:flex; flex-direction:column; gap:10px; max-width:320px; }
+  .toast{
+    background:var(--ink); color:#fff; border-radius:var(--radius-md);
+    padding:13px 16px; display:flex; gap:12px; align-items:center;
+    box-shadow:var(--shadow-lg);
+    animation:toastIn .35s ease;
+  }
+  @media (prefers-reduced-motion: reduce){ .toast{ animation:none; } }
+  @keyframes toastIn{ from{ opacity:0; transform:translateY(-8px); } to{ opacity:1; transform:none; } }
+  .toast .medal{
+    width:36px; height:36px; border-radius:50%; flex-shrink:0;
+    background:linear-gradient(135deg, var(--gold), #FFD37A);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .toast .medal svg{ width:19px; height:19px; color:#fff; }
+  .toast .t-title{ font-weight:700; font-size:0.85rem; }
+  .toast .t-sub{ font-size:0.76rem; color:#C9C6E0; }
+
+  footer.page-footer{ text-align:center; color:var(--ink-soft); font-size:0.78rem; padding:22px 20px 0; }
+
+  @media (max-width:600px){
+    .modal-panel{ max-height:94vh; }
+    .g-box{ font-size:1.35rem; padding:26px 14px; }
+    .stat-cluster{ margin-left:0; width:100%; justify-content:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="wordmark">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" width="19" height="19"><path d="M12 2C8 2 6 5 6 8c0 2 1 3 1 5 0 2-1 2-1 4 0 2 2 3 6 3s6-1 6-3c0-2-1-2-1-4 0-2 1-3 1-5 0-3-2-6-6-6z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9c1-1 2-1 3 0M12 9c1-1 2-1 3 0" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </span>
+      MindForge
+    </div>
+    <div class="level-track">
+      <span class="level-badge" id="levelBadge">1</span>
+      <div class="level-bar"><div class="level-bar-fill" id="levelBarFill" style="width:0%"></div></div>
+    </div>
+    <div class="stat-cluster">
+      <span class="stat-pill streak" id="streakPill">🔥 0 day streak</span>
+      <span class="stat-pill xp" id="xpPill">0 XP</span>
+      <button class="trophy-btn" id="openTrophyCase">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z" stroke="white" stroke-width="1.7"/><path d="M7 5H4a3 3 0 0 0 3 4M17 5h3a3 3 0 0 1-3 4" stroke="white" stroke-width="1.7"/><path d="M12 13v3M9 20h6M10 16.5h4v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z" stroke="white" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span id="trophyCountLabel">0/15</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Pick a quick brain warm-up</h1>
+    <p>Six short exercises, each under two minutes. Great as a settler at the start of any lesson — pick one, play, and get back to it. Trophies unlock as you go.</p>
+  </div>
+  <div class="card-grid" id="cardGrid"></div>
+</main>
+
+<footer class="page-footer">Progress is saved to this device only. Nothing is sent anywhere.</footer>
+
+<div id="toastLayer" aria-live="polite"></div>
+
+<!-- activity modal -->
+<div class="modal-backdrop" id="activityModal" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitleText">
+    <div class="modal-header">
+      <div class="modal-header-icon" id="modalHeaderIcon"></div>
+      <div class="modal-title">
+        <h2 id="modalTitleText">Activity</h2>
+        <div class="sub" id="modalTitleSub">Category</div>
+      </div>
+      <button class="modal-close" id="closeActivityModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- trophy case modal -->
+<div class="modal-backdrop" id="trophyModal" hidden>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="trophyModalTitle">
+    <div class="modal-header">
+      <div class="modal-header-icon" style="background:var(--gold-tint); color:var(--gold-dark);">
+        <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z" stroke="currentColor" stroke-width="1.7"/><path d="M12 13v3M9 20h6" stroke="currentColor" stroke-width="1.7"/></svg>
+      </div>
+      <div class="modal-title">
+        <h2 id="trophyModalTitle">Trophy Case</h2>
+        <div class="sub" id="trophyModalSub">0 of 15 unlocked</div>
+      </div>
+      <button class="modal-close" id="closeTrophyModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="trophy-progress-note">Trophies unlock automatically as you play — no need to do anything special.</p>
+      <div class="trophy-grid" id="trophyGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Storage — tries localStorage (persists once this file is hosted
+   on a real https:// origin, e.g. GitHub Pages), falls back to an
+   in-memory object if unavailable (e.g. a sandboxed preview).
+   ============================================================ */
+const memoryFallback = {};
+let storageIsPersistent = true;
+const store = {
+  get(key, fallback){
+    try{
+      const v = localStorage.getItem('mindforge:' + key);
+      return v === null ? fallback : JSON.parse(v);
+    }catch(e){
+      storageIsPersistent = false;
+      return (key in memoryFallback) ? memoryFallback[key] : fallback;
+    }
+  },
+  set(key, value){
+    try{
+      localStorage.setItem('mindforge:' + key, JSON.stringify(value));
+    }catch(e){
+      storageIsPersistent = false;
+      memoryFallback[key] = value;
+    }
+  }
+};
+
+/* ============================================================
+   Shared helpers
+   ============================================================ */
+function rand(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+function shuffle(arr){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j = rand(0,i); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pick(arr){ return arr[rand(0, arr.length-1)]; }
+function buildNumberChoices(correct){
+  const set = new Set([correct]);
+  let guard = 0;
+  while(set.size < 4 && guard < 60){
+    guard++;
+    const spread = Math.max(5, Math.round(Math.abs(correct) * 0.2) + 4);
+    const candidate = Math.random() < 0.5 ? correct + rand(1, spread) : correct - rand(1, spread);
+    set.add(candidate);
+  }
+  const arr = shuffle(Array.from(set));
+  return { choices: arr.map(String), correct: arr.indexOf(correct) };
+}
+function medalFor(ratio){
+  if(ratio >= 0.85) return 'GOLD RUN';
+  if(ratio >= 0.6) return 'SOLID RUN';
+  if(ratio >= 0.35) return 'STEADY RUN';
+  return 'WARM-UP RUN';
+}
+const ICONS = {
+  bolt: '<svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+  vault: '<svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="15" rx="3" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 9.5V12l1.6 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>',
+  nodes: '<svg viewBox="0 0 24 24" fill="none"><circle cx="5" cy="18" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="7" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="19" cy="18" r="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M7 16.5 10 9M14 9l3 7.5" stroke="currentColor" stroke-width="1.6"/></svg>',
+  bubble: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v10H9l-4 4v-4H4V5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  flask: '<svg viewBox="0 0 24 24" fill="none"><path d="M10 3h4M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 15h8" stroke="currentColor" stroke-width="1.5"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" fill="none"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z" stroke="currentColor" stroke-width="1.7"/><path d="M12 13v3M9 20h6" stroke="currentColor" stroke-width="1.7"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.7"/></svg>',
+  switch: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  spot: '<svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  grid: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="3" width="8" height="8" rx="1.5" fill="currentColor"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="currentColor"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>'
+};
+
+/* ============================================================
+   XP / Level / Streak / Trophies
+   ============================================================ */
+const LEVEL_THRESHOLDS = [0,100,250,450,700,1000,1400,1900,2500,3200,4000];
+function levelForXP(xp){
+  let lvl = 1;
+  for(let i=1;i<LEVEL_THRESHOLDS.length;i++){ if(xp >= LEVEL_THRESHOLDS[i]) lvl = i+1; }
+  return Math.min(lvl, LEVEL_THRESHOLDS.length);
+}
+function levelProgress(xp){
+  const lvl = levelForXP(xp);
+  const idx = lvl-1;
+  const floor = LEVEL_THRESHOLDS[Math.min(idx, LEVEL_THRESHOLDS.length-1)];
+  const nextIdx = Math.min(idx+1, LEVEL_THRESHOLDS.length-1);
+  const ceil = LEVEL_THRESHOLDS[nextIdx];
+  if(ceil === floor) return 100;
+  return Math.min(100, Math.round(((xp-floor)/(ceil-floor))*100));
+}
+
+const state = {
+  xp: store.get('xp', 0),
+  streak: store.get('streak', 0),
+  lastPlayedDate: store.get('lastPlayedDate', null),
+  bestScores: store.get('bestScores', {}),
+  playedActivities: store.get('playedActivities', []),
+  trophies: store.get('trophies', [])
+};
+
+function touchStreak(){
+  const today = new Date().toDateString();
+  if(state.lastPlayedDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if(state.lastPlayedDate === yesterday){ state.streak += 1; }
+  else if(state.lastPlayedDate === null){ state.streak = 1; }
+  else { state.streak = 1; }
+  state.lastPlayedDate = today;
+  store.set('streak', state.streak);
+  store.set('lastPlayedDate', state.lastPlayedDate);
+}
+
+function addXP(amount){
+  state.xp += amount;
+  store.set('xp', state.xp);
+  renderHeaderStats();
+}
+
+function recordActivityPlayed(key){
+  if(!state.playedActivities.includes(key)){
+    state.playedActivities.push(key);
+    store.set('playedActivities', state.playedActivities);
+  }
+}
+
+function recordBest(key, value, higherIsBetter){
+  const cur = state.bestScores[key];
+  if(cur === undefined || (higherIsBetter ? value > cur : value < cur)){
+    state.bestScores[key] = value;
+    store.set('bestScores', state.bestScores);
+  }
+}
+
+const TROPHIES = [
+  { id:'first_steps', name:'First Steps', desc:'Complete any 1 activity', icon:'trophy', check: () => state.playedActivities.length >= 1 },
+  { id:'full_house', name:'Full House', desc:'Try every activity at least once', icon:'trophy', check: () => state.playedActivities.length >= ACTIVITIES.length },
+  { id:'steel_trap', name:'Steel Trap', desc:'Memory Vault span of 8+', icon:'vault', check: () => state.bestScores.memorySpan !== undefined && state.bestScores.memorySpan >= 8 },
+  { id:'grid_master', name:'Grid Master', desc:'Recall Grid span of 7+', icon:'grid', check: () => state.bestScores.gridSpan !== undefined && state.bestScores.gridSpan >= 7 },
+  { id:'laser_focus', name:'Laser Focus', desc:'Focus Filter 9/10 or better', icon:'eye', check: () => state.bestScores.stroopCorrect !== undefined && state.bestScores.stroopCorrect >= 9 },
+  { id:'sharp_eye', name:'Sharp Eye', desc:'Spot It — perfect 5/5', icon:'spot', check: () => state.bestScores.spotSolved !== undefined && state.bestScores.spotSolved >= 5 },
+  { id:'pattern_master', name:'Pattern Master', desc:'Sequence Sense 5/5', icon:'nodes', check: () => state.bestScores.patternCorrect !== undefined && state.bestScores.patternCorrect >= 5 },
+  { id:'pattern_prodigy', name:'Pattern Prodigy', desc:'Sequence Sense 5/5 on Hard', icon:'nodes', check: () => state.bestScores.patternCorrectHard !== undefined && state.bestScores.patternCorrectHard >= 5 },
+  { id:'quick_switch', name:'Quick Switch', desc:'Switch Track 10/12 or better', icon:'switch', check: () => state.bestScores.switchCorrect !== undefined && state.bestScores.switchCorrect >= 10 },
+  { id:'wordsmith', name:'Wordsmith', desc:'Word Sprint 7/8 or better', icon:'bubble', check: () => state.bestScores.lexiconCorrect !== undefined && state.bestScores.lexiconCorrect >= 7 },
+  { id:'logician', name:'Logician', desc:'Logic Lab 3/3', icon:'flask', check: () => state.bestScores.logicCorrect !== undefined && state.bestScores.logicCorrect >= 3 },
+  { id:'on_a_roll', name:'On a Roll', desc:'3-day streak', icon:'trophy', check: () => state.streak >= 3 },
+  { id:'dedicated', name:'Dedicated', desc:'7-day streak', icon:'trophy', check: () => state.streak >= 7 },
+  { id:'rising_star', name:'Rising Star', desc:'Reach Level 5', icon:'trophy', check: () => levelForXP(state.xp) >= 5 },
+  { id:'brain_builder', name:'Brain Builder', desc:'Earn 500 total XP', icon:'trophy', check: () => state.xp >= 500 }
+];
+
+function checkTrophies(){
+  const newlyUnlocked = [];
+  TROPHIES.forEach(t => {
+    if(!state.trophies.includes(t.id) && t.check()){
+      state.trophies.push(t.id);
+      newlyUnlocked.push(t);
+    }
+  });
+  if(newlyUnlocked.length){
+    store.set('trophies', state.trophies);
+    newlyUnlocked.forEach((t,i) => setTimeout(() => showTrophyToast(t), i*900));
+    renderHeaderStats();
+    renderTrophyGrid();
+  }
+}
+
+function showTrophyToast(trophy){
+  const layer = document.getElementById('toastLayer');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<div class="medal">${ICONS[trophy.icon]}</div><div><div class="t-title">Trophy unlocked!</div><div class="t-sub">${trophy.name}</div></div>`;
+  layer.appendChild(el);
+  setTimeout(() => { el.style.transition='opacity .4s ease'; el.style.opacity='0'; setTimeout(()=>el.remove(), 400); }, 3600);
+}
+
+function renderHeaderStats(){
+  document.getElementById('levelBadge').textContent = levelForXP(state.xp);
+  document.getElementById('levelBarFill').style.width = levelProgress(state.xp) + '%';
+  document.getElementById('streakPill').textContent = '🔥 ' + state.streak + ' day' + (state.streak===1?'':'s') + ' streak';
+  document.getElementById('xpPill').textContent = state.xp + ' XP';
+  document.getElementById('trophyCountLabel').textContent = state.trophies.length + '/' + TROPHIES.length;
+}
+
+function renderTrophyGrid(){
+  const grid = document.getElementById('trophyGrid');
+  grid.innerHTML = '';
+  TROPHIES.forEach(t => {
+    const unlocked = state.trophies.includes(t.id);
+    const tile = document.createElement('div');
+    tile.className = 'trophy-tile' + (unlocked ? ' unlocked' : '');
+    tile.innerHTML = `
+      <div class="trophy-medal">${ICONS[unlocked ? t.icon : 'lock']}</div>
+      <div class="trophy-name">${t.name}</div>
+      <div class="trophy-desc">${t.desc}</div>`;
+    grid.appendChild(tile);
+  });
+  document.getElementById('trophyModalSub').textContent = state.trophies.length + ' of ' + TROPHIES.length + ' unlocked';
+}
+
+/* ============================================================
+   Modal plumbing
+   ============================================================ */
+const activityModal = document.getElementById('activityModal');
+const trophyModal = document.getElementById('trophyModal');
+let activeCleanup = null;
+
+function openActivityModal(activity){
+  document.getElementById('modalTitleText').textContent = activity.name;
+  document.getElementById('modalTitleSub').textContent = activity.category;
+  const iconWrap = document.getElementById('modalHeaderIcon');
+  iconWrap.className = 'modal-header-icon';
+  iconWrap.style.background = activity.iconBg;
+  iconWrap.style.color = activity.iconColor;
+  iconWrap.innerHTML = ICONS[activity.icon];
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '';
+  activityModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  renderIntro(activity, body);
+}
+function closeActivityModal(){
+  activityModal.hidden = true;
+  document.body.style.overflow = '';
+  if(activeCleanup){ activeCleanup(); activeCleanup = null; }
+  document.getElementById('modalBody').innerHTML = '';
+}
+document.getElementById('closeActivityModal').addEventListener('click', closeActivityModal);
+activityModal.addEventListener('click', e => { if(e.target === activityModal) closeActivityModal(); });
+
+document.getElementById('openTrophyCase').addEventListener('click', () => {
+  renderTrophyGrid();
+  trophyModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+});
+document.getElementById('closeTrophyModal').addEventListener('click', () => {
+  trophyModal.hidden = true; document.body.style.overflow = '';
+});
+trophyModal.addEventListener('click', e => { if(e.target === trophyModal){ trophyModal.hidden = true; document.body.style.overflow=''; } });
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if(!activityModal.hidden) closeActivityModal();
+    if(!trophyModal.hidden){ trophyModal.hidden = true; document.body.style.overflow=''; }
+  }
+});
+
+function renderIntro(activity, body){
+  const hasTiers = Array.isArray(activity.tiers);
+  let selectedTier = hasTiers ? activity.defaultTier : undefined;
+  body.innerHTML = `
+    <div class="g-intro">
+      <p>${activity.longDesc}</p>
+      ${hasTiers ? '<div class="tier-chips" id="tierChips"></div>' : ''}
+      <button class="g-start">Start</button>
+    </div>`;
+  if(hasTiers){
+    const chipWrap = body.querySelector('#tierChips');
+    activity.tiers.forEach(t => {
+      const chip = document.createElement('button');
+      chip.className = 'tier-chip' + (t.id === selectedTier ? ' selected' : '');
+      chip.textContent = t.label;
+      chip.addEventListener('click', () => {
+        selectedTier = t.id;
+        chipWrap.querySelectorAll('.tier-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      });
+      chipWrap.appendChild(chip);
+    });
+  }
+  body.querySelector('.g-start').addEventListener('click', () => {
+    body.innerHTML = '';
+    activeCleanup = activity.run(body, result => finishActivity(activity, result), selectedTier);
+  });
+}
+
+function finishActivity(activity, result){
+  if(activeCleanup){ activeCleanup(); activeCleanup = null; }
+  touchStreak();
+  recordActivityPlayed(activity.key);
+  (result.recordBests || []).forEach(rb => recordBest(rb.key, rb.value, rb.higherIsBetter));
+  const xpGain = Math.max(4, Math.round(result.ratio * 50));
+  addXP(xpGain);
+
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <div class="g-results">
+      <div class="g-medal">${medalFor(result.ratio)}</div>
+      <div class="g-headline">${result.headline}</div>
+      <div class="g-substats-row">${(result.stats||[]).map(s => `<div><div class="lbl">${s.label}</div><div class="val">${s.value}</div></div>`).join('')}</div>
+      <div class="g-xp-gain">+${xpGain} XP earned</div>
+      <div class="g-actions">
+        <button class="g-start" id="retryBtn">Try again</button>
+        <button class="g-ghost" id="doneBtn">Done</button>
+      </div>
+    </div>`;
+  document.getElementById('retryBtn').addEventListener('click', () => { body.innerHTML=''; renderIntro(activity, body); });
+  document.getElementById('doneBtn').addEventListener('click', closeActivityModal);
+
+  renderHeaderStats();
+  renderCardBests();
+  checkTrophies();
+}
+
+/* ============================================================
+   ACTIVITY 2: Memory Vault (Memory)
+   ============================================================ */
+function runMemory(body, onDone){
+  body.innerHTML = `
+    <div class="g-box" id="memBox">READY</div>
+    <div class="g-input-row" id="memInputRow" style="display:none;">
+      <input class="g-input" id="memInput" type="text" autocomplete="off" spellcheck="false">
+      <button class="g-submit" id="memGo">Go</button>
+    </div>
+    <div class="g-lives" id="memLives"></div>`;
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
+  let level=1, lives=3, maxLevel=9, successes=0, bestSpan=0, currentSeq=[], torndown=false;
+  const box=document.getElementById('memBox'), row=document.getElementById('memInputRow'), input=document.getElementById('memInput'), go=document.getElementById('memGo');
+  function renderLives(){ if(torndown) return; document.getElementById('memLives').textContent = '●'.repeat(lives) + '○'.repeat(3-lives); }
+  renderLives();
+  function round(){
+    if(torndown) return;
+    row.style.display='none';
+    const len = level+3;
+    currentSeq = Array.from({length:len}, () => pick(chars));
+    box.textContent='MEMORISE…'; box.className='g-box';
+    let i=0;
+    const showNext = () => {
+      if(torndown) return;
+      if(i<currentSeq.length){
+        box.textContent = currentSeq[i]; i++;
+        setTimeout(() => { if(torndown) return; box.textContent='•'; setTimeout(showNext,220); }, 550);
+      } else {
+        box.textContent = '?'.repeat(len);
+        row.style.display='flex'; input.value=''; input.focus();
+      }
+    };
+    showNext();
+  }
+  function check(){
+    if(torndown) return;
+    const val = input.value.trim().toUpperCase();
+    if(val === currentSeq.join('')){
+      successes++; bestSpan = currentSeq.length;
+      if(level>=maxLevel){ finish(); return; }
+      level++;
+      box.textContent='Nice!'; box.className='g-box hit';
+      row.style.display='none';
+      setTimeout(round, 700);
+    } else {
+      lives--; renderLives();
+      box.textContent='Not quite — it was ' + currentSeq.join('');
+      box.className='g-box miss';
+      row.style.display='none';
+      if(lives<=0) setTimeout(finish, 900);
+      else setTimeout(round, 1200);
+    }
+  }
+  go.addEventListener('click', check);
+  input.addEventListener('keydown', e => { if(e.key==='Enter') check(); });
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: bestSpan+'-char span', ratio: Math.min(bestSpan/(maxLevel+3),1),
+      stats:[{label:'Peak span',value:bestSpan},{label:'Rounds cleared',value:successes}],
+      recordBests:[{key:'memorySpan', value:bestSpan, higherIsBetter:true}]
+    });
+  }
+  round();
+  return () => { torndown = true; };
+}
+
+/* ============================================================
+   ACTIVITY 3: Focus Filter (Attention — Stroop)
+   ============================================================ */
+function runStroop(body, onDone){
+  const colours = [{name:'RED',hex:'#E5484D'},{name:'BLUE',hex:'#3B6FE0'},{name:'GREEN',hex:'#12A150'},{name:'YELLOW',hex:'#D6A400'},{name:'PURPLE',hex:'#8B5CF6'},{name:'ORANGE',hex:'#E8720C'}];
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;"><div>Trial <b id="sTrial">0</b>/10</div><div>Correct <b id="sCorrect">0</b></div></div>
+    <div class="g-box" id="sWord" style="font-size:2rem;">–</div>
+    <div class="g-substat" style="justify-content:center; margin-top:12px;">Pick the colour it's drawn in — not the word</div>
+    <div class="g-choices" id="sChoices"></div>
+    <div class="g-timerbar"><div class="g-timerbar-fill" id="sTimerFill" style="width:100%"></div></div>`;
+  let trial=0, totalTrials=10, correct=0, answered=false, current=null, timer=null, torndown=false;
+  const wordEl=document.getElementById('sWord'), choicesEl=document.getElementById('sChoices'), fill=document.getElementById('sTimerFill');
+  function newTrial(){
+    if(torndown) return;
+    if(trial>=totalTrials){ finish(); return; }
+    trial++; answered=false;
+    document.getElementById('sTrial').textContent = trial;
+    const wordChoice = pick(colours), displayChoice = pick(colours);
+    current = displayChoice;
+    wordEl.textContent = wordChoice.name;
+    wordEl.style.color = displayChoice.hex;
+    choicesEl.innerHTML='';
+    shuffle(colours).forEach(c => {
+      const b=document.createElement('button');
+      b.className='g-choice';
+      b.innerHTML = `<span class="swatch" style="background:${c.hex}"></span>${c.name}`;
+      b.addEventListener('click', () => answer(c));
+      choicesEl.appendChild(b);
+    });
+    let t=100;
+    fill.style.width='100%'; fill.style.transition='none';
+    requestAnimationFrame(() => { fill.style.transition='width 4s linear'; fill.style.width='0%'; });
+    clearTimeout(timer);
+    timer = setTimeout(() => answer(null), 4000);
+  }
+  function answer(c){
+    if(answered || torndown) return; answered=true; clearTimeout(timer);
+    if(c && c.name===current.name){ correct++; document.getElementById('sCorrect').textContent = correct; }
+    setTimeout(newTrial, 280);
+  }
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: correct+'/'+totalTrials, ratio: correct/totalTrials,
+      stats:[{label:'Accuracy',value:Math.round(correct/totalTrials*100)+'%'}],
+      recordBests:[{key:'stroopCorrect', value:correct, higherIsBetter:true}]
+    });
+  }
+  newTrial();
+  return () => { torndown = true; clearTimeout(timer); };
+}
+
+/* ============================================================
+   ACTIVITY 4: Sequence Sense (Logic — number sequences)
+   ============================================================ */
+const PRIMES = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113];
+function tri(n){ return n*(n+1)/2; }
+function genArithHard(tier){
+  const ranges = { easy:[1,20,1,5], standard:[10,80,4,15], hard:[50,300,10,40] };
+  const [s0,s1,d0,d1] = ranges[tier];
+  const s=rand(s0,s1), d=rand(d0,d1);
+  const t=[0,1,2,3,4].map(i=>s+i*d); const n=s+5*d; const c=buildNumberChoices(n);
+  return {clue:'Next term: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genGeoHard(tier){
+  const ranges = { easy:[1,4,[2]], standard:[2,5,[2,3,4]], hard:[2,9,[2,3,4,5]] };
+  const [s0,s1,ratios] = ranges[tier];
+  const s=rand(s0,s1), r=pick(ratios);
+  const t=[0,1,2,3].map(i=>s*Math.pow(r,i)); const n=s*Math.pow(r,4); const c=buildNumberChoices(n);
+  return {clue:'Next term: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genSquaresHard(tier){
+  const ranges = { easy:[1,5], standard:[4,12], hard:[8,20] };
+  const [s0,s1] = ranges[tier];
+  const s=rand(s0,s1);
+  const t=[0,1,2,3,4].map(i=>(s+i)*(s+i)); const nn=s+5, n=nn*nn; const c=buildNumberChoices(n);
+  return {clue:'Next term: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genCubes(tier){
+  const ranges = { easy:[1,3], standard:[2,6], hard:[4,10] };
+  const [s0,s1] = ranges[tier];
+  const s=rand(s0,s1);
+  const t=[0,1,2,3].map(i=>Math.pow(s+i,3)); const n=Math.pow(s+4,3); const c=buildNumberChoices(n);
+  return {clue:'Next term: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genPrimeSeq(tier){
+  const ranges = { easy:[0,8], standard:[0,PRIMES.length-7], hard:[15,PRIMES.length-7] };
+  const [si0,si1] = ranges[tier];
+  const si=rand(si0,si1);
+  const t=PRIMES.slice(si,si+5); const n=PRIMES[si+5]; const c=buildNumberChoices(n);
+  return {clue:'Next prime: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genTriangular(tier){
+  const ranges = { easy:[1,5], standard:[3,10], hard:[8,18] };
+  const [s0,s1] = ranges[tier];
+  const s=rand(s0,s1);
+  const t=[0,1,2,3,4].map(i=>tri(s+i)); const n=tri(s+5); const c=buildNumberChoices(n);
+  return {clue:'Next term: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genFibHard(tier){
+  const ranges = { easy:[1,3,1,3], standard:[2,9,1,9], hard:[5,15,3,15] };
+  const [a0,a1,b0,b1] = ranges[tier];
+  const a=rand(a0,a1), b=rand(a+b0,a+b1);
+  const t=[a,b]; for(let i=0;i<3;i++) t.push(t[t.length-1]+t[t.length-2]);
+  const n=t[3]+t[4]; const c=buildNumberChoices(n);
+  return {clue:'Next term: '+t.join(', ')+', ___', choices:c.choices, correct:c.correct};
+}
+function genAlternatingHard(){
+  let start, k, terms, tries=0;
+  do {
+    start = rand(4,10); k = rand(2,6);
+    terms=[start];
+    for(let i=0;i<4;i++){ terms.push(i%2===0 ? terms[terms.length-1]*2 : terms[terms.length-1]-k); }
+    tries++;
+  } while(terms.some(t => t < 0) && tries < 20);
+  const next = terms.length%2===1 ? terms[terms.length-1]*2 : terms[terms.length-1]-k;
+  const c = buildNumberChoices(next);
+  return {clue:'Next term: '+terms.join(', ')+', ___ (pattern alternates ×2 then −'+k+')', choices:c.choices, correct:c.correct};
+}
+const PATTERN_POOLS = {
+  easy: [genArithHard, genGeoHard, genSquaresHard, genFibHard],
+  standard: [genArithHard, genGeoHard, genSquaresHard, genCubes, genPrimeSeq, genTriangular, genFibHard],
+  hard: [genArithHard, genGeoHard, genSquaresHard, genCubes, genPrimeSeq, genTriangular, genFibHard, genAlternatingHard]
+};
+const PATTERN_TIMERS = { easy:16000, standard:12000, hard:9000 };
+
+function runPattern(body, onDone, tier){
+  tier = tier || 'standard';
+  const pool = PATTERN_POOLS[tier];
+  const timerMs = PATTERN_TIMERS[tier];
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;"><div>Round <b id="pRound">0</b>/5</div><div>Correct <b id="pCorrect">0</b></div></div>
+    <div class="g-box" id="pClue" style="font-size:1.25rem;">–</div>
+    <div class="g-choices" id="pChoices"></div>
+    <div class="g-timerbar"><div class="g-timerbar-fill" id="pTimerFill" style="width:100%"></div></div>`;
+  let round=0, totalRounds=5, correct=0, answered=false, timer=null, correctIdx=-1, torndown=false;
+  const fill = document.getElementById('pTimerFill');
+  function newRound(){
+    if(torndown) return;
+    if(round>=totalRounds){ finish(); return; }
+    round++; answered=false;
+    document.getElementById('pRound').textContent = round;
+    const p = pick(pool)(tier);
+    correctIdx = p.correct;
+    document.getElementById('pClue').textContent = p.clue;
+    const choicesEl = document.getElementById('pChoices');
+    choicesEl.innerHTML='';
+    p.choices.forEach((c,idx) => {
+      const b=document.createElement('button'); b.className='g-choice'; b.textContent = c;
+      b.addEventListener('click', () => answer(idx));
+      choicesEl.appendChild(b);
+    });
+    fill.style.width='100%'; fill.style.transition='none';
+    requestAnimationFrame(() => { fill.style.transition='width '+(timerMs/1000)+'s linear'; fill.style.width='0%'; });
+    clearTimeout(timer);
+    timer = setTimeout(() => answer(-1), timerMs);
+  }
+  function answer(idx){
+    if(answered || torndown) return; answered=true; clearTimeout(timer);
+    if(idx===correctIdx){ correct++; document.getElementById('pCorrect').textContent=correct; }
+    setTimeout(newRound, 450);
+  }
+  function finish(){
+    if(torndown) return;
+    const recordBests = [{key:'patternCorrect', value:correct, higherIsBetter:true}];
+    if(tier === 'hard') recordBests.push({key:'patternCorrectHard', value:correct, higherIsBetter:true});
+    onDone({
+      headline: correct+'/'+totalRounds, ratio: correct/totalRounds,
+      stats:[{label:'Solved',value:correct+'/'+totalRounds},{label:'Difficulty',value:tier.charAt(0).toUpperCase()+tier.slice(1)}],
+      recordBests: recordBests
+    });
+  }
+  newRound();
+  return () => { torndown = true; clearTimeout(timer); };
+}
+
+/* ============================================================
+   ACTIVITY 5: Word Sprint (Verbal)
+   ============================================================ */
+const lexiconBank = [
+  {word:'UBIQUITOUS', correct:'Everywhere', wrongs:['Rare','Hidden','Temporary','Scarce','Fragile']},
+  {word:'EPHEMERAL', correct:'Short-lived', wrongs:['Permanent','Enormous','Ancient','Heavy','Loud']},
+  {word:'PRAGMATIC', correct:'Practical', wrongs:['Idealistic','Emotional','Careless','Mysterious','Reckless']},
+  {word:'CANDID', correct:'Honest', wrongs:['Secretive','Nervous','Formal','Aggressive','Timid']},
+  {word:'METICULOUS', correct:'Thorough', wrongs:['Careless','Quick','Confused','Lazy','Reckless']},
+  {word:'AUSTERE', correct:'Severe / plain', wrongs:['Luxurious','Colourful','Generous','Playful','Warm']},
+  {word:'VOLATILE', correct:'Unpredictable', wrongs:['Stable','Slow','Quiet','Reliable','Gentle']},
+  {word:'BENEVOLENT', correct:'Kind', wrongs:['Cruel','Lazy','Anxious','Greedy','Distant']},
+  {word:'CONCISE', correct:'Brief', wrongs:['Wordy','Confusing','Loud','Vague','Repetitive']},
+  {word:'ARBITRARY', correct:'Random', wrongs:['Reasoned','Fair','Slow','Careful','Structured']},
+  {word:'TENACIOUS', correct:'Persistent', wrongs:['Weak','Forgetful','Shy','Careless','Timid']},
+  {word:'PLAUSIBLE', correct:'Believable', wrongs:['Impossible','Boring','Loud','Absurd','Confusing']},
+  {word:'SUBTLE', correct:'Understated', wrongs:['Obvious','Loud','Rough','Blunt','Harsh']},
+  {word:'COHERENT', correct:'Logical', wrongs:['Confusing','Random','Silent','Chaotic','Vague']},
+  {word:'RESILIENT', correct:'Tough / adaptable', wrongs:['Fragile','Slow','Careless','Timid','Rigid']},
+  {word:'DILIGENT', correct:'Hardworking', wrongs:['Lazy','Careless','Anxious','Reckless','Forgetful']},
+  {word:'AMBIGUOUS', correct:'Unclear', wrongs:['Obvious','Precise','Simple','Direct','Certain']},
+  {word:'AUTONOMOUS', correct:'Independent', wrongs:['Dependent','Controlled','Restricted','Passive','Reliant']},
+  {word:'CREDIBLE', correct:'Trustworthy', wrongs:['Suspicious','Fake','Silly','Weak','Uncertain']},
+  {word:'ECCENTRIC', correct:'Unconventional', wrongs:['Ordinary','Boring','Formal','Predictable','Strict']},
+  {word:'FRUGAL', correct:'Thrifty', wrongs:['Wasteful','Generous','Reckless','Lavish','Careless']},
+  {word:'IMPARTIAL', correct:'Unbiased', wrongs:['Biased','Emotional','Confused','Involved','Opinionated']},
+  {word:'LUCID', correct:'Clear', wrongs:['Confusing','Vague','Blurry','Complicated','Murky']},
+  {word:'OBSOLETE', correct:'Outdated', wrongs:['Modern','New','Advanced','Current','Fresh']},
+  {word:'PROLIFIC', correct:'Highly productive', wrongs:['Lazy','Rare','Slow','Inactive','Sparse']},
+  {word:'SKEPTICAL', correct:'Doubtful', wrongs:['Trusting','Naive','Certain','Convinced','Gullible']},
+  {word:'TACIT', correct:'Unspoken', wrongs:['Explicit','Loud','Written','Direct','Stated']},
+  {word:'VERSATILE', correct:'Adaptable', wrongs:['Rigid','Limited','Fixed','Narrow','Specialised']},
+  {word:'WARY', correct:'Cautious', wrongs:['Careless','Confident','Reckless','Relaxed','Bold']},
+  {word:'ZEALOUS', correct:'Enthusiastic', wrongs:['Indifferent','Bored','Reluctant','Apathetic','Calm']}
+];
+function sampleN(arr, n){
+  return shuffle(arr).slice(0, n);
+}
+function buildLexiconItem(entry){
+  const wrongs = sampleN(entry.wrongs, 3);
+  const options = shuffle([entry.correct, ...wrongs]);
+  return { word: entry.word, choices: options, correct: options.indexOf(entry.correct) };
+}
+function runLexicon(body, onDone){
+  const items = shuffle(lexiconBank).slice(0,8).map(buildLexiconItem);
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;"><div>Word <b id="lNum">1</b>/8</div><div>Score <b id="lScore">0</b></div></div>
+    <div class="g-box" id="lWord" style="font-size:1.6rem;">–</div>
+    <div class="g-choices" id="lChoices"></div>
+    <div class="g-timerbar"><div class="g-timerbar-fill" id="lTimerFill" style="width:100%"></div></div>`;
+  let idx=0, score=0, timer=null, answered=false, torndown=false;
+  const fill = document.getElementById('lTimerFill');
+  function newItem(){
+    if(torndown) return;
+    if(idx>=items.length){ finish(); return; }
+    answered=false;
+    const item = items[idx];
+    document.getElementById('lNum').textContent = idx+1;
+    document.getElementById('lWord').textContent = item.word;
+    const choicesEl = document.getElementById('lChoices');
+    choicesEl.innerHTML='';
+    item.choices.forEach((c,i) => {
+      const b=document.createElement('button'); b.className='g-choice'; b.textContent = c;
+      b.addEventListener('click', () => answer(i));
+      choicesEl.appendChild(b);
+    });
+    fill.style.width='100%'; fill.style.transition='none';
+    requestAnimationFrame(() => { fill.style.transition='width 8s linear'; fill.style.width='0%'; });
+    clearTimeout(timer);
+    timer = setTimeout(() => answer(-1), 8000);
+  }
+  function answer(i){
+    if(answered || torndown) return; answered=true; clearTimeout(timer);
+    const item = items[idx];
+    document.querySelectorAll('#lChoices .g-choice').forEach((b,bi) => {
+      b.disabled=true;
+      if(bi===item.correct) b.classList.add('correct');
+      else if(bi===i) b.classList.add('wrong');
+    });
+    if(i===item.correct){ score++; document.getElementById('lScore').textContent = score; }
+    idx++;
+    setTimeout(newItem, 450);
+  }
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: score+'/'+items.length, ratio: score/items.length,
+      stats:[{label:'Accuracy',value:Math.round(score/items.length*100)+'%'}],
+      recordBests:[{key:'lexiconCorrect', value:score, higherIsBetter:true}]
+    });
+  }
+  newItem();
+  return () => { torndown = true; clearTimeout(timer); };
+}
+
+/* ============================================================
+   ACTIVITY 6: Logic Lab (Reasoning)
+   ============================================================ */
+const logicBank = [
+  {clue:"All Zorbs are Fangs. Some Fangs are Wibbles. Does it follow that some Zorbs are Wibbles?", choices:["Yes, definitely","No, not necessarily","Only if all Wibbles are Fangs","Cannot be determined"], correct:1},
+  {clue:"On an island, knights always tell the truth and knaves always lie. A says: 'We are both knaves.' What are A and B?", choices:["A is a knight, B is a knave","A is a knave, B is a knight","Both are knights","Cannot be determined"], correct:1},
+  {clue:"'If it is raining, the ground is wet. The ground is wet. Therefore it is raining.' Is this argument valid?", choices:["Valid","Invalid — the ground could be wet another way","Valid only in winter","Cannot be determined"], correct:1},
+  {clue:"'No mammals are reptiles. All dogs are mammals. Therefore no dogs are reptiles.' Is this valid?", choices:["Valid","Invalid","Only sometimes","Needs more premises"], correct:0},
+  {clue:"Alex doesn't play football or tennis. Bo doesn't play tennis or swimming. Alex, Bo and Casey each play a different one of: tennis, football, swimming. What does Casey play?", choices:["Tennis","Football","Swimming","Cannot be determined"], correct:0},
+  {clue:"'All squares are rectangles. This shape is not a rectangle.' What follows?", choices:["It's not a square","It's definitely a triangle","It could still be a square","Cannot be determined"], correct:0},
+  {clue:"A man looks at a portrait and says: 'Brothers and sisters I have none, but that man's father is my father's son.' Who is in the portrait?", choices:["His father","His son","Himself","His brother"], correct:1},
+  {clue:"'Every prime number greater than 2 is odd. 7 is a prime number greater than 2. Therefore 7 is odd.' Is this valid?", choices:["Valid","Invalid","Depends on context","Needs more information"], correct:0},
+  {clue:"'If you study, you will pass. You passed.' Does it follow that you studied?", choices:["Yes, definitely","No, not necessarily","Only if you're honest","Logic doesn't apply here"], correct:1},
+  {clue:"'All squares are rectangles. All rectangles have four sides. Therefore all squares have four sides.' Is this valid?", choices:["Valid","Invalid","Only for some squares","Cannot be determined"], correct:0},
+  {clue:"Dana lives on the middle floor of a 3-floor building. Farah doesn't live on the ground floor. Dana, Farah and Eli each live on a different floor. What floor does Eli live on?", choices:["Ground floor","Middle floor","Top floor","Cannot be determined"], correct:0},
+  {clue:"'If the alarm is faulty, it won't ring. The alarm rang.' What can we conclude?", choices:["The alarm is faulty","The alarm is not faulty","The alarm might be faulty","Cannot be determined"], correct:1},
+  {clue:"'All cats are animals. All dogs are animals. Therefore all cats are dogs.' Is this valid?", choices:["Valid","Invalid","Only for some cats","Needs more premises"], correct:1},
+  {clue:"'If it snows, school closes. If school closes, the roads stay quiet. It is snowing.' Does it follow that the roads stay quiet?", choices:["Yes, it follows necessarily","No, not necessarily","Only if it's a weekday","Cannot be determined"], correct:0},
+  {clue:"On another island, knights always tell the truth and knaves always lie. Two people, C and D, live there. C says: 'At least one of us is a knave.' What can you conclude about C?", choices:["C is a knight","C is a knave","C could be either","Cannot be determined"], correct:0},
+  {clue:"'If you're a bird, you can fly. You are not a bird.' Does it follow that you cannot fly?", choices:["Yes, it follows necessarily","No, not necessarily","Only for mammals","Cannot be determined"], correct:1},
+  {clue:"'Some doctors are surgeons. All surgeons went to medical school.' Does it follow that some doctors went to medical school?", choices:["Yes, it follows necessarily","No, not necessarily","Only if all doctors are surgeons","Cannot be determined"], correct:0},
+  {clue:"A woman gives a beggar 50p. The woman is the beggar's sister, but the beggar is not the woman's brother. How?", choices:["The beggar is her sister","The beggar is her son","The beggar is a stranger","This is impossible"], correct:0},
+  {clue:"Four runners finish a race. Priya finishes before Sam. Sam finishes before Tom. Jo finishes before Priya. Who finishes last?", choices:["Jo","Priya","Sam","Tom"], correct:3},
+  {clue:"'No fish are mammals. All whales are mammals. Therefore no whales are fish.' Is this valid?", choices:["Valid","Invalid","Only sometimes","Needs more premises"], correct:0},
+  {clue:"What always comes at the end of everything?", choices:["Time","Nothing","The letter G","Silence"], correct:2},
+  {clue:"'Either the meeting is on Monday or Tuesday. It is not on Monday.' Does it follow that it's on Tuesday?", choices:["Yes, it follows necessarily","No, not necessarily","Only if no other day is possible","Cannot be determined"], correct:0},
+  {clue:"'If the plant gets sunlight, it grows. The plant is getting sunlight.' Does it follow that it grows?", choices:["Yes, it follows necessarily","No, not necessarily","Only in summer","Cannot be determined"], correct:0},
+  {clue:"In a 3-person race: the runner in red is not first or last. The runner in blue is last. Who is first — red, blue, or green?", choices:["Red","Blue","Green","Cannot be determined"], correct:2}
+];
+function runLogic(body, onDone){
+  const items = shuffle(logicBank).slice(0,3);
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;"><div>Question <b id="gNum">1</b>/3</div><div>Correct <b id="gCorrect">0</b></div></div>
+    <div class="g-box" id="gClue" style="font-size:1rem; text-align:left; font-weight:600; letter-spacing:normal;">–</div>
+    <div class="g-choices" id="gChoices"></div>
+    <div class="g-timerbar"><div class="g-timerbar-fill" id="gTimerFill" style="width:100%"></div></div>`;
+  let idx=0, correct=0, answered=false, timer=null, torndown=false;
+  const fill = document.getElementById('gTimerFill');
+  function newItem(){
+    if(torndown) return;
+    if(idx>=items.length){ finish(); return; }
+    answered=false;
+    const item = items[idx];
+    document.getElementById('gNum').textContent = idx+1;
+    document.getElementById('gClue').textContent = item.clue;
+    const choicesEl = document.getElementById('gChoices');
+    choicesEl.innerHTML='';
+    item.choices.forEach((c,i) => {
+      const b=document.createElement('button'); b.className='g-choice'; b.textContent = c;
+      b.addEventListener('click', () => answer(i));
+      choicesEl.appendChild(b);
+    });
+    fill.style.width='100%'; fill.style.transition='none';
+    requestAnimationFrame(() => { fill.style.transition='width 25s linear'; fill.style.width='0%'; });
+    clearTimeout(timer);
+    timer = setTimeout(() => answer(-1), 25000);
+  }
+  function answer(i){
+    if(answered || torndown) return; answered=true; clearTimeout(timer);
+    const item = items[idx];
+    if(i===item.correct){ correct++; document.getElementById('gCorrect').textContent = correct; }
+    idx++;
+    setTimeout(newItem, 500);
+  }
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: correct+'/'+items.length, ratio: correct/items.length,
+      stats:[{label:'Correct',value:correct+'/'+items.length}],
+      recordBests:[{key:'logicCorrect', value:correct, higherIsBetter:true}]
+    });
+  }
+  newItem();
+  return () => { torndown = true; clearTimeout(timer); };
+}
+
+/* ============================================================
+   ACTIVITY 7: Switch Track (Flexibility — task switching)
+   ============================================================ */
+function runSwitch(body, onDone){
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;"><div>Trial <b id="swTrial">0</b>/12</div><div>Correct <b id="swCorrect">0</b></div></div>
+    <div class="g-substat" style="justify-content:center; font-weight:700; color:var(--primary-dark);" id="swRule">Rule: –</div>
+    <div class="g-box" id="swNumber">–</div>
+    <div class="g-choices" style="flex-direction:row;">
+      <button class="g-choice" id="swYes" style="justify-content:center; background:var(--mint-tint); border-color:var(--mint); color:#0E8C7D;">Yes</button>
+      <button class="g-choice" id="swNo" style="justify-content:center; background:var(--coral-tint); border-color:var(--coral); color:#C9432F;">No</button>
+    </div>
+    <div class="g-timerbar"><div class="g-timerbar-fill" id="swTimerFill" style="width:100%"></div></div>`;
+  const rules = [
+    { label:'the number is ODD', test:n=>n%2===1 },
+    { label:'the number is EVEN', test:n=>n%2===0 },
+    { label:'the number is 5 or more', test:n=>n>=5 },
+    { label:'the number is less than 5', test:n=>n<5 }
+  ];
+  let trial=0, totalTrials=12, correct=0, currentRule=rules[0], currentNum=0, sinceSwitch=0, answered=false, timer=null, torndown=false;
+  const fill = document.getElementById('swTimerFill');
+  function newTrial(){
+    if(torndown) return;
+    if(trial>=totalTrials){ finish(); return; }
+    trial++; sinceSwitch++; answered=false;
+    if(trial===1 || sinceSwitch > rand(2,4)){ currentRule = pick(rules.filter(r=>r!==currentRule)); sinceSwitch=0; }
+    currentNum = rand(1,9);
+    document.getElementById('swRule').textContent = 'Rule: ' + currentRule.label;
+    document.getElementById('swNumber').textContent = currentNum;
+    document.getElementById('swTrial').textContent = trial;
+    fill.style.width='100%'; fill.style.transition='none';
+    requestAnimationFrame(() => { fill.style.transition='width 3s linear'; fill.style.width='0%'; });
+    clearTimeout(timer);
+    timer = setTimeout(() => respond(!currentRule.test(currentNum)), 3000);
+  }
+  function respond(said){
+    if(answered || torndown) return; answered=true; clearTimeout(timer);
+    if(said === currentRule.test(currentNum)){ correct++; document.getElementById('swCorrect').textContent = correct; }
+    setTimeout(newTrial, 260);
+  }
+  document.getElementById('swYes').addEventListener('click', () => respond(true));
+  document.getElementById('swNo').addEventListener('click', () => respond(false));
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: correct+'/'+totalTrials, ratio: correct/totalTrials,
+      stats:[{label:'Accuracy',value:Math.round(correct/totalTrials*100)+'%'}],
+      recordBests:[{key:'switchCorrect', value:correct, higherIsBetter:true}]
+    });
+  }
+  newTrial();
+  return () => { torndown = true; clearTimeout(timer); };
+}
+
+/* ============================================================
+   ACTIVITY 8: Spot It (Attention — visual search)
+   ============================================================ */
+function runSpot(body, onDone){
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;"><div>Round <b id="spRound">0</b>/5</div><div>Solved <b id="spSolved">0</b></div></div>
+    <div class="g-substat" style="justify-content:center;">Tap the triangle facing a different way</div>
+    <div class="g-tilegrid" id="spGrid"></div>
+    <div class="g-timerbar"><div class="g-timerbar-fill" id="spTimerFill" style="width:100%"></div></div>`;
+  let round=0, totalRounds=5, solved=0, timer=null, torndown=false;
+  const sizes = [9,9,16,16,25];
+  const fill = document.getElementById('spTimerFill');
+  function newRound(){
+    if(torndown) return;
+    if(round>=totalRounds){ finish(); return; }
+    round++;
+    document.getElementById('spRound').textContent = round;
+    const size = sizes[round-1], cols = Math.sqrt(size);
+    const grid = document.getElementById('spGrid');
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.innerHTML = '';
+    const oddIdx = rand(0, size-1);
+    const oddRotation = pick([90,180,270]);
+    let answered = false;
+    for(let i=0;i<size;i++){
+      const t = document.createElement('button');
+      t.className = 'g-tile';
+      t.innerHTML = '<span style="display:inline-block;' + (i===oddIdx ? 'transform:rotate('+oddRotation+'deg);' : '') + '">▲</span>';
+      t.addEventListener('click', () => {
+        if(answered || torndown) return; answered = true;
+        clearTimeout(timer);
+        if(i===oddIdx){ solved++; document.getElementById('spSolved').textContent = solved; t.classList.add('confirmed'); }
+        else { t.classList.add('wrongpick'); }
+        setTimeout(newRound, 350);
+      });
+      grid.appendChild(t);
+    }
+    let time = 8000;
+    fill.style.width='100%'; fill.style.transition='none';
+    requestAnimationFrame(() => { fill.style.transition='width '+(time/1000)+'s linear'; fill.style.width='0%'; });
+    clearTimeout(timer);
+    timer = setTimeout(() => { if(!answered && !torndown){ answered=true; setTimeout(newRound, 300); } }, time);
+  }
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: solved+'/'+totalRounds, ratio: solved/totalRounds,
+      stats:[{label:'Rounds solved',value:solved+'/'+totalRounds}],
+      recordBests:[{key:'spotSolved', value:solved, higherIsBetter:true}]
+    });
+  }
+  newRound();
+  return () => { torndown = true; clearTimeout(timer); };
+}
+
+/* ============================================================
+   ACTIVITY 9: Recall Grid (Memory — spatial / simultaneous, distinct
+   from Memory Vault's sequential verbal recall)
+   ============================================================ */
+function runRecallGrid(body, onDone){
+  body.innerHTML = `
+    <div class="g-substat" style="justify-content:center;" id="rgStatus">Watch closely…</div>
+    <div class="g-tilegrid" id="rgGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+    <div class="g-substat" style="justify-content:center; margin-top:12px;" id="rgLives"></div>`;
+  const grid = document.getElementById('rgGrid');
+  const tiles = [];
+  for(let i=0;i<16;i++){
+    const t = document.createElement('button');
+    t.className = 'g-tile'; t.disabled = true;
+    grid.appendChild(t); tiles.push(t);
+  }
+  let level=1, lives=3, maxLevel=8, bestSpan=0, successes=0, litSet=new Set(), foundSet=new Set(), accepting=false, torndown=false;
+  function renderLives(){ if(torndown) return; document.getElementById('rgLives').textContent = '●'.repeat(lives) + '○'.repeat(3-lives); }
+  renderLives();
+  function round(){
+    if(torndown) return;
+    accepting = false; foundSet = new Set();
+    tiles.forEach(t => { t.className='g-tile'; t.disabled=true; });
+    const count = level+2;
+    litSet = new Set();
+    while(litSet.size < count) litSet.add(rand(0,15));
+    document.getElementById('rgStatus').textContent = 'Watch closely… (' + count + ' tiles)';
+    litSet.forEach(i => tiles[i].classList.add('lit'));
+    setTimeout(() => {
+      if(torndown) return;
+      litSet.forEach(i => tiles[i].classList.remove('lit'));
+      document.getElementById('rgStatus').textContent = 'Now tap the ' + count + ' tiles you saw';
+      tiles.forEach(t => t.disabled=false);
+      accepting = true;
+    }, 1600);
+  }
+  tiles.forEach((t,i) => {
+    t.addEventListener('click', () => {
+      if(!accepting || torndown) return;
+      if(foundSet.has(i)) return;
+      if(litSet.has(i)){
+        foundSet.add(i); t.classList.add('confirmed');
+        if(foundSet.size === litSet.size){
+          accepting = false;
+          successes++; bestSpan = litSet.size;
+          if(level >= maxLevel){ setTimeout(finish, 500); return; }
+          level++;
+          document.getElementById('rgStatus').textContent = 'Nice — next round…';
+          setTimeout(round, 900);
+        }
+      } else {
+        t.classList.add('wrongpick');
+        accepting = false;
+        lives--; renderLives();
+        if(lives<=0){ setTimeout(finish, 700); }
+        else { document.getElementById('rgStatus').textContent = 'Not quite — watch again'; setTimeout(round, 1100); }
+      }
+    });
+  });
+  function finish(){
+    if(torndown) return;
+    onDone({
+      headline: bestSpan+'-tile span', ratio: Math.min(bestSpan/(maxLevel+2),1),
+      stats:[{label:'Peak span',value:bestSpan},{label:'Rounds cleared',value:successes}],
+      recordBests:[{key:'gridSpan', value:bestSpan, higherIsBetter:true}]
+    });
+  }
+  round();
+  return () => { torndown = true; };
+}
+
+/* ============================================================
+   Activity registry + dashboard rendering
+   ============================================================ */
+const ACTIVITIES = [
+  { key:'memory', name:'Memory Vault', category:'Memory', catClass:'cat-memory', icon:'vault', iconBg:'var(--primary-tint)', iconColor:'var(--primary-dark)',
+    desc:'Memorise a code, then type it back.', longDesc:'A short code flashes up one character at a time. Once it disappears, type it back exactly. It gets one character longer each round.',
+    bestKey:'memorySpan', bestLabel:v=>v+'-char span', higherIsBetter:true, run:runMemory },
+  { key:'grid', name:'Recall Grid', category:'Memory', catClass:'cat-memory', icon:'grid', iconBg:'var(--primary-tint)', iconColor:'var(--primary-dark)',
+    desc:'Remember a pattern of tiles, all at once.', longDesc:'A set of tiles lights up together for a couple of seconds. Once they go dark, tap the same tiles back — in any order. Gets one tile bigger each round.',
+    bestKey:'gridSpan', bestLabel:v=>v+'-tile span', higherIsBetter:true, run:runRecallGrid },
+  { key:'focus', name:'Focus Filter', category:'Attention', catClass:'cat-attention', icon:'eye', iconBg:'var(--mint-tint)', iconColor:'#0E8C7D',
+    desc:'Name the colour, not the word.', longDesc:'A colour word appears in an ink colour that might not match. Tap the colour it\'s actually drawn in — not what it says. Ten rounds, four seconds each.',
+    bestKey:'stroopCorrect', bestLabel:v=>v+'/10', higherIsBetter:true, run:runStroop },
+  { key:'spot', name:'Spot It', category:'Attention', catClass:'cat-attention', icon:'spot', iconBg:'var(--mint-tint)', iconColor:'#0E8C7D',
+    desc:'Find the one that doesn\'t match, fast.', longDesc:'A grid of identical triangles — except one, facing a different way. Tap it before the timer runs out. The grid grows each round.',
+    bestKey:'spotSolved', bestLabel:v=>v+'/5', higherIsBetter:true, run:runSpot },
+  { key:'switch', name:'Switch Track', category:'Flexibility', catClass:'cat-flexibility', icon:'switch', iconBg:'#E0F5FF', iconColor:'#0B7FAE',
+    desc:'The rule changes without warning.', longDesc:'A number appears alongside a rule, like "the number is odd". Say yes or no as fast as you can — but the rule switches on you every few goes.',
+    bestKey:'switchCorrect', bestLabel:v=>v+'/12', higherIsBetter:true, run:runSwitch },
+  { key:'sequence', name:'Sequence Sense', category:'Logic', catClass:'cat-logic', icon:'nodes', iconBg:'#EFF0FF', iconColor:'#4A46C4',
+    desc:'Spot the rule, predict what\'s next.', longDesc:'Five number sequences, five different rules. Work out the pattern and pick what comes next before the timer runs out. Pick a difficulty below.',
+    bestKey:'patternCorrect', bestLabel:v=>v+'/5', higherIsBetter:true, run:runPattern,
+    tiers:[{id:'easy',label:'Easy'},{id:'standard',label:'Standard'},{id:'hard',label:'Hard'}], defaultTier:'standard' },
+  { key:'word', name:'Word Sprint', category:'Verbal', catClass:'cat-word', icon:'bubble', iconBg:'var(--gold-tint)', iconColor:'var(--gold-dark)',
+    desc:'Fast synonym matching.', longDesc:'Eight words, eight seconds each. Pick the closest match before time runs out.',
+    bestKey:'lexiconCorrect', bestLabel:v=>v+'/8', higherIsBetter:true, run:runLexicon },
+  { key:'logic', name:'Logic Lab', category:'Reasoning', catClass:'cat-reasoning', icon:'flask', iconBg:'#FDEBFB', iconColor:'#A6339F',
+    desc:'Short arguments — valid, or not?', longDesc:'Three quick deduction puzzles: syllogisms, classic riddles, and validity checks. Real critical-thinking content, not trivia.',
+    bestKey:'logicCorrect', bestLabel:v=>v+'/3', higherIsBetter:true, run:runLogic }
+];
+
+function renderCardGrid(){
+  const grid = document.getElementById('cardGrid');
+  grid.innerHTML = '';
+  ACTIVITIES.forEach(a => {
+    const card = document.createElement('button');
+    card.className = 'activity-card ' + a.catClass;
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-icon">${ICONS[a.icon]}</div>
+        <span class="card-tag">${a.category}</span>
+      </div>
+      <h3>${a.name}</h3>
+      <p class="desc">${a.desc}</p>
+      <div class="card-foot">
+        <span class="card-best" data-best-for="${a.key}"></span>
+        <span class="card-cta">Start →</span>
+      </div>`;
+    card.addEventListener('click', () => openActivityModal(a));
+    grid.appendChild(card);
+  });
+  renderCardBests();
+}
+function renderCardBests(){
+  ACTIVITIES.forEach(a => {
+    const el = document.querySelector('[data-best-for="'+a.key+'"]');
+    const v = state.bestScores[a.bestKey];
+    el.innerHTML = v !== undefined ? 'Best <b>' + a.bestLabel(v) + '</b>' : 'Not played yet';
+  });
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+renderCardGrid();
+renderHeaderStats();
+renderTrophyGrid();
+checkTrophies();
+</script>
+</body>
+</html>
