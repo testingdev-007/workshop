@@ -103,6 +103,20 @@
     height:3px; background:var(--hairline); border-radius:2px; margin:18px 0 22px 0; overflow:hidden;
   }
   .rail .progress-fill{ height:100%; width:0%; background:var(--gold); transition:width .3s ease;}
+  .reset-link{
+    display:block;
+    background:none;
+    border:none;
+    padding:0;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--paper-dim);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+    margin-bottom:22px;
+  }
+  .reset-link:hover{ color:var(--gold); }
 
   /* ---------- Main column ---------- */
   main{ padding: 0 40px 100px 40px; min-width:0;}
@@ -129,29 +143,13 @@
     color:var(--paper-dim);
   }
 
-  .timer-card{
-    margin-top:32px;
-    background:var(--panel);
-    border:1px solid var(--hairline);
-    border-radius:14px;
-    padding:22px 26px;
+  .hero-actions{
+    margin-top:28px;
     display:flex;
     align-items:center;
-    gap:26px;
+    gap:12px;
     flex-wrap:wrap;
   }
-  .timer-digits{
-    font-family:var(--mono);
-    font-size:44px;
-    font-weight:500;
-    color:#FBFAF7;
-    letter-spacing:.02em;
-    font-variant-numeric: tabular-nums;
-  }
-  .timer-meta{ display:flex; flex-direction:column; gap:4px;}
-  .timer-meta .label{ font-family:var(--mono); font-size:11px; color:var(--paper-dim); letter-spacing:.04em;}
-  .timer-meta .now-on{ font-size:14px; color:var(--gold); font-family:var(--mono);}
-  .timer-controls{ display:flex; gap:8px; margin-left:auto;}
   .btn{
     font-family:var(--sans);
     font-size:13.5px;
@@ -361,6 +359,62 @@
   .cheat .card .k{ font-family:var(--mono); font-size:12px; color:var(--gold); margin-bottom:6px;}
   .cheat .card .v{ font-size:13px; color:var(--paper-dim);}
 
+  /* ---------- Trophy & certificate ---------- */
+  .trophy-block{ padding: 56px 0 20px 0; border-bottom:1px solid var(--hairline); text-align:center; }
+  .trophy-icon{ width:64px; height:64px; margin:0 auto 18px auto; }
+  .trophy-block h2{ font-size:26px; }
+  .trophy-block .sub{ max-width:52ch; margin:10px auto 0 auto; }
+
+  .certificate{
+    margin: 32px auto 8px auto;
+    max-width:640px;
+    background: linear-gradient(180deg, #1B2A46, #101A30);
+    border:2px solid var(--gold-dim);
+    border-radius:16px;
+    padding:44px 40px;
+    position:relative;
+  }
+  .certificate::before{
+    content:"";
+    position:absolute; inset:10px;
+    border:1px solid rgba(217,169,59,0.35);
+    border-radius:10px;
+    pointer-events:none;
+  }
+  .certificate .cert-eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--gold); margin-bottom:10px;}
+  .certificate h3{ font-family:var(--serif); font-size:28px; color:#FBFAF7; margin-bottom:18px;}
+  .certificate .cert-line{ font-size:15px; color:var(--paper-dim); margin-bottom:4px;}
+  .cert-name-input{
+    font-family:var(--serif);
+    font-size:24px;
+    text-align:center;
+    color:#FBFAF7;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--hairline);
+    padding:6px 4px 10px 4px;
+    width:80%;
+    max-width:360px;
+    margin: 6px 0 16px 0;
+  }
+  .cert-name-input:focus{ outline:none; border-bottom-color:var(--gold); }
+  .cert-name-input::placeholder{ color:var(--paper-dim); font-family:var(--sans); font-size:15px; }
+  .certificate .cert-project{ font-family:var(--serif); font-size:19px; color:var(--gold); margin: 6px 0 14px 0;}
+  .certificate .cert-date{ font-family:var(--mono); font-size:12px; color:var(--paper-dim); margin-top:18px;}
+
+  .cert-actions{ margin-top:26px; text-align:center; }
+
+  @media print {
+    body *{ visibility:hidden; }
+    #certificate, #certificate *{ visibility:visible; }
+    #certificate{ position:absolute; top:0; left:0; width:100%; border-color:#B8952E; background:#fff; }
+    #certificate::before{ border-color:#B8952E; }
+    #certificate, #certificate h3, #certificate .cert-line, #certificate .cert-project, #certificate .cert-date, #certificate .cert-eyebrow{ color:#1A1408 !important; }
+    #certificate .trophy-icon{ filter: none; }
+    .cert-name-input{ border-bottom-color:#1A1408; color:#1A1408; }
+    .no-print{ display:none !important; }
+  }
+
   footer{ padding: 30px 0 60px 0; font-family:var(--mono); font-size:11.5px; color:var(--paper-dim);}
 
   /* ---------- Mobile rail becomes top bar ---------- */
@@ -379,8 +433,6 @@
     }
     .mobile-progress .progress-track{ margin:0; }
     .mobile-progress .now-on{ font-family:var(--mono); font-size:12px; color:var(--gold); margin-top:8px;}
-    .timer-card{ padding:18px; }
-    .timer-digits{ font-size:34px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -396,6 +448,7 @@
   <nav class="rail" aria-label="Session steps">
     <div class="brand">THE COMPOUND CLICK</div>
     <div class="progress-track"><div class="progress-fill" id="railProgress"></div></div>
+    <button class="reset-link" id="resetProgress" type="button">Reset progress</button>
     <ol id="railList">
       <li><a class="step-link" href="#welcome" data-step="0"><span class="num">00</span><span>Welcome</span></a></li>
       <li><a class="step-link" href="#step-1" data-step="1"><span class="num">01</span><span>Clear the stage</span><span class="check" data-check="1"></span></a></li>
@@ -405,7 +458,8 @@
       <li><a class="step-link" href="#step-5" data-step="5"><span class="num">05</span><span>Make it yours</span><span class="check" data-check="5"></span></a></li>
       <li><a class="step-link" href="#step-6" data-step="6"><span class="num">06</span><span>Stretch goal</span><span class="check" data-check="6"></span></a></li>
       <li><a class="step-link" href="#extend" data-step="7"><span class="num">+</span><span>Finished early?</span></a></li>
-      <li><a class="step-link" href="#closing" data-step="8"><span class="num">08</span><span>What this was</span></a></li>
+      <li><a class="step-link" href="#certificate-section" data-step="8"><span class="num">CERT</span><span>Certificate</span></a></li>
+      <li><a class="step-link" href="#closing" data-step="9"><span class="num">09</span><span>What this was</span></a></li>
     </ol>
   </nav>
 
@@ -413,7 +467,8 @@
 
     <div class="mobile-progress">
       <div class="progress-track"><div class="progress-fill" id="railProgressMobile"></div></div>
-      <div class="now-on" id="mobileNowOn">Session not started</div>
+      <div class="now-on" id="mobileStepsDone">0 of 6 steps done</div>
+      <button class="reset-link" id="resetProgressMobile" type="button" style="margin-top:6px; margin-bottom:0;">Reset progress</button>
     </div>
 
     <section class="hero" id="welcome">
@@ -421,20 +476,8 @@
       <h1>Build your first programme in the time it takes to have a coffee.</h1>
       <p class="sub">Today you'll build a small, working piece of software — a clickable "savings" simulator that grows a number, plays a sound and reacts to you. It's the same trigger → logic → feedback pattern running inside every banking app, trading screen and fintech product you've ever used. By the end, it's yours: built, tested, and complete.</p>
 
-      <div class="timer-card">
-        <div>
-          <div class="timer-meta"><span class="label">SESSION TIME</span></div>
-          <div class="timer-digits" id="timerDigits">00:00</div>
-        </div>
-        <div class="timer-meta">
-          <span class="label">YOU SHOULD BE ON</span>
-          <span class="now-on" id="nowOn">Not started yet</span>
-        </div>
-        <div class="timer-controls">
-          <a class="btn primary" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">Open Scratch ↗</a>
-          <button class="btn" id="timerStart">Start session</button>
-          <button class="btn" id="timerReset">Reset</button>
-        </div>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">Open Scratch ↗</a>
       </div>
     </section>
 
@@ -454,6 +497,14 @@
       <div class="try-it">
         <strong>Do this:</strong> Right-click the cat sprite in the sprite list and delete it. Click <strong>Choose a Sprite</strong> — it's below the stage, on the right of the screen — and add the <strong>Crystal</strong> sprite. Then choose any backdrop you like from the button next to it.
       </div>
+
+      <details class="stuck">
+        <summary>Stuck? Open this</summary>
+        <div class="stuck-body">
+          <p>Deleted the wrong thing, or can't find the cat to delete? No harm done — right-click any sprite in the sprite list to delete it, and re-add Crystal from the library if needed.</p>
+          <p>If the library doesn't show Crystal straight away, use the search box at the top of the library and type "crystal."</p>
+        </div>
+      </details>
 
       <label class="mark-done"><input type="checkbox" data-mark="1"> Mark this step done</label>
     </section>
@@ -480,6 +531,14 @@
       <div class="try-it">
         <strong>Do this:</strong> Open the <strong>Variables</strong> category in the block palette, click <strong>Make a Variable</strong>, and name it <code>Savings</code>. Tick the checkbox next to it so it shows on the stage.
       </div>
+
+      <details class="stuck">
+        <summary>Stuck? Open this</summary>
+        <div class="stuck-body">
+          <p>"Make a Variable" is a button, not a block — it sits at the top of the Variables category, above the orange blocks themselves. Easy to scroll straight past it the first time.</p>
+          <p>If a pop-up asks "for all sprites or just this sprite" — either works for this project, but "for all sprites" is the simpler default if unsure.</p>
+        </div>
+      </details>
 
       <label class="mark-done"><input type="checkbox" data-mark="2"> Mark this step done</label>
     </section>
@@ -660,6 +719,32 @@
       </div>
     </section>
 
+    <section class="trophy-block" id="certificate-section">
+      <svg class="trophy-icon" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M20 10h24v14c0 8-6 14-12 14s-12-6-12-14V10z" fill="var(--gold)"/>
+        <path d="M20 14h-8a6 6 0 0 0 6 10h2v-4h-2a2 2 0 0 1-2-4h4v-2z" fill="var(--gold)"/>
+        <path d="M44 14h8a6 6 0 0 1-6 10h-2v-4h2a2 2 0 0 0 2-4h-4v-2z" fill="var(--gold)"/>
+        <rect x="29" y="37" width="6" height="9" fill="var(--gold-dim)"/>
+        <rect x="21" y="46" width="22" height="5" rx="1.5" fill="var(--gold-dim)"/>
+      </svg>
+      <h2>You built it. That's real.</h2>
+      <p class="sub">Whatever you got to — the core click-and-grow build, the explicit reset, or one of the extensions — you wrote and ran working software today. Fill in your certificate below and print it if you'd like a copy to keep.</p>
+
+      <div class="certificate" id="certificate">
+        <div class="cert-eyebrow">CERTIFICATE OF COMPLETION</div>
+        <h3>This certifies that</h3>
+        <input type="text" class="cert-name-input" id="certName" placeholder="Type your name here" maxlength="60">
+        <div class="cert-line">built a working programme in Scratch:</div>
+        <div class="cert-project">The Compound Click</div>
+        <div class="cert-line">a trigger, a stored value, and a response — the core loop of software engineering.</div>
+        <div class="cert-date" id="certDate"></div>
+      </div>
+
+      <div class="cert-actions no-print">
+        <button class="btn primary" id="printCert" type="button">Print certificate</button>
+      </div>
+    </section>
+
     <section class="closing" id="closing">
       <div class="eyebrow">WHAT YOU ACTUALLY JUST DID</div>
       <h2>You didn't just "try coding." You built the core loop of software engineering.</h2>
@@ -685,92 +770,21 @@
 (function(){
   "use strict";
 
-  // ---------- Timer ----------
-  var digits = document.getElementById('timerDigits');
-  var nowOn = document.getElementById('nowOn');
-  var mobileNowOn = document.getElementById('mobileNowOn');
-  var startBtn = document.getElementById('timerStart');
-  var resetBtn = document.getElementById('timerReset');
-
-  var segments = [
-    { label: "Welcome & tour", start: 0, end: 7 },
-    { label: "Step 1 — Clear the stage", start: 7, end: 10 },
-    { label: "Step 2 — Give it a memory", start: 10, end: 12 },
-    { label: "Step 3 — Start at zero (+ reset)", start: 12, end: 15 },
-    { label: "Step 4 — Make it respond", start: 15, end: 22 },
-    { label: "Step 5 — Make it yours", start: 22, end: 26 },
-    { label: "Step 6 — Stretch goal", start: 26, end: 28 },
-    { label: "Wrap-up", start: 28, end: 999 }
-  ];
-
-  var elapsedSec = 0;
-  var running = false;
-  var tickHandle = null;
-
-  function fmt(sec){
-    var m = Math.floor(sec/60);
-    var s = sec%60;
-    return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
-  }
-
-  function currentSegment(mins){
-    for (var i=0;i<segments.length;i++){
-      if (mins >= segments[i].start && mins < segments[i].end) return segments[i];
-    }
-    return segments[segments.length-1];
-  }
-
-  function render(){
-    digits.textContent = fmt(elapsedSec);
-    var mins = elapsedSec/60;
-    var seg = currentSegment(mins);
-    nowOn.textContent = seg.label;
-    mobileNowOn.textContent = running || elapsedSec>0 ? seg.label : "Session not started";
-  }
-
-  function tick(){
-    elapsedSec++;
-    render();
-  }
-
-  startBtn.addEventListener('click', function(){
-    if (!running){
-      running = true;
-      startBtn.textContent = "Pause";
-      tickHandle = setInterval(tick, 1000);
-    } else {
-      running = false;
-      startBtn.textContent = "Resume";
-      clearInterval(tickHandle);
-    }
-  });
-
-  resetBtn.addEventListener('click', function(){
-    running = false;
-    clearInterval(tickHandle);
-    elapsedSec = 0;
-    startBtn.textContent = "Start session";
-    render();
-  });
-
-  render();
-
-  // ---------- Step checkboxes (persisted per browser) ----------
-  var STORAGE_KEY = "compound-click-progress";
+  // ---------- Step checkboxes (in-memory only — nothing saved between visits) ----------
+  // Deliberately not using localStorage: this page is used on shared/venue laptops,
+  // so no participant's progress should carry over to the next person. Reloading the
+  // page, or pressing "Reset progress", both wipe it instantly.
   var state = {};
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) state = JSON.parse(raw);
-  } catch(e){ state = {}; }
 
   var checkboxes = document.querySelectorAll('[data-mark]');
-  var railChecks = document.querySelectorAll('[data-check]');
   var railProgress = document.getElementById('railProgress');
   var railProgressMobile = document.getElementById('railProgressMobile');
+  var mobileStepsDone = document.getElementById('mobileStepsDone');
   var totalSteps = checkboxes.length;
 
-  function persist(){
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  function syncRailCheck(stepNum, isDone){
+    var el = document.querySelector('[data-check="'+stepNum+'"]');
+    if (el){ el.classList.toggle('done', !!isDone); }
   }
 
   function updateProgressBar(){
@@ -779,26 +793,36 @@
     var pct = totalSteps ? Math.round((done/totalSteps)*100) : 0;
     railProgress.style.width = pct + "%";
     railProgressMobile.style.width = pct + "%";
+    if (mobileStepsDone) mobileStepsDone.textContent = done + " of " + totalSteps + " steps done";
   }
 
-  function syncRailCheck(stepNum, isDone){
-    var el = document.querySelector('[data-check="'+stepNum+'"]');
-    if (el){ el.classList.toggle('done', !!isDone); }
-  }
-
-  checkboxes.forEach(function(cb){
+  function bindCheckbox(cb){
     var key = cb.getAttribute('data-mark');
     cb.checked = !!state[key];
     syncRailCheck(key, cb.checked);
     cb.addEventListener('change', function(){
       state[key] = cb.checked;
-      persist();
       syncRailCheck(key, cb.checked);
       updateProgressBar();
     });
-  });
+  }
 
+  checkboxes.forEach(bindCheckbox);
   updateProgressBar();
+
+  function resetProgress(){
+    state = {};
+    checkboxes.forEach(function(cb){
+      cb.checked = false;
+      syncRailCheck(cb.getAttribute('data-mark'), false);
+    });
+    updateProgressBar();
+  }
+
+  var resetBtn = document.getElementById('resetProgress');
+  var resetBtnMobile = document.getElementById('resetProgressMobile');
+  if (resetBtn) resetBtn.addEventListener('click', resetProgress);
+  if (resetBtnMobile) resetBtnMobile.addEventListener('click', resetProgress);
 
   // ---------- Rail active-section highlighting ----------
   var stepLinks = document.querySelectorAll('.step-link');
@@ -822,6 +846,23 @@
 
   window.addEventListener('scroll', updateActive, { passive:true });
   updateActive();
+
+  // ---------- Certificate ----------
+  var certName = document.getElementById('certName');
+  var certDate = document.getElementById('certDate');
+  var printBtn = document.getElementById('printCert');
+
+  if (certDate){
+    var today = new Date();
+    var dateStr = today.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+    certDate.textContent = "Completed " + dateStr;
+  }
+
+  if (printBtn){
+    printBtn.addEventListener('click', function(){
+      window.print();
+    });
+  }
 
 })();
 </script>

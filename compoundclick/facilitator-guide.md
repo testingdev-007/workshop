@@ -37,6 +37,15 @@ The goal is not "learn to code" — it's "prove to yourself in 30 minutes that y
 
 The participant website has an **Open Scratch** button in the hero (linked to `https://scratch.mit.edu/projects/editor/`, opens in a new tab) that drops straight into a blank project — no homepage-browsing or account needed. Worth pointing people to it explicitly at 0:00 rather than assuming everyone finds Scratch on their own.
 
+## About the participant website
+
+A few things worth knowing before the day:
+
+- **No on-page timer.** The site doesn't run a countdown or clock — that turned out to feel more like pressure than pacing for a room of first-timers. Keep time against this guide's timetable instead; each step still shows its own suggested duration on the site as a light badge, with no ticking clock attached.
+- **Progress isn't saved between visits.** The step checkboxes track progress only for as long as the page stays open — closing the tab or reloading clears everything automatically. Nothing is written to the laptop's storage, so there's nothing left behind for the next person to use that machine.
+- **"Reset progress" button.** If you want to clear a laptop's checkboxes without reloading — for instance, handing a laptop to a second participant later the same day — there's a small "Reset progress" link under the progress bar (in the side rail on desktop, and just under the top bar on mobile/narrow screens).
+- **Certificate and trophy.** After Step 6 / the extension menu, the site shows a small trophy graphic and a printable certificate: participants type their name into a field, the date fills in automatically, and a "Print certificate" button prints just the certificate (not the rest of the page). Worth mentioning around the 0:28 mark so nobody skips past it.
+
 ---
 
 ## Timetable
@@ -101,7 +110,7 @@ Close by naming the transfer explicitly:
 
 > "What you just built — a trigger, a stored value, and a response — is the core loop of software engineering. Every fintech app, every trading dashboard, every banking system is thousands of versions of what's on your screen right now. You already did the hard part: you proved to yourself you can pick this up."
 
-Point to where they can go next (see Appendix C).
+Point people to the certificate section on the site — type your name in, print if you'd like a copy — and to where they can go next (see Appendix C).
 
 ---
 
