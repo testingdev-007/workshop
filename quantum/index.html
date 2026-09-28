@@ -267,6 +267,33 @@ h3{font-size:1.05rem;font-weight:700;margin-bottom:7px}
 .fb-more-body p{margin-bottom:10px} .fb-more-body p:last-child{margin-bottom:0}
 .fb-more-body b{color:var(--gold)}
 
+/* ── fb-primm: predict-before-you're-shown, folded into the same flashback
+   overlay rather than a new scene. Never typed by the typewriter effect
+   (lives outside #fbBody, same reasoning as fb-more above) so it renders
+   instantly. The predict step is a light gate (see flashback()); modify
+   is real extra practice but never blocks anything, to keep the time cost
+   bounded on a build that's tuned to run tight. ── */
+.fb-primm{margin:2px 0 16px;padding:14px 15px;border-radius:12px;background:rgba(0,0,0,.32);border:1px solid var(--edge-2)}
+.fb-primm-step{display:none}
+.fb-primm-step.on{display:block;animation:insightIn .35s ease both}
+.fb-primm-step + .fb-primm-step{margin-top:16px;padding-top:16px;border-top:1px dashed var(--edge-2)}
+.fb-primm-label{font-family:var(--fm);font-weight:700;font-size:.62rem;letter-spacing:.14em;color:var(--txt-3);margin-bottom:8px}
+.fb-primm-nudge{font-size:.72rem;color:var(--txt-3);font-style:italic;margin:-3px 0 10px}
+.fb-primm-q{font-size:.92rem;color:#fff;margin-bottom:11px;line-height:1.5}
+.fb-primm-opts{display:flex;flex-wrap:wrap;gap:7px}
+.primm-opt{
+  font-family:var(--fm);font-weight:700;font-size:.82rem;padding:8px 13px;border-radius:10px;
+  cursor:pointer;user-select:none;border:1px solid var(--edge-2);background:rgba(255,255,255,.05);
+  color:var(--txt-2);transition:transform .13s,filter .16s,background .16s,border-color .16s,opacity .16s;
+}
+.primm-opt:hover{transform:translateY(-2px);filter:brightness(1.2)}
+.primm-opt:active{transform:scale(.95)}
+.primm-opt.picked{background:rgba(245,196,81,.16);border-color:rgba(245,196,81,.45);color:var(--gold)}
+.primm-opt.done{opacity:.4;pointer-events:none;transform:none}
+.fb-primm-reveal{display:none;margin-top:12px;font-size:.88rem;color:var(--txt-2);line-height:1.55}
+.fb-primm-reveal.on{display:block;animation:insightIn .35s ease both}
+.fb-primm-reveal b{color:var(--gold)}
+
 /* ── flashback: made to pop ────────────────────────────────── */
 .fb-strobe{position:fixed;inset:0;z-index:220;background:radial-gradient(ellipse at 50% 40%,#fff8ea,#f5c451 70%,#a3781f 100%);opacity:0;pointer-events:none}
 .fb-strobe.go{animation:strobe .45s ease-out}
@@ -1086,6 +1113,7 @@ body.realm-visual .btn.ghost{border-color:rgba(69,227,255,.28)}
 }
 .cert-name:focus{border-bottom-color:var(--gold)}
 .cert-name::placeholder{color:var(--txt-3);font-weight:400;font-size:1.15rem}
+.cert-name-hint{font-size:.72rem;color:var(--txt-3);text-align:center;margin:-8px 0 14px}
 .cert-body{font-size:.92rem;color:var(--txt-2);line-height:1.6;max-width:480px;margin:0 auto 16px}
 .cert-tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
 .cert-tiles span{font-family:var(--fm);font-size:.7rem;font-weight:700;color:var(--txt-2);background:rgba(255,255,255,.06);border:1px solid var(--edge-2);border-radius:100px;padding:6px 12px}
@@ -1094,7 +1122,7 @@ body.realm-visual .btn.ghost{border-color:rgba(69,227,255,.28)}
   .topbar, .toast, #valeTab, #valeDrawer { display:none!important }
   .scene:not(#sCert){ display:none!important }
   #sCert{ display:block!important; animation:none!important }
-  #sCert .pgback, #certPrintBtn, #certBackBtn { display:none!important }
+  #sCert .pgback, #certPrintBtn, #certBackBtn, #certNameHint { display:none!important }
 }
 
 /* ── misc ───────────────────────────────────────────────────── */
@@ -1264,6 +1292,7 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
       <button class="fb-more-toggle" id="fbMoreToggle" type="button" aria-expanded="false">🔍 Tell me more</button>
       <div class="fb-more-body" id="fbMoreBody" style="display:none"></div>
     </div>
+    <div class="fb-primm" id="fbPrimm" style="display:none"></div>
     <div class="fb-skiphint" id="fbSkipHint">tap to finish ▸</div>
     <button class="btn gold" id="fbBack">Back to the job →</button>
   </div>
@@ -1428,7 +1457,8 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
     <div class="comm">
       <span class="pic">🕶️</span>
       <div><span class="who">VALE</span><span class="said">You will have, in about twenty minutes. Touch that
-      door and the alarm starts. <b>Six minutes</b> from then.</span></div>
+      door and the alarm starts. <b>Six minutes</b> from then &mdash; run long and I will cover you. You are
+      not getting caught over a clock.</span></div>
     </div>
     <button class="btn gold" id="go0">Touch the door →</button>
   </div>
@@ -1910,6 +1940,7 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
 
     <div class="row">
       <button class="btn ghost" id="again">↺ Run it again</button>
+      <button class="btn gold" id="toBigPictureMain">🔭 See what it all builds to →</button>
       <button class="btn gold" id="getCert">🎓 Get your certificate →</button>
     </div>
   </div>
@@ -1922,6 +1953,7 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
     <div class="certificate" id="certificateBlock">
       <div class="cert-k">THE VAULT · CERTIFICATE OF COMPLETION</div>
       <input class="cert-name" id="certName" placeholder="Type your name" maxlength="60">
+      <div class="cert-name-hint" id="certNameHint">Optional — leave it blank and print as is if you'd rather not type.</div>
       <div class="cert-body">completed The Heist &mdash; cracked a cipher, searched a vault by hand, and lifted
       a ledger that put four people away, in one job, under a six-minute clock.</div>
       <div class="cert-tiles">
@@ -1962,6 +1994,7 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
     mini-labs &mdash; search, encryption, true randomness and more &mdash; each racing a classical machine
     against a quantum one, real code shown for both.</div>
     <div class="row">
+      <button class="btn gold" id="getCertFromS6">🎓 Get your certificate →</button>
       <button class="btn ghost" id="s6again">↺ Run the job again</button>
       <button class="btn q" id="toRealmFromEnd">⚛ Enter the Quantum Playground →</button>
     </div>
@@ -2685,7 +2718,7 @@ const QTASTE = [
       + '<i>look()</i> &mdash; the one step that actually opens a box and gives you a real answer. Do it too early, before mark/boost have done their work, and it\'s no better than a guess.',
     result:'Four boxes, up to four opens by hand. One tuned Mark + Boost step, and the odds hit 100%.',
     wow:'<b>Why it matters:</b> search is one of the few problems quantum computers are provably faster at, whatever the size of the pile — not just code-breaking. Any "find the one thing in a huge unsorted mess" problem gets this same speed-up, from medical records to logistics to training data.',
-    scale:'<b>At real-world scale:</b> four boxes is too small to feel any difference &mdash; both approaches finish in a blink. Scale the pile up to a million unsorted records and checking them one at a time, at a steady one per second, averages about six days of non-stop searching. Grover\'s algorithm needs roughly 1,000 tuned steps for that same million &mdash; over in seconds.' },
+    scale:'<b>At real-world scale:</b> four boxes is too small to feel any difference &mdash; both approaches finish in a blink. Scale the pile up to a million unsorted records and checking them one at a time, at a steady one per second, averages about six days of non-stop searching. Grover\'s algorithm needs roughly 785 tuned steps for that same million &mdash; over in seconds.' },
   { tag:'ROOMS TWO & THREE', img:'🔂', n:64, cols:8, emoji:'🔑', verb:'checking box',
     cPill:'CLASSICAL — COUNTED LOOP',
     cCode:`<span class="kw">repeat</span> <span class="num">64</span> <span class="kw">times:</span><br>
@@ -2700,7 +2733,7 @@ const QTASTE = [
       + '<i>why 6, not 64</i> &mdash; the number of repeats you need grows with the <b>square root</b> of the pile, not the pile itself. Quadruple the boxes (16 &rarr; 64) and you only need about double the steps (3 &rarr; 6).',
     result:'64 boxes by hand, one at a time. 6 tuned steps by quantum.',
     wow:'<b>Why it matters:</b> sixteen boxes (room two) needs 3 quantum steps; sixty-four (room three) needs 6 &mdash; that\'s only double the steps for sixteen times the boxes. That gap between "a few more steps" and "the whole pile, checked by hand" keeps widening as the pile grows: a million records would still only take about a thousand steps, not a million.',
-    scale:'<b>At real-world scale:</b> scale the pile up to sixteen million &mdash; a national archive, say &mdash; and checking one at a time averages about three months of non-stop searching. Quantum keeps pace with the square root of the pile: roughly 4,000 tuned steps, still done in seconds.' },
+    scale:'<b>At real-world scale:</b> scale the pile up to sixteen million &mdash; a national archive, say &mdash; and checking one at a time averages about three months of non-stop searching. Quantum keeps pace with roughly the square root of the pile: about 3,141 tuned steps, still done in seconds.' },
   { tag:'THE LEDGER', img:'🔀', n:64, cols:8, emoji:'🚩', verb:'reading account',
     cPill:'CLASSICAL — CONDITIONAL SCAN',
     cCode:`<span class="kw">for</span> <span class="var">account</span> <span class="kw">in</span> <span class="var">ledger</span><span class="kw">:</span><br>
@@ -2717,7 +2750,7 @@ const QTASTE = [
       + '<i>oracle = your_if_rule</i> &mdash; this isn\'t a new rule written for the quantum machine. It\'s the exact same <code>amount &gt; 10000 and country != "UK"</code> check you already wrote, just handed to a different kind of computer to run.',
     result:"64 accounts read by hand, in order. The same rule, handed to a quantum machine: 6 steps.",
     wow:"<b>Why it matters:</b> you didn't rewrite the rule for the quantum machine &mdash; you handed the exact same if-statement to a different kind of computer. That's the realistic way this actually arrives at a bank: not new code from scratch, existing logic pointed at new hardware.",
-    scale:'<b>At real-world scale:</b> a real bank\'s ledger might hold ten million transactions a year. Scanning them one at a time, at hand-speed rules, one per second, averages close to two months of non-stop checking. The same if-rule as an oracle, handed to a quantum machine: about 3,160 tuned steps &mdash; a few seconds, whatever the ledger\'s real size.' },
+    scale:'<b>At real-world scale:</b> a real bank\'s ledger might hold ten million transactions a year. Scanning them one at a time, at hand-speed rules, one per second, averages close to two months of non-stop checking. The same if-rule as an oracle, handed to a quantum machine: about 2,483 tuned steps &mdash; a few seconds, whatever the ledger\'s real size.' },
 ];
 let qIdx = 0, qTarget = 0;
 
@@ -3111,6 +3144,48 @@ $('#fbMoreToggle').addEventListener('click', () => {
   btn.setAttribute('aria-expanded', String(opening));
 });
 
+/* ── PRIMM: predict → run → investigate, folded into the flashback ──
+   o.primm = { predict:{label,q,opts:[...],reveal}, modify:{same shape} }.
+   Any option is a valid guess — nothing here is marked wrong, since the
+   point is committing to a guess before being shown, not scoring one. */
+function renderPrimm(primm){
+  const wrap = $('#fbPrimm');
+  wrap._primm = primm;
+  if (!primm){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+  const step = (kind, s) => `
+    <div class="fb-primm-label">${s.label}</div>
+    ${kind === 'predict' ? '<div class="fb-primm-nudge">No wrong answers here — just take a guess.</div>' : ''}
+    <div class="fb-primm-q">${s.q}</div>
+    <div class="fb-primm-opts" data-kind="${kind}">
+      ${s.opts.map(v => `<span class="primm-opt" data-v="${v}">${v}</span>`).join('')}
+    </div>
+    <div class="fb-primm-reveal" data-reveal="${kind}"></div>`;
+  let html = `<div class="fb-primm-step on" data-step="predict">${step('predict', primm.predict)}</div>`;
+  if (primm.modify) html += `<div class="fb-primm-step" data-step="modify">${step('modify', primm.modify)}</div>`;
+  wrap.innerHTML = html;
+}
+$('#fbPrimm').addEventListener('click', e => {
+  const opt = e.target.closest('.primm-opt');
+  if (!opt) return;
+  const optsRow = opt.parentElement;
+  if (optsRow.classList.contains('locked')) return;
+  const primm = $('#fbPrimm')._primm;
+  const kind = optsRow.dataset.kind;
+  const s = primm[kind];
+  optsRow.classList.add('locked');
+  optsRow.querySelectorAll('.primm-opt').forEach(o => o.classList.add('done'));
+  opt.classList.remove('done'); opt.classList.add('picked');
+  const reveal = optsRow.nextElementSibling;
+  reveal.innerHTML = s.reveal;
+  reveal.classList.add('on');
+  if (kind === 'predict'){
+    $('#fbBack').disabled = false;
+    const modStep = $('.fb-primm-step[data-step="modify"]');
+    if (modStep) modStep.classList.add('on');
+  }
+});
+
 let fbBack = null;
 function flashback(o){
   const forward = o.variant === 'forward';
@@ -3131,6 +3206,15 @@ function flashback(o){
   moreBody.style.display = 'none'; moreBody.innerHTML = o.more || '';
   moreToggle.textContent = '🔍 Tell me more'; moreToggle.setAttribute('aria-expanded', 'false');
   $('#fbMoreWrap').style.display = o.more ? 'block' : 'none';
+  renderPrimm(o.primm || null);
+  // A PRIMM flashback opens with "Back to the job" disabled — the player
+  // has to commit to one predict guess (any guess; there's no wrong answer
+  // here, this isn't graded) before moving on, which is the one mechanic
+  // the whole predict-before-you're-shown method depends on. Modifying
+  // afterwards is real, worthwhile extra practice, but doesn't gate — the
+  // core benefit is already banked by the time predict is answered, and
+  // gating twice in a row would cost more time than it earns back.
+  $('#fbBack').disabled = !!o.primm;
   $('#fbBack').textContent = o.back || 'Back to the job →';
   fbBack = o.onBack || null;
   const total = o.total || 4, idx = o.index || 1;
@@ -3242,9 +3326,19 @@ $('#go1').addEventListener('click', () => {
       <div class="code"><span class="cm"># a box called price, with 4 in it</span><br>
       <span class="var">price</span> <span class="kw">=</span> <span class="num">4</span><br>
       <span class="var">price</span> <span class="kw">=</span> <span class="var">price</span>
-      <span class="kw">+</span> <span class="num">2</span>   <span class="cm"># now it holds 6</span></div>
+      <span class="kw">+</span> <span class="num">2</span></div>
       <p>The name is not for the computer. The computer does not care. The name is for
       <b>the next person who reads it</b> — which is usually you, three weeks later.</p>`,
+    primm:{
+      predict:{ label:'🔮 PREDICT FIRST — DON\'T RUN IT YET',
+        q:'Before you run it: after both lines above, what does price actually hold?',
+        opts:['4','6','"price + 2"'],
+        reveal:'<b>It holds 6.</b> Run it in your head: price starts at 4. The second line reads price\'s current value (4), adds 2, and stores the result back into the same box — overwriting the 4.' },
+      modify:{ label:'✏️ NOW MODIFY IT',
+        q:'What if that second line said <span class="mono">price = price + 10</span> instead?',
+        opts:['6','14','12'],
+        reveal:'<b>14.</b> Same box, same rule — just a different number added. That is all a variable ever does: hold whatever you last stored, until you store something else.' }
+    },
     back:'Back to the door →',
     onBack: () => go('s1b')
   });
@@ -3372,6 +3466,16 @@ $('#go1c').addEventListener('click', () => {
       <span class="ind"><span class="var">key</span> <span class="kw">=</span> <span class="var">key</span> <span class="kw">+</span> <span class="num">1</span></span></div>
       <p>Three parts, always: something that <b>changes</b>, a <b>test</b> that says when to stop,
       and the <b>work</b> in the middle. Miss the first and it runs forever.</p>`,
+    primm:{
+      predict:{ label:'🔮 PREDICT FIRST — THE COUNTED ONE',
+        q:'How many times does post(letter) run, in the COUNTED example above?',
+        opts:['3, always','Until it works','Forever'],
+        reveal:'<b>3, always.</b> A counted loop does not check anything — it just counts down from the number you gave it, then stops, whether or not you\'re happy with the result.' },
+      modify:{ label:'✏️ NOW PREDICT THE UNTIL ONE',
+        q:'How many times does try(key) run, in the UNTIL example above?',
+        opts:['Exactly 3','However many it takes','Forever, always'],
+        reveal:'<b>However many it takes</b> — could be 1, could be 25. The until loop doesn\'t know the number in advance; it just keeps asking "has it worked yet?" after every attempt, and stops the moment the answer is yes.' }
+    },
     back:'Into the vault floor →',
     onBack: () => { go('s1r'); }
   });
@@ -3430,11 +3534,20 @@ $('#cont2r').addEventListener('click', () => {
       <div class="code"><span class="cm"># or two</span><br>
       <span class="kw">repeat</span> <span class="num">3</span> <span class="kw">times:</span><br>
       <span class="ind"><span class="fn">check</span>()</span></div>
-      <p>Same program. And when the room turns out to need six instead of three, you change
-      <b>one character</b> rather than rewriting the lot.</p>
+      <p>Same program, and it works whatever the room throws at it next.</p>
       <div class="note excel">🧮 <b>If you use spreadsheets:</b> this is what happens when you write one
       formula in a cell and drag it down a column — the same instruction, repeated a fixed number of
       times, instead of retyping it in every row.</div>`,
+    primm:{
+      predict:{ label:'🔮 PREDICT FIRST',
+        q:'In the repeat version above, how many times does check() run?',
+        opts:['1','3','However many boxes there are'],
+        reveal:'<b>3.</b> Same as writing check() three separate times — just written once, with the count said out loud.' },
+      modify:{ label:'✏️ NOW MODIFY IT',
+        q:'The next room needs six checks, not three. What\'s the smallest change to make that happen?',
+        opts:['Write check() six times','Change the 3 to a 6','Add a whole new repeat block'],
+        reveal:'<b>Change the 3 to a 6.</b> One character, same program. That\'s the entire point of writing the instruction once and saying how many times — the room can double in size and you barely notice.' }
+    },
     back:'Room two →',
     onBack: () => { go('s3'); enterRoom(0); }
   });
@@ -3555,6 +3668,16 @@ $('#cont3r').addEventListener('click', () => {
       "not equal", this uses <span class="mono">!=</span> — same idea, different symbol. And the rule
       itself is the same shape as <span class="mono">IF(AND(amount&gt;10000, country&lt;&gt;"UK"))</span> —
       one question, two conditions joined together.</div>`,
+    primm:{
+      predict:{ label:'🔮 PREDICT FIRST',
+        q:'In the example above, temperature is 25. Does open(window) run?',
+        opts:['Yes','No','Can\'t tell'],
+        reveal:'<b>No.</b> 25 is not more than 30, so the question "temperature &gt; 30" comes back false — and an <span class="mono">if</span> only acts when the answer is true. Nothing else happens; the program just moves on.' },
+      modify:{ label:'✏️ NOW MODIFY IT',
+        q:'What if temperature were 35 instead?',
+        opts:['Yes, it opens','No, still closed','Depends on the window'],
+        reveal:'<b>Yes, it opens.</b> 35 is more than 30, so the question comes back true, and open(window) runs. Same rule, same line of code — only the answer to the question changed.' }
+    },
     back:'The ledger →',
     onBack: () => { go('s4'); buildLedger(); }
   });
@@ -3800,9 +3923,7 @@ function finish(){
           const o = $('#quizOut'); o.style.display = 'block';
           o.innerHTML = `<span class="ok">${quizScore} out of ${QUIZ_ROUND.length}.</span> ` +
             (quizScore >= 4 ? 'That is a real understanding of what you just built tonight.'
-                            : 'You wrote real code and cracked a real vault tonight — that is what matters. Run it again any time and watch the score climb.') +
-            `<button class="btn gold" id="toBigPicture" style="margin-top:14px">See what it all builds to →</button>`;
-          $('#toBigPicture').addEventListener('click', () => go('s6'));
+                            : 'You wrote real code and cracked a real vault tonight — that is what matters. Run it again any time and watch the score climb.');
           checkCue();
         }
       });
@@ -3813,16 +3934,27 @@ function finish(){
   });
 }
 $('#again').addEventListener('click', () => location.reload());
+$('#toBigPictureMain').addEventListener('click', () => go('s6'));
 $('#s6again').addEventListener('click', () => location.reload());
 $('#toRealmFromEnd').addEventListener('click', () => go('sR'));
 
 /* ═══════════════ CERTIFICATE ═══════════════ */
-$('#getCert').addEventListener('click', () => {
+function openCertificate(){
   $('#certDate').textContent = 'Verified — every line run live, on this device · ' +
     new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
   go('sCert');
-  setTimeout(() => $('#certName').focus(), 200);
-});
+  // Deliberately no auto-focus here: this is the one screen that should feel
+  // like pure reward, and yanking a phone's keyboard up uninvited reads as a
+  // demand, not an invitation — especially for someone who's spent the whole
+  // heist successfully avoiding any typing at all. Filling the name in is a
+  // nice-to-have (the placeholder says so, and print works with it blank);
+  // it should only ever happen because the player chose to tap the field.
+}
+$('#getCert').addEventListener('click', openCertificate);
+$('#getCertFromS6').addEventListener('click', openCertificate);
+// certBackBtn always returns to s5 rather than tracking which scene the
+// player arrived from — s5 already offers the way through to s6, so this
+// keeps the certificate's one "back" affordance simple and predictable.
 $('#certBackBtn').addEventListener('click', () => go('s5'));
 $('#certPrintBtn').addEventListener('click', () => window.print());
 
