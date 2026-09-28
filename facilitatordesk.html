@@ -1,0 +1,1335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Facilitator Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout concept: a control-room desk. Sticky clock bar on top, tab strip beneath, one working panel below.
+   The desk is used standing up, on a phone or a laptop, so everything is large, scannable and one tap away. */
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface2:#F5F7FA; --ink:#14202B; --muted:#54657A; --line:#D3DBE4;
+  --accent:#0A7C76; --accent-ink:#FFFFFF; --accent-soft:#D9F0EE;
+  --group:#3B4FC4; --group-soft:#E3E7FA;
+  --moment:#B45A00; --moment-soft:#FCE9D2;
+  --warn:#9A6400; --warn-soft:#FBEFC9;
+  --bad:#B3261E; --bad-soft:#FADAD6;
+  --ok:#1E7A3C; --ok-soft:#D8F0DF;
+  --break:#6B7785;
+  --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D141B; --surface:#152029; --surface2:#1B2833; --ink:#E7EEF4; --muted:#9FB0C0; --line:#26384A;
+  --accent:#3CC7BD; --accent-ink:#04211F; --accent-soft:#12413F;
+  --group:#8F9DFF; --group-soft:#222B5C;
+  --moment:#FFB35C; --moment-soft:#4A3110;
+  --warn:#F2C14E; --warn-soft:#41330E;
+  --bad:#FF8A80; --bad-soft:#4B1F1B;
+  --ok:#6FD68B; --ok-soft:#173D24;
+  --break:#8797A8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D141B; --surface:#152029; --surface2:#1B2833; --ink:#E7EEF4; --muted:#9FB0C0; --line:#26384A;
+  --accent:#3CC7BD; --accent-ink:#04211F; --accent-soft:#12413F;
+  --group:#8F9DFF; --group-soft:#222B5C;
+  --moment:#FFB35C; --moment-soft:#4A3110;
+  --warn:#F2C14E; --warn-soft:#41330E;
+  --bad:#FF8A80; --bad-soft:#4B1F1B;
+  --ok:#6FD68B; --ok-soft:#173D24;
+  --break:#8797A8; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0 0 .6em}
+a{color:var(--accent)}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+code{background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:.05em .35em}
+.wrap{max-width:1100px;margin-inline:auto;padding-inline:16px}
+
+/* ---------- desk bar ---------- */
+.desk{background:var(--surface)}
+.deskstick{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.desk-top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding-block:10px}
+.brand{font-family:var(--f-display);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;margin-right:auto;min-width:0}
+.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.seg-ctl{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface2)}
+.seg-ctl button{border:0;background:transparent;padding:8px 12px;font-weight:600;font-size:.9rem;min-height:40px}
+.seg-ctl button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;font-weight:500;min-height:40px}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+.iconbtn{border:1px solid var(--line);background:var(--surface2);border-radius:10px;padding:8px 12px;min-height:40px;font-weight:600;font-size:.9rem}
+.clockrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding-bottom:10px}
+.clock{font-family:var(--f-mono);font-weight:600;font-size:2rem;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
+.clock small{font-size:.7rem;color:var(--muted);font-family:var(--f-body);font-weight:500;display:block;letter-spacing:.06em;text-transform:uppercase}
+.btn{border:1px solid var(--line);background:var(--surface2);border-radius:10px;padding:9px 14px;font-weight:600;min-height:44px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.small{min-height:36px;padding:6px 10px;font-size:.88rem}
+.nownext{flex:1 1 320px;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nn{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.nn b{display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.nn span{display:block;font-weight:600;overflow-wrap:anywhere}
+.nn.now{border-color:var(--accent);background:var(--accent-soft)}
+.cue{margin:0 0 10px;padding:9px 12px;border-radius:10px;font-weight:600;background:var(--surface2);border:1px solid var(--line)}
+.cue.warn{background:var(--warn-soft);border-color:var(--warn);color:var(--ink)}
+.cue.bad{background:var(--bad-soft);border-color:var(--bad)}
+.cue.ok{background:var(--ok-soft);border-color:var(--ok)}
+.bar{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--line);position:relative;margin-bottom:10px}
+.bar button{border:0;padding:0;height:100%;border-right:2px solid var(--surface);min-width:3px}
+.bar button.self{background:var(--accent)} .bar button.group{background:var(--group)} .bar button.break{background:var(--break)}
+.bar button.cur{outline:3px solid var(--ink);outline-offset:-3px}
+.bar i{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--bad);border-radius:2px;pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted);margin:-4px 0 10px}
+.legend s{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;text-decoration:none}
+
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:0;scrollbar-width:thin}
+.tabs button{flex:0 0 auto;border:0;border-bottom:3px solid transparent;background:transparent;padding:10px 12px;font-weight:600;color:var(--muted);min-height:44px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* ---------- panels ---------- */
+main{padding-block:18px 60px}
+.panel[hidden]{display:none!important}
+.h-row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:end;justify-content:space-between;margin-bottom:12px}
+.h-row h2{font-size:1.6rem}
+.sub{color:var(--muted);margin:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.card h3{font-size:1.1rem;margin-bottom:8px}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface2);color:var(--muted);white-space:nowrap}
+.pill.self{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.pill.group{background:var(--group-soft);color:var(--group);border-color:transparent}
+.pill.moment{background:var(--moment-soft);color:var(--moment);border-color:transparent}
+.pill.now{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.pill.late{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.pill.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+
+.segcard{background:var(--surface);border:1px solid var(--line);border-left-width:6px;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.segcard.self{border-left-color:var(--accent)} .segcard.group{border-left-color:var(--group)} .segcard.break{border-left-color:var(--break)}
+.segcard[data-st="now"]{box-shadow:0 0 0 2px var(--accent)}
+.segcard[data-st="done"]{opacity:.72}
+.seghead{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;width:100%;text-align:left;border:0;background:transparent;padding:12px 14px;min-height:56px}
+.seghead .t{font-family:var(--f-mono);font-weight:600;font-size:.95rem;color:var(--muted);min-width:8.5em}
+.seghead .nm{font-family:var(--f-display);font-weight:700;font-size:1.15rem;line-height:1.15;flex:1 1 200px;min-width:0}
+.segbody{padding:4px 16px 16px;border-top:1px solid var(--line)}
+.goal{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:12px 0}
+.step{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
+.step:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.step[data-skip="1"]{opacity:.5}
+.step h4{font-size:1.02rem;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.step h4 .t{font-family:var(--f-mono);font-size:.82rem;color:var(--muted);font-weight:600}
+.lbl{font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px;display:block}
+.say{margin:0;border-left:4px solid var(--accent);background:var(--accent-soft);padding:8px 12px;border-radius:0 10px 10px 0}
+.say p{margin:.25em 0}
+.moment-box{border:2px solid var(--moment);background:var(--moment-soft);border-radius:12px;padding:10px 14px;margin-top:10px}
+.moment-box b{color:var(--moment)}
+ul.tight{margin:0;padding-left:1.15em} ul.tight li{margin:.15em 0}
+.watch li::marker{color:var(--warn)}
+.watch{background:var(--warn-soft);border-radius:10px;padding:8px 12px 8px 1.6em;margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--surface2);position:sticky;top:0}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:8px 0 14px}
+.tw table{min-width:520px}
+.num{font-variant-numeric:tabular-nums}
+.key{font-weight:700;color:var(--ok)}
+.accbox{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:10px}
+.accbox>summary{list-style:none;cursor:pointer;padding:14px 16px;font-family:var(--f-display);font-weight:700;font-size:1.1rem;display:flex;gap:10px;align-items:center;min-height:52px}
+.accbox>summary::-webkit-details-marker{display:none}
+.accbox>summary::after{content:"+";margin-left:auto;font-family:var(--f-mono);font-size:1.3rem;color:var(--muted)}
+.accbox[open]>summary::after{content:"\2212"}
+.accbox .in{padding:0 16px 16px}
+.tool{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.tool h4{font-size:1rem;margin-bottom:8px}
+.fields{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end}
+.fields label{display:flex;flex-direction:column;font-size:.78rem;color:var(--muted);font-weight:600;gap:3px}
+.fields input,.fields select,.field{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:40px;width:6.5em}
+.fields select{width:auto;max-width:100%}
+.out{margin-top:10px;font-family:var(--f-mono);font-size:.9rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
+.search{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:1.05rem;min-height:48px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:600;font-size:.85rem;min-height:36px}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.qa{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.qa summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;gap:10px;min-height:48px;align-items:center}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::before{content:"Q";font-family:var(--f-mono);color:var(--accent);font-weight:700}
+.qa .a{padding:0 14px 14px 34px}
+.qa .tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-left:auto;padding-left:8px}
+.fix{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.fix h4{font-size:1rem;margin-bottom:4px}
+.fix dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
+.fix dt{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:2px}
+.fix dd{margin:0}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:8px 6px;border-bottom:1px solid var(--line);min-height:44px}
+.checks input{width:22px;height:22px;margin-top:1px;accent-color:var(--accent);flex:0 0 auto}
+.checks label.on span{text-decoration:line-through;color:var(--muted)}
+.prog{height:8px;border-radius:6px;background:var(--line);overflow:hidden;margin:6px 0 10px}
+.prog i{display:block;height:100%;background:var(--accent);width:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50;max-width:calc(100% - 32px)}
+.note{border-left:4px solid var(--moment);background:var(--moment-soft);padding:8px 12px;border-radius:0 10px 10px 0;margin:10px 0}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+.note.bad{border-color:var(--bad);background:var(--bad-soft)}
+
+.subnav{margin-top:0}
+.menu{position:relative}
+.menu>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center}
+.menu>summary::-webkit-details-marker{display:none}
+.menubox{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:250px}
+.pre{white-space:pre-wrap;font-family:var(--f-body);font-size:.92rem;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 10px;overflow-wrap:anywhere}
+.start{border:2px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.start h3{font-size:1.1rem;margin-bottom:6px}
+a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+@media (max-width:560px){
+  .brand{flex-basis:100%}
+  .clock{font-size:1.6rem}
+  .nownext{grid-template-columns:1fr;flex-basis:100%}
+  .nownext .nn:not(.now){display:none}
+  .legend{display:none}
+  .cue{font-size:.9rem;padding:6px 10px;margin-bottom:8px}
+  .clockrow{gap:6px 10px;padding-bottom:6px}
+  .btn{padding:8px 12px}
+  .seghead .t{min-width:0;flex-basis:100%}
+  .fix dl{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){.segcard,.card{transition:box-shadow .2s}}
+</style>
+
+</head>
+<body>
+<header class="desk">
+  <div class="wrap">
+    <div class="desk-top">
+      <div class="brand">Pivot into Tech<small>Facilitator Desk</small></div>
+      <div class="seg-ctl" role="group" aria-label="Session length" id="modeCtl">
+        <button data-mode="0" aria-pressed="false">Full 110</button>
+        <button data-mode="1" aria-pressed="true">Core 90</button>
+        <button data-mode="2" aria-pressed="false">Express 72</button>
+      </div>
+      <button class="iconbtn" id="panicBtn" type="button">Panic card</button>
+      <details class="menu"><summary class="iconbtn">Settings</summary><div class="menubox">
+        <label class="chk"><input type="checkbox" id="remoteChk"> Remote facilitator (+5 min)</label>
+        <button class="iconbtn" id="themeBtn" type="button" aria-label="Switch light or dark theme">Switch light or dark</button>
+      </div></details>
+    </div>
+  </div>
+</header>
+<div class="deskstick">
+  <div class="wrap">
+    <div class="clockrow" style="padding-top:10px">
+      <div class="clock" id="clock" aria-live="off"><small>Session clock</small><span id="clockT">00:00:00</span></div>
+      <button class="btn primary" id="startBtn" type="button">Start session</button>
+      <button class="btn" id="nextBtn" type="button">Next segment</button>
+      <button class="btn small" id="backBtn" type="button">Back</button>
+      <button class="btn small" id="resetBtn" type="button">Reset</button>
+      <div class="nownext">
+        <div class="nn now"><b>Now</b><span id="nowTxt">Not started</span></div>
+        <div class="nn"><b>Next</b><span id="nextTxt">MindForge</span></div>
+      </div>
+    </div>
+    <div class="cue" id="cue" role="status">Press Start session when the doors open. The clock runs from 00:00.</div>
+    <div class="bar" id="bar" aria-label="Session timeline"></div>
+    <nav class="tabs" role="tablist" id="tabs" aria-label="Sections"></nav>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+/* ============================================================
+   DATA
+   Durations are minutes as [Full, Core, Express].
+   ============================================================ */
+const MODES=["Full","Core","Express"];
+const TOTALS=[110,90,72];
+const SEGS=[
+{id:"mf",name:"MindForge and arrival",kind:"self",dur:[10,8,5],goal:"People arrive, sit, and start solving small puzzles on their own. Energy up, nerves down. You say almost nothing yet.",
+ steps:[
+ {n:"Doors open, greet, settle",d:[3,3,2],say:["Hello, come in, pick any seat. Open the first screen and press Start. Nothing in here can break."],
+  do:["Helpers greet every person by name and point at the screen.","Check every laptop has 01 MindForge open. Sound low or off.","Facilitator stays at the front, smiling, and does not start talking yet."],
+  watch:["Anyone standing at the edge of the room and not clicking. A helper sits beside them for one minute.","Shared machines: earlier progress can appear. It is only a score, ignore it."]},
+ {n:"Self-paced play",d:[7,5,3],say:["Play whatever you like. There is no order and no score to beat. If a puzzle feels easy, try the harder level. If it feels hard, skip to another.","(At one minute left) One more minute. Finish the puzzle you are on."],
+  do:["Helpers circulate. Point out harder levels for fast people (Sequence Sense has difficulty tiers).","No answers are needed for MindForge. The point is warm-up, not marking.","At the end, ask two people what they liked. Applaud."],
+  watch:["Do not let this run over. Stop at the planned end even if people are enjoying it.","If a person is frustrated, say: 'Skipping is allowed. Every good programmer skips and comes back.'"]}
+ ]},
+{id:"welcome",name:"Welcome and ground rules",kind:"group",dur:[4,3,2],goal:"Set the tone: it is fun, it is safe, it is a taster. Name the three rules and the four parts of today.",
+ steps:[
+ {n:"Hook and promise",d:[1,1,1],say:["Welcome to Pivot into Tech. In the next {TOTAL} minutes you will break a rollercoaster, crack a vault and build a small app.","Nobody here needs any coding experience. Nobody will be tested. You keep everything you make."],
+  do:["Stand still. Speak slowly. Look at the whole room.","If remote: confirm the room can hear and see you. Ask a helper to give you a thumbs up."]},
+ {n:"Ground rules",d:[2,1,1],say:["Three rules. One: it is fine to stop early. Two: it is fine to ask a helper, and helpers will point, not click for you. Three: if you are lost for a minute, that is normal. Being lost and then finding the way is what coding feels like for everyone.","Today is a taster. It does not promise a job. It shows you what the work feels like, so you can decide if you want more."],
+  do:["Point to the helpers and ask them to wave.","Say once, clearly, where the toilets and exits are."],
+  watch:["Career anxiety in the room (near retirement, redundancy worries). Keep the tone honest and warm. Do not promise outcomes."]},
+ {n:"Map of the session",d:[1,1,0],say:["First: MindForge, done. Second: LoomSTEM, where we build with blocks together. Third: the Vault, a heist where you learn to code your way out. Last: you build your own small app."],
+  do:["Optional: show the agenda slide. Skip it in Express."]}
+ ]},
+{id:"loom",name:"LoomSTEM, group-run",kind:"group",dur:[28,22,15],slack:2,goal:"Everyone drags blocks together. They see physics react to what they build. Then the reveal: the language they just used is our own.",
+ steps:[
+ {n:"Open and orient",d:[1,1,1],say:["Open 02 LoomSTEM. Choose Rollercoaster. You will drag blocks into the grey box. When I say run, press Run."],
+  do:["Helpers check every screen shows the Rollercoaster and not the hub.","Show how to drag: click, hold, move, let go. Say it out loud."],
+  watch:["Trackpad users: dragging is the hardest part. Tell them to click and hold with one finger while moving with another, or use a mouse."]},
+ {n:"Rollercoaster, steps 1 to 5",d:[6,5,5],ans:"ans-coaster",
+  say:["Step 1: set gravity to 9.8. That is the real value on Earth.","Step 2: place the top of the ride, 80 metres.","Step 3: a small dip to 75 metres. Now press Run. What do you think the rating will be? (Wait for guesses.) It is low. Too tame.","Step 4: a big drop to 10 metres. Step 5: level out at 45 metres. Run it again."],
+  do:["Group pace: say each step, wait until most people have dropped the block, then move on.","Expected: step 3 gives 66 out of 100 (bit tame). Step 5 gives 87 out of 100 (thrilling and safe).","Ask: what changed between the two rides? Let two people answer."],
+  watch:["A person who drops the block in the wrong place: it snaps back. Tell them to drop inside the grey box.","Speed and thrill numbers appear in the readout. You do not need to explain the formula yet."]},
+ {n:"Sandbox: thrilling but safe",d:[3,3,2],ans:"ans-coaster",
+  say:["You now have a sandbox. Change any number. Your goal: the highest ride rating you can get. Watch out: too wild makes the rider sick. Too tame is boring. Real ride designers aim for the middle."],
+  do:["Give it 2 minutes. Ask who got over 90. Ask what they changed.","Tip for helpers: a total thrill between 23 and 44 scores 90 or more."],
+  watch:["A stalled cart (sad face): the cart ran out of speed and cannot climb that high. That is real energy: you cannot climb higher than your speed allows."]},
+ {n:"Rollercoasters Part 2: loops",d:[6,5,0],ans:"ans-loops",
+  say:["Now the same ride, but we teach the computer to repeat. A variable is a labelled box holding a number. A loop says: do this again, five times. Look, five points from two lines of code."],
+  do:["Read the recap, then steps 1 to 6: gravity, height = 90, repeat 5 times, trackPoint(height), height = height - 15, end of loop.","Press Run. Expected: five points at 90, 75, 60, 45, 30 metres, rating 99.","Spreadsheet link for Lucy and Viktor: it is like dragging a formula down a column."],
+  watch:["Steps 2 to 5 are all one tiny block. If people fall behind, the helper drags for them, then asks the person to press Run."]},
+ {n:"Loop playground",d:[3,2,0],ans:"ans-loops",
+  say:["Change the number of points, the drop each time, and the climb at the end. If the climb is as big as the whole drop, the cart cannot get there. Try to make it stall on purpose."],
+  do:["Rule: the cart stalls when the final climb is equal to or larger than the total drop (iterations times step)."],
+  watch:[]},
+ {n:"Chemistry demo: mix two substances",d:[3,0,0],ans:"ans-ph",
+  say:["Same language, different subject. Pick two things from your kitchen and mix them. The result is not a simple average. pH works on a scale that multiplies by ten each step, so a strong one beats a mild one."],
+  do:["Facilitator demo on screen. Try lemon juice and bleach: about 12.65. Vinegar and ammonia: exactly 7, neutral."]},
+ {n:"The reveal: our own language",d:[4,4,4],ans:"ans-reveal",
+  say:["Hands off the mouse for a moment. Click the tab that says Real Code.","Everything you dragged is a line of text. Read the first line: @engine colon physics. This is not Scratch. It is not Python. This is a programming language we built ourselves. It is called LoomScript. It has its own parser and its own rules. Nobody else in the world has it. And you just used it.","Now watch. In the engine box, choose chemistry and press Run. (Let them see the red message.) The language refuses to run a physics command in a chemistry program. That is a real rule, enforced by a real language. You did not know you were writing code twenty minutes ago."],
+  do:["Say it slowly. After the line 'you just used it', stay silent for five seconds.","Then invite three people to tell the room what the error says in their own words.","Link to careers: banks build small languages like this for trading rules and risk checks. People who understand how languages work are hired for that."],
+  moment:"Land the reveal, then pause. Let the room react before you say anything else.",
+  watch:["Some people will think it is a gimmick. Show the Real Code tab and the error again. It is a real interpreter.","Yuki and Chidinma may need the sentence repeated in simpler words: 'We made this language. You used it.'"]},
+ {n:"Wrap and breathe",d:[2,2,3],say:["Well done. You just used variables, loops and events. Those three ideas are in every programming language. Stand up, stretch, get water in a minute."],
+  do:["Tell early finishers to try Build an Adventure (10 steps) or wait. Answers are on the Answers tab.","Helpers open 03 Vault on every laptop during the breather."]}
+ ]},
+{id:"br1",name:"Breather",kind:"break",dur:[3,2,0],goal:"Let people breathe. Do not skip it in Full or Core.",
+ steps:[{n:"Stand, drink, one question",d:[3,2,0],say:["Stand up. Stretch. Get some water. One question from anyone before we start the heist?"],do:["Helpers switch every laptop to 03 Vault and make sure the sound is on low.","Check the projector or the remote screen share is showing the Vault start screen."],watch:["If someone is confused about LoomSTEM, a helper sits with them now, not during the Vault."]}]},
+{id:"vault",name:"The Vault, group-run",kind:"group",dur:[35,32,28],slack:3,goal:"A story-led escape room that teaches five programming ideas. It ends with the red button and the real worry about quantum.",
+ steps:[
+ {n:"Briefing: choose your night",d:[2,2,1],say:["Everyone press The Heist. Not the red button. Not yet.","You wake up in a vault basement. You must crack a cipher, open three doors and find a ledger that proves fraud. You have six minutes on the clock.","Important: the clock does not tick by itself. It only moves when you guess wrong. If it ever runs out, someone rescues you. You cannot lose."],
+  do:["Ask a helper to check every person is on The Heist.","Point at the Vale drawer (the tab on the right). It is the safe hint.","Read the reassurance line before pressing Start, not after."],
+  watch:["Jack: takes the countdown literally. Say the clock line twice.","Jamie, Frank, Colin: point out that hints are free."],ans:"ans-vault"},
+ {n:"Act 1a: the variable",d:[4,4,3],ans:"ans-vault",
+  say:["The word on screen is scrambled: CHBSA. We need to decode it. Give the box a name, then put a number in it.","A variable is a box with a name. The computer does not care about the name. The name is for the next human. Pick a good one.","Now try numbers. Wrong guesses cost nothing here. Guess, look, guess again."],
+  do:["Names: shift or shift_amount are best. x and thing are accepted with a small nudge.","The number that works: 7. It decodes to VAULT.","Then the flashback screen: predict first. price = 4, then price = price + 2. Answer: 6. Modify: price + 10 gives 14."],
+  watch:["People who type a random name. Say: 'All four are accepted. Which one will you understand in three weeks?'"]},
+ {n:"Act 1b: the until loop",d:[5,4,4],ans:"ans-vault",
+  say:["Second door. Another scrambled word, no tip-off. You could try every shift by hand. Or teach the computer to keep trying until it works. That is an until loop.","Fill two gaps: when to stop, and how much to change each time."],
+  do:["Right answers: stop when it_is_a_word; change by 1. It finds the word LEDGER at shift 14. Message: 14 tries.","Wrong on purpose: 'never' or step 0 runs forever (costs 10 seconds). 'shift == 25' runs out without success. Step 5 misses 14 and steps straight past it.","Flashback: counted loop runs 3 times always. Until loop runs however many it takes."],
+  watch:["Nobody is punished for running forever. It shows what a bad loop looks like."]},
+ {n:"Room One: search by hand",d:[2,2,2],ans:"ans-vault",
+  say:["Four boxes, one key. Open them one at a time. This is a linear search. Notice how it feels. Slow and dull. Remember this feeling."],
+  do:["Anyone can open the boxes in any order. Each open costs 4 seconds on the clock. The key is in a random box.","Vale says: this is what Room Two is going to test."]},
+ {n:"Rooms 2 and 3: the counted loop",d:[4,4,3],ans:"ans-vault",
+  say:["Write it once and say how many times. The next wall has 16 boxes. Each cycle checks 4 boxes at once. How many cycles? Work it out.","Room Three has 64 boxes and each cycle checks 8. Work it out yourself."],
+  do:["Room Two: 4 cycles (16 divided by 4). Too few stops short and costs 20 seconds. 6 works but is wasteful.","Room Three: 8 cycles (64 divided by 8). 4 or 6 stops short. 12 works but is wasteful.","Flashback: repeat 3 times runs 3 times. Six checks needed: change the 3 to a 6."],
+  watch:["Lucy and Ingrid will do this in their head. Ask them to explain how to the table."]},
+ {n:"The Ledger: the conditional",d:[4,4,4],ans:"ans-vault",
+  say:["Sixty-four accounts. One is the crime. Write a rule: flag any account where the amount is more than 10,000 and the country is not the UK.","Careful: one equals sign puts a value in. Two, or an exclamation and an equals, ask a question. And words need quote marks."],
+  do:["Fill four gaps: greater than (>), 10000, not equal (!=), and the text \"UK\" with quote marks.","Then press Run. It scans and stops when it finds the flagged account.","Spreadsheet link: the same rule as IF(AND(amount>10000, country<>\"UK\")).","Flashback: temperature 25 with the rule temperature > 30: does the window open? No. Temperature 35: yes."],
+  watch:["The mistakes are the lesson: = instead of !=, UK without quotes. Read the red message aloud."]},
+ {n:"The routing code",d:[3,2,3],ans:"ans-vault",
+  say:["Last lock: a routing code, 91. It is the product of two numbers. Try dividing by 2, then 3, then 4. Stop when nothing is left over."],
+  do:["Click the step button six times: divide by 2 (1 left), 3 (1), 4 (3), 5 (1), 6 (1), 7 (0). 91 = 7 times 13.","Remember this. Finding the two numbers took six tries. For a huge number, it takes longer than the universe. That is what the button will show."],
+  watch:["In Core, do this quickly and keep moving. In Express, keep it."]},
+ {n:"Out: five ideas and the certificate",d:[3,3,2],ans:"ans-vault",
+  say:["You are out. You wrote five programming constructs tonight: a variable, an until loop, a counted loop, a conditional, and a search. Take the short quiz. Then fill in your certificate."],
+  do:["Quiz has five questions. Answers are on the Answers tab.","Certificate: they can screenshot it. The number on screen is how many boxes they checked by hand."],
+  watch:["In Express skip the quiz: go straight to the certificate."]},
+ {n:"The button: ritual and press",d:[2,2,1],moment:true,ans:"ans-button",
+  say:["You solved four problems by hand. Now I want you to do the one thing the screen tells you not to do.","Press the home icon at the top, confirm (or refresh the page), and find the red button. It says do not press. Everyone find it? Hands over it. Three, two, one, press.","(A message asks: press the quantum button? Everyone says yes together.)"],
+  do:["Do the countdown out loud.","There is a short burst of screen static. Warn once: 'There is a flash of static. Look away if flashing bothers you.'","The hum needs a prior click to play. It will work because they have already clicked on the page.","After the static: a call from Vale."],
+  moment:"This is the mic drop. Build it up, do the countdown, and let the static do the work.",
+  watch:["Speakers off on shared floors: the visual still works.","If the button does not respond, use the Fixes tab."]},
+ {n:"Four scenarios: same jobs, quantum",d:[4,3,3],ans:"ans-button",
+  say:["Vale shows you the same four jobs, the way a quantum computer would do them. For each one: read the classical code, press Convert to quantum, then Run the quantum code, then Next.","Everything Vale shows is real. Shor's algorithm and Grover's algorithm, written in plain English."],
+  do:["Scenario 1, outer door: Shor's. 26 shifts by hand, one pass with quantum.","Scenario 2, Room One: Grover's. 4 boxes, one tuned step, odds 100%.","Scenario 3, Rooms 2 and 3: 64 boxes need just 6 steps. 16 boxes need 3.","Scenario 4, Ledger: the same if-rule handed to a quantum machine as the oracle. 6 steps.","Keep each scenario to about a minute. Do not lecture."],
+  watch:["Overwhelm with words like mod, period, oracle. The screens have plain-English glossaries. Say: 'It is a taster, not a lecture.'"]},
+ {n:"Summary and 'harvest now, decrypt later'",d:[2,2,2],ans:"ans-button",
+  say:["That is the taste. None of this ran on a real quantum computer tonight. The maths is real. A machine big enough is not built yet.","But here is the worry. Data protected today can be copied today. Someone can store it and wait. When a big enough quantum computer exists, they can open it. That is called harvest now, decrypt later.","That is why banks and governments are already moving to post-quantum encryption, years before the machines exist. In August 2024 the US standards body NIST published its first post-quantum encryption standards. And that is why people who understand both banking and technology are needed."],
+  do:["Ask the room: what data at a bank has to stay secret for 20 years? Take two answers.","Reassure: your money is not at risk today.","Then press Back to reality."],
+  watch:["Kwame, Tommy and Esther: they may feel alarm. Pair the worry with the answer above.","Do not speak for the bank's own plans. Say: 'The security team owns that. I can point you to them.'"]}
+ ]},
+{id:"br2",name:"Breather and switch",kind:"break",dur:[2,2,0],goal:"Reset. The next part is different: they drive.",
+ steps:[{n:"Stand, then change gear",d:[2,2,0],say:["Take a breath. The last part is different. So far I have led. Now you drive. You will build a small app, and I will show you the first step."],do:["Helpers open Scratch on every laptop and switch to the Compound Click page.","Check Scratch loads with no sign-in. Nobody needs an account."],watch:["If Scratch is blocked on the network, use the Fixes tab now."]}]},
+{id:"ccb",name:"Compound Click: brief and demo",kind:"group",dur:[8,5,4],goal:"Show the pattern: trigger, logic, feedback. Practise it on a tiny example. Then let people go.",
+ steps:[
+ {n:"The pattern",d:[1,1,1],say:["Every app you use has three parts. A trigger: something happens, like a tap. Logic: the app decides. Feedback: it shows you something. Today you build all three."]},
+ {n:"Watch, then predict",d:[4,2,1],ans:"ans-cc",
+  say:["Look at the two blocks on the screen. When this sprite is clicked, say hello for 2 seconds. Before I click the cat, what will happen? (Wait.)","I click. Did it match your guess? The top block listens. The bottom block acts."],
+  do:["Build the two blocks live: Events, when this sprite clicked. Looks, say Hello for 2 seconds. Snap them.","Explain the four moves: Predict, Run, Investigate, Modify."],
+  watch:["The 'say for 2 seconds' block is one of several similar say blocks. Point to the exact one."]},
+ {n:"Their turn",d:[3,2,2],say:["Now you. Open Scratch. The cat is already there. Build those two blocks. Click the cat. Then change one thing, the message or the seconds, and test again."],
+  do:["Helpers walk the room. Look for blocks that are close together but not snapped.","Then say: Right-click the cat and delete it. We start fresh."]}
+ ]},
+{id:"ccs",name:"Compound Click: self-paced build",kind:"self",dur:[15,12,10],goal:"Everyone works at their own speed. Helpers circulate. Anything that reacts to a click is a win.",
+ steps:[
+ {n:"Steps 1 to 3: stage, memory, reset",d:[6,5,4],ans:"ans-cc",
+  say:["Step 1: delete the cat, add the Crystal sprite, choose a backdrop. Step 2: make a variable called Savings and tick the box so it shows. Step 3: when the green flag is clicked, set Savings to 0. Add a second script: when the R key is pressed, set Savings to 0.","You do not need to finish. Even one click that changes a number is real software."],
+  do:["Call the checkpoint at +5 minutes: 'By now most people should have a Savings variable on screen.'","Helpers watch for: gaps between blocks, variable checkbox not ticked, R key dropdown still on space."]},
+ {n:"Step 4: make it respond",d:[6,5,5],ans:"ans-cc",
+  say:["Step 4 is the fiddly one. Everyone slows here. When the crystal is clicked: change Savings by 10, play a sound, change colour effect by 25, wait 0.1 seconds, change colour effect by minus 25. Start with just the first block if you like."],
+  do:["Call the checkpoint at +10 minutes: 'If you are stuck, build the smaller version. Click the crystal, watch the number go up.'","Fast finishers: Step 5 (personalise) and Step 6 (say something when Savings passes 100)."],
+  watch:["Sound missing: check the Sounds tab. Colour flash invisible: the wait block is missing."]},
+ {n:"Steps 5 and 6, extensions",d:[3,2,1],ans:"ans-cc",
+  say:["Make it yours: change the backdrop, the costume or the number. If you are done, try Step 6 or an extension."],
+  do:["Extensions: random returns, compound interest with a forever loop, expenses, broadcast milestone.","Tell people to prepare one thing to show the room."]}
+ ]},
+{id:"close",name:"Showcase, next steps, close",kind:"group",dur:[5,4,8],goal:"Celebrate. Connect what they did to real roles. Give them a next step. Finish on time.",
+ steps:[
+ {n:"Showcase",d:[2,2,3],say:["Stop clicking for a moment. Who will show us one thing they built? It can be tiny."],
+  do:["Take two or three volunteers. Applaud each. Celebrate the smallest ones the loudest.","If remote: helpers hold the camera or share the volunteer's screen."],watch:["Do not force anyone. Frank and Colin will not volunteer. A thumbs-up from the helper is enough."]},
+ {n:"What you actually did",d:[1,1,2],say:["In this session you used a variable, a loop, a conditional and an event. You wrote in a language we built. You solved a heist. You built an app. That is what a junior developer does. It is also what analysts, testers and security people do every day. None of this needed a degree today."],
+  do:["Optional: show the skills slide.","Repeat the taster line: this does not promise a job. It shows the work."]},
+ {n:"Next steps and close",d:[2,1,3],say:["If you liked it, here is what to do next. (Point to the follow-up link.) Take the certificate. Try Compound Click again at home. Talk to a helper. Thank you."],
+  do:["Give the follow-up link and contact from the Checklists tab.","Express: this is where you say they can finish Compound Click at home from the same link.","Ask for feedback by a show of hands: energy, pace, clarity."]}
+ ]}
+];
+
+const CUTS=[
+ {seg:"loom",label:"Skip the chemistry demo",mins:[3,0,0]},
+ {seg:"vault",label:"Skip the Vault quiz, go straight to the certificate",mins:[1,1,0]},
+ {seg:"loom",label:"Skip Rollercoaster Part 2 (loops)",mins:[9,7,0]},
+ {seg:"vault",label:"Skip the routing code",mins:[3,2,3]},
+ {seg:"ccs",label:"Tell people to stop after Step 4",mins:[4,3,2]},
+ {seg:"close",label:"One volunteer only in the showcase",mins:[1,1,1]},
+ {seg:"br1",label:"Shorten the first breather to one minute",mins:[2,1,0]}
+];
+const EXTRAS=["Loom: Build an Adventure (10 steps), for early finishers, about 8 minutes","Quantum Playground, seven mini-labs, about 10 minutes for keen people","Compound Click extensions: random returns, compound interest, expenses, milestone broadcast"];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const S={mode:1,remote:false,tab:"run",running:false,elapsed:0,cur:-1,segStart:[],base:0,open:{}};
+function store(k,v){try{localStorage.setItem("ptt_"+k,JSON.stringify(v))}catch(e){}}
+function load(k,d){try{const v=localStorage.getItem("ptt_"+k);return v===null?d:JSON.parse(v)}catch(e){return d}}
+
+function segDur(s){return s.dur[S.mode]+(S.remote&&s.slack?s.slack:0)}
+function plan(){let t=0;return SEGS.map(s=>{const d=segDur(s);const o={s,start:t,end:t+d,dur:d};t+=d;return o})}
+function total(){return plan().reduce((a,p)=>a+p.dur,0)}
+const hm=m=>{m=Math.max(0,Math.round(m));return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")};
+const hms=sec=>{sec=Math.max(0,Math.floor(sec));return String(Math.floor(sec/3600)).padStart(2,"0")+":"+String(Math.floor(sec%3600/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")};
+const ms=sec=>{const neg=sec<0;sec=Math.abs(Math.round(sec));return (neg?"-":"")+String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+/* ============================================================
+   RUN OF SHOW
+   ============================================================ */
+function stepRows(seg,segStartMin){
+  let t=segStartMin;const rows=[];
+  seg.steps.forEach(st=>{const d=st.d[S.mode];rows.push({st,d,start:t,end:t+d});t+=d});
+  if(S.remote&&seg.slack){rows.push({st:{n:"Remote buffer for lag and screen-share delay",d:[seg.slack,seg.slack,seg.slack],say:[],do:["Use this only if the link is slow. If not needed, move on early and gain the time."],watch:[]},d:seg.slack,start:t,end:t+seg.slack,buffer:true})}
+  return rows;
+}
+function renderRun(){
+  const P=plan();
+  const el=document.createElement("div");
+  const total_=total();
+  let h=`<div class="h-row"><div><h2>Run of show</h2><p class="sub">${MODES[S.mode]}, ${total_} minutes${S.remote?", remote":""}. Times run from 00:00. Protect the reveal, the red button and the showcase.</p></div>
+   <div class="actions" style="margin:0"><button class="btn small" id="expandAll" type="button">Open all</button><button class="btn small" id="collapseAll" type="button">Close all</button><button class="btn small" id="copySheet" type="button">Copy run sheet</button></div></div>`;
+  if(!load("hidestart",false)){h+=`<div class="start"><h3>First time here? Three steps</h3><ol class="tight"><li>Before the day: open <b>Prep</b> and do the Rehearsal.</li><li>On the day: choose your length above, then press <b>Start session</b>. This page tells you what to say and do next.</li><li>Stuck? Press <b>Panic card</b> at the top, or open <b>Help</b>.</li></ol><div class="actions"><button class="btn small" id="hideStart" type="button">Got it, hide this</button></div></div>`}
+  P.forEach((p,i)=>{
+    const st=segState(i);
+    const seg=p.s;
+    const kindLbl=seg.kind==="self"?"Self-paced":seg.kind==="group"?"Group-run":"Breather";
+    const isMoment=seg.steps.some(x=>x.moment);
+    const open=S.open[seg.id]!==undefined?S.open[seg.id]:(st==="now"||(S.cur<0&&i===0));
+    const rows=stepRows(seg,p.start);
+    h+=`<article class="segcard ${seg.kind}" id="seg-${seg.id}" data-st="${st}">
+      <button class="seghead" type="button" data-toggle="${seg.id}" aria-expanded="${open}">
+        <span class="t">${hm(p.start)} to ${hm(p.end)}</span>
+        <span class="nm">${esc(seg.name)}</span>
+        <span class="pill ${seg.kind==='self'?'self':seg.kind==='group'?'group':''}">${kindLbl}</span>
+        ${isMoment?'<span class="pill moment">Mic drop</span>':''}
+        <span class="pill">${p.dur} min</span>
+        ${st==="now"?'<span class="pill now">Now</span>':st==="done"?'<span class="pill done">Done</span>':''}
+      </button>
+      <div class="segbody" ${open?"":"hidden"}>
+       <div class="goal"><b>Goal.</b> ${esc(seg.goal)}</div>`;
+    rows.forEach(r=>{
+      const st_=r.st;const skip=r.d===0;
+      h+=`<section class="step" ${skip?'data-skip="1"':''}>
+        <h4>${skip?'':`<span class="t">${hm(r.start)} to ${hm(r.end)}</span>`}${esc(st_.n)}${skip?' <span class="pill">Skipped in '+MODES[S.mode]+'</span>':`<span class="pill">${r.d} min</span>`}${st_.moment?' <span class="pill moment">Moment</span>':''}</h4>`;
+      if(!skip){
+        if(st_.say&&st_.say.length){h+=`<span class="lbl">Say</span><div class="say">${st_.say.map(x=>`<p>${esc(x.replace("{TOTAL}",TOTALS[S.mode]))}</p>`).join("")}</div>`}
+        if(st_.do&&st_.do.length){h+=`<span class="lbl">Do</span><ul class="tight">${st_.do.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}
+        if(typeof st_.moment==="string"){h+=`<div class="moment-box"><b>Mic drop.</b> ${esc(st_.moment)}</div>`}
+        if(st_.watch&&st_.watch.length){h+=`<span class="lbl">Watch for</span><ul class="tight watch">${st_.watch.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}
+        if(st_.ans){h+=`<div class="actions"><button class="btn small" type="button" data-goans="${st_.ans}">Open answers</button></div>`}
+      }
+      h+=`</section>`;
+    });
+    h+=`<div class="actions"><button class="btn small primary" type="button" data-startseg="${i}">Start this segment now</button></div>
+      </div></article>`;
+  });
+  h+=`<details class="accbox"><summary>Running late or early?</summary><div class="in"><div class="grid2"><div class="card"><h3>If you are running late</h3><p class="sub">Cut in this order. Times are minutes saved in ${MODES[S.mode]} mode.</p><ul class="tight" id="cutList">${CUTS.map(c=>{const m=c.mins[S.mode];return `<li data-cut="${c.seg}" ${m===0?'style="opacity:.45"':''}>${esc(c.label)} <span class="pill">${m===0?"not in this mode":"saves "+m+" min"}</span></li>`}).join("")}</ul></div>
+   <div class="card"><h3>If you are running early</h3><p class="sub">Add one of these. Never add to a segment that has a mic-drop moment.</p><ul class="tight">${EXTRAS.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div></details>`;
+  el.innerHTML=h;return el;
+}
+function segState(i){
+  if(S.cur<0)return i===0?"next":"later";
+  if(i<S.cur)return "done";if(i===S.cur)return "now";return "later";
+}
+
+/* ============================================================
+   CLOCK
+   ============================================================ */
+let tick=null,wake=null;
+function startClock(){
+  if(S.running)return;
+  S.running=true;S.base=Date.now()-S.elapsed*1000;
+  if(S.cur<0){S.cur=0;S.segStart[0]=0}
+  clearInterval(tick);tick=setInterval(()=>{S.elapsed=(Date.now()-S.base)/1000;updateDesk()},500);
+  try{if(navigator.wakeLock){navigator.wakeLock.request("screen").then(w=>{wake=w}).catch(()=>{})}}catch(e){}
+  $("#startBtn").textContent="Pause";render(true);
+}
+function pauseClock(){S.running=false;clearInterval(tick);$("#startBtn").textContent="Resume";try{if(wake){wake.release();wake=null}}catch(e){}updateDesk()}
+function resetClock(){pauseClock();S.elapsed=0;S.cur=-1;S.segStart=[];$("#startBtn").textContent="Start session";render(true);updateDesk()}
+function goSeg(i){
+  const P=plan();if(i<0||i>=P.length)return;
+  S.cur=i;S.segStart[i]=S.elapsed;
+  if(!S.running&&S.elapsed===0){}
+  S.open={};render(true);updateDesk();
+  const a=document.getElementById("seg-"+P[i].s.id);if(a&&S.tab==="run"){a.scrollIntoView({behavior:"smooth",block:"start"})}
+}
+function drift(){
+  const P=plan();if(S.cur<0||S.cur>=P.length)return 0;
+  const p=P[S.cur];const start=S.segStart[S.cur]!==undefined?S.segStart[S.cur]:p.start*60;
+  const projEnd=Math.max(S.elapsed,start+p.dur*60);
+  return projEnd-p.end*60;
+}
+function updateDesk(){
+  const P=plan();
+  $("#clockT").textContent=hms(S.elapsed);
+  const cur=S.cur>=0?P[S.cur]:null;
+  $("#nowTxt").textContent=cur?cur.s.name:"Not started";
+  const nx=S.cur+1<P.length?P[S.cur+1]:null;
+  $("#nextTxt").textContent=S.cur<0?P[0].s.name:(nx?nx.s.name:"Session ends");
+  const bar=$("#bar");
+  const tot=total()*60;
+  let pos=bar.querySelector("i");if(!pos){pos=document.createElement("i");bar.appendChild(pos)}
+  pos.style.left=Math.min(100,S.elapsed/tot*100)+"%";
+  bar.querySelectorAll("button").forEach((b,i)=>b.classList.toggle("cur",i===S.cur));
+  const cue=$("#cue");cue.className="cue";
+  if(!S.running&&S.elapsed===0){cue.textContent="Press Start session when the doors open. The clock runs from 00:00.";return}
+  if(!S.running){cue.textContent="Paused at "+ms(S.elapsed)+". Press Resume.";cue.classList.add("warn");return}
+  if(!cur){return}
+  const start=S.segStart[S.cur]!==undefined?S.segStart[S.cur]:cur.start*60;
+  const left=start+cur.dur*60-S.elapsed;
+  const d=drift();
+  const dTxt=Math.abs(d)<30?"on time":(d>0?ms(d)+" behind plan":ms(-d)+" ahead of plan");
+  if(S.elapsed>=tot+60&&S.cur===P.length-1){cue.classList.add("ok");cue.textContent="Session complete. Thank everyone and hand over to the helpers.";return}
+  if(left<0){
+    const over=-left;
+    cue.classList.add(over>180?"bad":"warn");
+    cue.textContent=(over>180?"Over by ":"Over by ")+ms(over)+" on "+cur.s.name+". "+(over>180?"Wrap up now and move on. See the cuts below.":"Start wrapping up.")+" ("+dTxt+")";
+  }else if(left<=120){
+    cue.classList.add("warn");cue.textContent=ms(left)+" left in "+cur.s.name+". Start the wrap-up line. ("+dTxt+")";
+  }else{
+    cue.textContent=cur.s.name+": "+ms(left)+" left of "+cur.dur+" min. ("+dTxt+")";
+  }
+  document.querySelectorAll("#cutList li").forEach(li=>li.style.outline="");
+  if(d>=180){
+    let need=d/60;const P2=plan();
+    CUTS.forEach(c=>{
+      const idx=P2.findIndex(p=>p.s.id===c.seg);const m=c.mins[S.mode];
+      if(need>0&&m>0&&idx>=S.cur){document.querySelectorAll('#cutList li[data-cut="'+c.seg+'"]').forEach(li=>{if(li.textContent.includes(c.label))li.style.outline="3px solid var(--warn)"});need-=m}
+    });
+  }
+}
+function buildBar(){
+  const P=plan();const bar=$("#bar");bar.innerHTML="";
+  P.forEach((p,i)=>{
+    const b=document.createElement("button");b.className=p.s.kind;b.type="button";
+    b.style.flex=p.dur+" 1 0";b.title=p.s.name+" "+p.dur+" min";b.setAttribute("aria-label",p.s.name+", "+p.dur+" minutes");
+    b.addEventListener("click",()=>{S.tab="run";setTab("run");const a=document.getElementById("seg-"+p.s.id);if(a){S.open[p.s.id]=true;render(false);document.getElementById("seg-"+p.s.id).scrollIntoView({behavior:"smooth",block:"start"})}});
+    bar.appendChild(b);
+  });
+}
+
+/* ============================================================
+   ANSWERS
+   ============================================================ */
+function coaster(g,pts){
+  let ph=null,pv=0,th=0;const log=[];
+  for(const h of pts){
+    if(ph===null){ph=h;continue}
+    const vs=pv*pv+2*g*(ph-h);
+    if(vs<=0)return {stalled:true,at:h,th,log};
+    const v=Math.sqrt(vs);th+=Math.abs(v-pv);log.push({h,v});pv=v;ph=h;
+  }
+  return {stalled:false,th,log,rating:rate(th)};
+}
+function rate(t){const a=12,b=55;if(t>=a&&t<=b)return Math.round(100-20*Math.abs(t-(a+b)/2)/((b-a)/2));if(t<a)return Math.round(80*t/a);return Math.max(0,Math.round(80-(t-b)*3))}
+function face(t){return t>55?"sick face (too intense)":t>30?"amazed face":t>12?"happy face":"neutral face (tame)"}
+const PH={"lemon juice":2,"vinegar":2.5,"black coffee":5,"milk":6.5,"baking soda":9,"soap":10,"ammonia":11.5,"bleach":13};
+function mixPH(a,b){const h1=10**-a,o1=10**(a-14),h2=10**-b,o2=10**(b-14);const n=((h1-o1)+(h2-o2))/2;return n>0?-Math.log10(n):n<0?14+Math.log10(-n):7}
+function verdict(p){return p<3?"strongly acidic":p<6.5?"weakly acidic":p<=7.5?"neutral":p<=11?"weakly alkaline":"strongly alkaline"}
+function groverK(N){const th=Math.asin(1/Math.sqrt(N));return Math.max(1,Math.round(Math.PI/4/th-.5))}
+function groverP(N,k){const th=Math.asin(1/Math.sqrt(N));return Math.sin((2*k+1)*th)**2}
+function shift(w,n){return [...w].map(c=>String.fromCharCode((c.charCodeAt(0)-65+n+26)%26+65)).join("")}
+
+function renderAnswers(){
+  const el=document.createElement("div");
+  const ph=Object.keys(PH);
+  const opts=ph.map(k=>`<option>${k}</option>`).join("");
+  el.innerHTML=`
+  <div class="h-row"><div><h2>Answers</h2><p class="sub">Every answer for LoomSTEM, the Vault and Compound Click. MindForge needs none.</p></div></div>
+  <div class="chips" id="ansChips"><button type="button" data-jump="ans-coaster">Rollercoaster</button><button type="button" data-jump="ans-loops">Loops</button><button type="button" data-jump="ans-reveal">Reveal</button><button type="button" data-jump="ans-adv">Adventure</button><button type="button" data-jump="ans-ph">Chemistry</button><button type="button" data-jump="ans-vault">Vault</button><button type="button" data-jump="ans-button">Quantum button</button><button type="button" data-jump="ans-cc">Compound Click</button></div>
+
+  <details class="accbox" id="ans-mf"><summary>MindForge</summary><div class="in"><p>No answers needed. The eight activities are: Memory Vault, Recall Grid, Focus Filter, Spot It, Switch Track, Sequence Sense, Word Sprint, Logic Lab. Points and trophies are stored in the browser only. The hero text says six, there are eight: do not say a number aloud.</p></div></details>
+
+  <details class="accbox" id="ans-coaster"><summary>LoomSTEM: Rollercoaster</summary><div class="in">
+   <div class="tw"><table><thead><tr><th>Step</th><th>Block</th><th>Code it writes</th></tr></thead><tbody>
+    <tr><td>1</td><td>Set gravity to 9.8</td><td><code>set gravity = 9.8</code></td></tr>
+    <tr><td>2</td><td>Track point 80 m (the start)</td><td><code>trackPoint(80)</code></td></tr>
+    <tr><td>3</td><td>Track point 75 m (small dip). Then Run</td><td><code>trackPoint(75)</code></td></tr>
+    <tr><td>4</td><td>Track point 10 m (big drop)</td><td><code>trackPoint(10)</code></td></tr>
+    <tr><td>5</td><td>Track point 45 m (level out). Then Run</td><td><code>trackPoint(45)</code></td></tr></tbody></table></div>
+   <div class="tw"><table><thead><tr><th>Run</th><th>Speeds (m/s)</th><th>Thrill</th><th>Rating</th><th>Message</th></tr></thead><tbody>
+    <tr><td>After step 3 (80, 75)</td><td class="num">9.9</td><td class="num">10</td><td class="key num">66 / 100</td><td>Bit tame</td></tr>
+    <tr><td>After step 5 (80, 75, 10, 45)</td><td class="num">9.9, 37.0, 26.2</td><td class="num">48</td><td class="key num">87 / 100</td><td>Thrilling and safe</td></tr></tbody></table></div>
+   <p><b>The rule behind it:</b> new speed squared = old speed squared + 2 x gravity x (old height - new height). Thrill is the sum of the changes in speed. Rating peaks when thrill is about 33.5 (rating 100), stays 80 to 100 between 12 and 55, and falls fast above 55 (80 minus 3 for each point over). Under 12 it is 80 times thrill divided by 12. Thrill from about 23 to 44 gives 90 or more. The face changes at 12, 30 and 55.</p>
+   <p><b>Stall:</b> the cart stops if it is asked to climb higher than its speed allows. It shows a dizzy face and "ride incomplete".</p>
+   <div class="tool"><h4>Coaster calculator</h4><div class="fields">
+    <label>Gravity<input id="cg" type="number" value="9.8" step="0.1"></label><label>Point 1<input id="c1" type="number" value="80"></label><label>Point 2<input id="c2" type="number" value="75"></label><label>Point 3<input id="c3" type="number" value="10"></label><label>Point 4<input id="c4" type="number" value="45"></label></div><div class="out" id="cout"></div></div>
+  </div></details>
+
+  <details class="accbox" id="ans-loops"><summary>LoomSTEM: Rollercoasters Part 2 (loops)</summary><div class="in">
+   <div class="tw"><table><thead><tr><th>Step</th><th>Block</th><th>Code</th></tr></thead><tbody>
+    <tr><td>1</td><td>Set gravity to 9.8</td><td><code>set gravity = 9.8</code></td></tr>
+    <tr><td>2</td><td>Set height to 90 (a variable)</td><td><code>set height = 90</code></td></tr>
+    <tr><td>3</td><td>Repeat 5 times</td><td><code>repeat 5 times {</code></td></tr>
+    <tr><td>4</td><td>Track point at the current height</td><td><code>trackPoint(height)</code></td></tr>
+    <tr><td>5</td><td>Lower height by 15</td><td><code>height = height - 15</code></td></tr>
+    <tr><td>6</td><td>End of loop. Then Run</td><td><code>}</code></td></tr></tbody></table></div>
+   <p><b>Expected first run:</b> five points at 90, 75, 60, 45, 30 m. Speeds 17.1, 24.2, 29.7, 34.3 m/s. Thrill 34, rating 99 / 100.</p>
+   <p><b>Playground defaults:</b> 5 points, drop 10 m each, climb 30 m after the loop. Points 90, 80, 70, 60, 50, then 70. Thrill 36, rating 97. <b>Stall rule:</b> the last point is (90 minus points x drop) plus the climb. If that is 90 or more, the cart stalls. So it stalls whenever the climb is equal to or larger than the total drop.</p>
+   <div class="tool"><h4>Loop calculator</h4><div class="fields">
+    <label>Points<input id="li" type="number" value="5" min="2" max="8"></label><label>Drop each<input id="ls" type="number" value="10" min="5" max="12"></label><label>Climb<input id="lc" type="number" value="30" min="10" max="70"></label></div><div class="out" id="lout"></div></div>
+  </div></details>
+
+  <details class="accbox" id="ans-reveal"><summary>The reveal: what to click and what you will see</summary><div class="in">
+   <ul class="tight"><li>Click the <b>Real Code</b> tab. It shows <code>@engine: physics</code> followed by <code>on start:</code> and the block code.</li>
+   <li>In the sandbox, choose <b>chemistry</b> or <b>maths</b> as the declared engine and press Run.</li>
+   <li>Exact message: <code>"trackPoint()" belongs to the "physics" engine, but this program only declared: chemistry.</code> Then: "That's exactly the kind of silent mismatch a declared engine is meant to catch."</li>
+   <li>Honest note if asked: the engine check is a prototype feature in LoomSTEM. The Loom story engine shows the header only and does not enforce it.</li></ul>
+  </div></details>
+
+  <details class="accbox" id="ans-adv"><summary>Loom: Build an Adventure (10 steps, optional)</summary><div class="in">
+   <div class="tw"><table><thead><tr><th>Step</th><th>Block</th></tr></thead><tbody>
+    <tr><td>1</td><td>Start node: torch on the ground, cabin ahead (<code>:: start</code>)</td></tr>
+    <tr><td>2</td><td>Choice: <code>+ [Pick up the torch] -> gotTorch</code></td></tr>
+    <tr><td>3</td><td>Choice: <code>+ [Leave it, head for the cabin] -> noTorch</code></td></tr>
+    <tr><td>4</td><td>Node gotTorch with <code>(give torch)</code>, then a choice to the cabin</td></tr>
+    <tr><td>5</td><td>Node noTorch, then a choice to the cabin</td></tr>
+    <tr><td>6</td><td>Node insideCabin: pitch black</td></tr>
+    <tr><td>7</td><td>Choice only with the torch: <code>{item: torch}</code></td></tr>
+    <tr><td>8</td><td>Choice only without the torch: <code>{!item: torch}</code></td></tr>
+    <tr><td>9</td><td>Ending "Prepared" (sawEverything)</td></tr>
+    <tr><td>10</td><td>Ending "In The Dark" (stumbledAround). Then Play</td></tr></tbody></table></div>
+   <p>Play it twice. Take the torch and you see the room. Leave it and you trip over a stool. The point: a condition on an item makes two different stories from one script.</p>
+  </div></details>
+
+  <details class="accbox" id="ans-ph"><summary>LoomSTEM: chemistry mix (pH)</summary><div class="in">
+   <p>Values: lemon juice 2, vinegar 2.5, black coffee 5, milk 6.5, baking soda 9, soap 10, ammonia 11.5, bleach 13. Mixing works on real concentrations, not by averaging the pH numbers. Labels: below 3 strongly acidic, below 6.5 weakly acidic, up to 7.5 neutral, up to 11 weakly alkaline, above that strongly alkaline.</p>
+   <div class="tool"><h4>pH mixer</h4><div class="fields"><label>Substance A<select id="pa">${opts}</select></label><label>Substance B<select id="pb">${opts.replace("<option>lemon juice","<option selected>lemon juice").replace("<option>bleach","<option selected>bleach")}</select></label></div><div class="out" id="pout"></div></div>
+  </div></details>
+
+  <details class="accbox" id="ans-vault"><summary>The Vault: every puzzle</summary><div class="in">
+   <p><b>The clock:</b> 6:00 on screen, but it moves only when the player acts or gets things wrong. At zero, Okonjo gives 90 seconds, then Vale 30, then random rescues (about 20 to 40 seconds). It never fails a player.</p>
+   <div class="tw"><table><thead><tr><th>Scene</th><th>Question</th><th>Right answer</th><th>Wrong answers</th></tr></thead><tbody>
+    <tr><td>1a Variable</td><td>Name the box</td><td class="key">shift or shift_amount</td><td>x and thing are accepted with a nudge. Other names are not offered.</td></tr>
+    <tr><td>1a Variable</td><td>Value (scrambled word ${shift("VAULT",7)})</td><td class="key">7 (decodes to VAULT)</td><td>3, 5, 11, 19 give gibberish. Free retries, no clock cost.</td></tr>
+    <tr><td>1a Flashback</td><td>price = 4, then price = price + 2</td><td class="key">6. Modify: + 10 gives 14</td><td>4, "price + 2", 12</td></tr>
+    <tr><td>1b Until loop</td><td>When to stop; change by how much (scrambled ${shift("LEDGER",14)})</td><td class="key">it_is_a_word; 1. Finds LEDGER at shift 14 (14 tries)</td><td>never or step 0: runs forever (-10 s). shift == 25: runs out (-6 s). Step 5: steps past the answer.</td></tr>
+    <tr><td>1b Flashback</td><td>Counted loop repeat 3; until loop</td><td class="key">3, always; however many it takes</td><td>Forever, until it works, exactly 3</td></tr>
+    <tr><td>Room One</td><td>4 boxes, one key</td><td class="key">Any order</td><td>4 s per box. Key is random.</td></tr>
+    <tr><td>Room Two</td><td>16 boxes, 4 per cycle. How many cycles?</td><td class="key">4</td><td>2 or 3: stops short (-20 s, retry). 6: works but over.</td></tr>
+    <tr><td>Room Three</td><td>64 boxes, 8 per cycle</td><td class="key">8</td><td>4 or 6: stops short. 12: works but over.</td></tr>
+    <tr><td>Room flashback</td><td>Repeat 3 times: how often does check() run? Six checks needed?</td><td class="key">3. Change the 3 to a 6</td><td>Write it six times, add a new repeat block</td></tr>
+    <tr><td>Ledger rule</td><td><code>amount ? ? and country ? ?</code></td><td class="key">amount &gt; 10000 and country != "UK"</td><td>&lt;, ==, 100, 1000000, = (label maker), UK without quotes, "10000"</td></tr>
+    <tr><td>Ledger flashback</td><td>if temperature &gt; 30, temperature 25 / 35</td><td class="key">No / Yes, it opens</td><td>Yes, can't tell, depends on the window</td></tr>
+    <tr><td>Routing code</td><td>Factor 91</td><td class="key">7 and 13 (six steps: divide by 2 to 7; remainders 1, 1, 3, 1, 1, 0)</td><td>None. Each step costs 3 s.</td></tr></tbody></table></div>
+   <h4 style="margin:14px 0 6px">The five quiz questions (one of two variants each, shuffled)</h4>
+   <div class="tw"><table><thead><tr><th>Idea</th><th>Question</th><th>Right answer</th></tr></thead><tbody>
+    <tr><td>Variable</td><td>You wrote shift = 7. What is shift?</td><td class="key">A variable, a named box holding a value</td></tr>
+    <tr><td>Variable</td><td>What did naming the box shift_amount buy you?</td><td class="key">One place to change the value instead of hunting every 7</td></tr>
+    <tr><td>Until loop</td><td>Which loop did the second door?</td><td class="key">An until loop, keep going until it opens</td></tr>
+    <tr><td>Until loop</td><td>What stops an until loop?</td><td class="key">Its stop condition becoming true</td></tr>
+    <tr><td>Counted loop</td><td>Same instruction 3 times: what did you use?</td><td class="key">A counted loop, repeat 3 times</td></tr>
+    <tr><td>Counted loop</td><td>What must a counted loop decide before it starts?</td><td class="key">How many times it will run</td></tr>
+    <tr><td>Conditional</td><td>Why does country = "UK" not belong in an if?</td><td class="key">A single = assigns a value, it does not ask a question</td></tr>
+    <tr><td>Conditional</td><td>Which asks "is amount not equal to zero"?</td><td class="key">amount != 0</td></tr>
+    <tr><td>Search</td><td>What is checking one at a time, in order, called?</td><td class="key">A linear search</td></tr>
+    <tr><td>Search</td><td>64 accounts one at a time, worst case?</td><td class="key">All 64</td></tr></tbody></table></div>
+   <div class="tool"><h4>Cycles calculator</h4><div class="fields"><label>Boxes<input id="rn" type="number" value="64"></label><label>Per cycle<input id="rb" type="number" value="8"></label></div><div class="out" id="rout"></div></div>
+   <p><b>Certificate:</b> the number on it is every box or account the person checked by hand all night.</p>
+  </div></details>
+
+  <details class="accbox" id="ans-button"><summary>The quantum button: sequence, numbers and the worry</summary><div class="in">
+   <ol class="tight"><li>On the start screen, the red button (Do not press). Hum plays on hover or touch (needs one click earlier on the page).</li>
+   <li>A message: "Press the quantum button?" Choose <b>Yes</b> (No cancels).</li>
+   <li>A short static burst. Then "Vale?" (incoming call). Press Show me.</li>
+   <li>Four scenarios. Each: read the classical code, Convert to quantum, Run the quantum code, Next.</li>
+   <li>Summary: "Four jobs. Four quantum tricks." and "Why any of this actually matters." Then Back to reality.</li></ol>
+   <div class="tw"><table><thead><tr><th>Scenario</th><th>Classical</th><th>Quantum</th><th>Numbers</th></tr></thead><tbody>
+    <tr><td>1 The outer door</td><td>Brute-force loop</td><td>Shor's algorithm (find the repeating period)</td><td>26 shifts by hand; a real key is hundreds of digits</td></tr>
+    <tr><td>2 Room One</td><td>Linear search</td><td>Grover's: spin, mark, boost, look</td><td>4 boxes; one tuned step gives 100%</td></tr>
+    <tr><td>3 Rooms Two and Three</td><td>Counted loop</td><td>Grover's, scaled</td><td>16 boxes: 3 steps. 64 boxes: 6 steps</td></tr>
+    <tr><td>4 The Ledger</td><td>Conditional scan</td><td>Same if-rule as the oracle</td><td>64 accounts: 6 steps</td></tr></tbody></table></div>
+   <div class="tool"><h4>Grover steps calculator</h4><div class="fields"><label>Boxes<input id="gn" type="number" value="1000000"></label></div><div class="out" id="gout"></div></div>
+   <p><b>Key facts to say:</b> Shor's algorithm (1994) and Grover's algorithm (1996) are real. Nothing was run on a real quantum computer tonight. Machines big enough do not exist yet. Estimates for machines that matter are often 10 to 20 years, and nobody knows. "Harvest now, decrypt later": data captured today could be opened later. NIST published its first post-quantum encryption standards in August 2024.</p>
+   <p><b>Quantum Playground (optional):</b> seven mini-labs with no clock. One box or many at once; Guess until sure or commit first; Pick a step count; Write the rule at any size; Watch the gap widen (search at scale); Crack your own cipher; True randomness.</p>
+  </div></details>
+
+  <details class="accbox" id="ans-cc"><summary>Compound Click (Scratch)</summary><div class="in">
+   <div class="tw"><table><thead><tr><th>Step</th><th>Blocks, in order</th><th>How to check</th></tr></thead><tbody>
+    <tr><td>Practice</td><td>when this sprite clicked, say Hello! for 2 seconds</td><td>Click the cat: it says Hello</td></tr>
+    <tr><td>1 Clear the stage</td><td>Delete the cat. Add the Crystal sprite. Pick a backdrop</td><td>Crystal on stage</td></tr>
+    <tr><td>2 Memory</td><td>Variables, Make a Variable, name it Savings. Tick the box</td><td>"Savings" shows on stage</td></tr>
+    <tr><td>3 Start at zero</td><td>Script 1: when green flag clicked, set Savings to 0. Script 2: when r key pressed, set Savings to 0</td><td>Green flag shows 0. Press R: 0</td></tr>
+    <tr><td>4 Respond</td><td>when this sprite clicked; change Savings by 10; play sound; change color effect by 25; wait 0.1 seconds; change color effect by -25</td><td>Each click adds 10, plays a sound, flashes</td></tr>
+    <tr><td>5 Make it yours</td><td>Backdrop, costume, change the 10, add a sprite</td><td>Any change works</td></tr>
+    <tr><td>6 Stretch</td><td>Inside the click script after the flash: if Savings &gt; 100 then say "You just built your first fintech feature!" for 2 seconds</td><td>Message appears on the 11th click (Savings 110)</td></tr></tbody></table></div>
+   <h4 style="margin:12px 0 6px">Extensions</h4>
+   <ul class="tight"><li><b>Real returns:</b> change Savings by (pick random 5 to 15).</li>
+   <li><b>Compound interest:</b> second script: when green flag clicked, forever, wait 2 seconds, change Savings by (Savings x 0.01). (Savings grows 1% every 2 seconds. Starting from 0 it stays at 0 until a click adds something.)</li>
+   <li><b>Expenses:</b> a second sprite that changes Savings by a negative number when clicked.</li>
+   <li><b>Milestone:</b> broadcast a message when the threshold is passed. Another script: when I receive it, switch the backdrop and play a fanfare.</li></ul>
+   <p><b>Smallest version that counts:</b> when this sprite clicked, change Savings by 10. That is a complete, working programme.</p>
+  </div></details>`;
+  return el;
+}
+function bindAnswers(root){
+  const g=id=>root.querySelector("#"+id);
+  const calc=()=>{
+    const r=coaster(+g("cg").value||9.8,[+g("c1").value,+g("c2").value,+g("c3").value,+g("c4").value]);
+    g("cout").innerHTML=r.stalled?`Stalled at ${r.at} m. The cart ran out of speed. Ride incomplete.`:`Speeds: ${r.log.map(x=>x.v.toFixed(1)).join(", ")} m/s. Thrill ${r.th.toFixed(1)}. Rating <b>${r.rating} / 100</b>. Face: ${face(r.th)}.`;
+  };
+  ["cg","c1","c2","c3","c4"].forEach(i=>g(i).addEventListener("input",calc));calc();
+  const lc=()=>{
+    const n=+g("li").value,st=+g("ls").value,cl=+g("lc").value;const pts=[];let h=90;
+    for(let i=0;i<n;i++){pts.push(h);h-=st}
+    pts.push(h+cl);
+    const r=coaster(9.8,pts);
+    g("lout").innerHTML=`Points: ${pts.join(", ")}. `+(r.stalled?`Stalled at ${r.at} m (climb ${cl} is not less than total drop ${n*st}).`:`Thrill ${r.th.toFixed(1)}. Rating <b>${r.rating} / 100</b>.`);
+  };
+  ["li","ls","lc"].forEach(i=>g(i).addEventListener("input",lc));lc();
+  const pc=()=>{const a=PH[g("pa").value],b=PH[g("pb").value];const p=mixPH(a,b);g("pout").innerHTML=`pH <b>${p.toFixed(2)}</b>, ${verdict(p)}. (Simple average would be ${((a+b)/2).toFixed(2)}.)`};
+  g("pa").addEventListener("change",pc);g("pb").addEventListener("change",pc);pc();
+  const rc=()=>{const n=+g("rn").value,b=+g("rb").value;g("rout").innerHTML=b>0?`Exact cycles: <b>${Math.ceil(n/b)}</b> (${n} / ${b}).`:"Enter a size above zero."};
+  g("rn").addEventListener("input",rc);g("rb").addEventListener("input",rc);rc();
+  const gc=()=>{const n=Math.max(2,+g("gn").value||2);const k=groverK(n);g("gout").innerHTML=`${n.toLocaleString()} boxes: about <b>${k.toLocaleString()}</b> tuned quantum steps (chance ${(groverP(n,k)*100).toFixed(1)}%). One at a time by hand needs up to ${n.toLocaleString()} looks.`};
+  g("gn").addEventListener("input",gc);gc();
+  root.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>openAns(b.dataset.jump)));
+}
+function openAns(id){
+  const d=document.getElementById(id);if(!d)return;
+  document.querySelectorAll("#main details.accbox").forEach(x=>x.open=false);d.open=true;
+  d.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* ============================================================
+   QUESTIONS
+   ============================================================ */
+const QA=[
+["Careers","Do I need to be good at maths to move into tech?","Not for most roles. Today used counting, comparing and spotting patterns. Testing, business analysis, product, support, delivery, and much of security lean on logic, care and clear writing. Advanced maths matters for a few areas such as quantitative work, data science and quantum research."],
+["Careers","Am I too old to start?","No. Many people move at 40, 50 or later. Bank knowledge is valued in tech teams because they build for banks. Be honest that this is a taster and not a guarantee of a job."],
+["Careers","Will AI take these jobs?","Nobody knows for certain. AI is changing how code is written, so people who understand the problem and can check the result matter more. Do not promise outcomes either way."],
+["Careers","What roles could someone from my area move into?","Examples only. Operations: business analyst, tester, process automation. Compliance and risk: regulatory technology, risk data. Fraud: fraud analytics, security operations. Customer roles: product support, service design, user research. HR: people analytics. Sales: product or technical account roles. Point to the follow-up contact for real options."],
+["Careers","How long does it take to become a developer?","It depends on the role and how much time someone has. Months to years is honest. Many tech-adjacent roles need less than full development skills. Suggest a first step, not a timeline."],
+["Careers","What should I learn first?","A common route is spreadsheet logic, then SQL for data, then a language such as Python, alongside how software teams work. Say it is one route, not the only one."],
+["Careers","Do I need a degree?","Not always. Many roles accept experience, apprenticeships, or certifications. It varies by employer and role."],
+["Careers","What does a developer actually do all day?","Mostly reading existing code, fixing problems, testing, and talking to colleagues. Writing new code is a smaller part. Compound Click is the small version of trigger, logic, feedback."],
+["Careers","Does the bank offer training or secondments?","Say what you know. If you do not know the current programme, say so and point to the follow-up contact in the Checklists tab. Never guess."],
+["Careers","I am worried about my own job. What should I do?","Listen first. Say it is a reasonable worry and that this session is a taster, not advice about their job. Point them to HR or their manager for their own situation, and to the follow-up link for learning options."],
+["Tech","Is LoomScript a real programming language?","Yes. It has its own tokenizer, parser and interpreter, written by the session creator. It is a small teaching language and the engine check is a prototype feature. The ideas are the same as in any language."],
+["Tech","Is the Real Code tab what actually runs?","Yes. The block code is joined into a text script and that text is what the interpreter reads."],
+["Tech","Is Scratch real coding?","Blocks are a real way to learn logic and are widely used for teaching. Professional code is typed as text, but variables, loops, conditions and events are the same ideas."],
+["Tech","Is a variable the same as a spreadsheet cell?","Close. A cell holds a value and has an address like B4. A variable holds a value and has a name you choose. Naming it well is the skill."],
+["Tech","What is Python, SQL, an API?","Python is a popular general programming language. SQL is the language for asking databases questions. An API is a door one program offers so another program can ask it for things."],
+["Tech","What is a compiler or an engine?","A compiler or interpreter reads your text and makes the computer do it. In LoomScript, an engine is a part of the language, such as physics or chemistry. Declaring one tells the language which commands are allowed."],
+["Tech","Is this what programmers really do?","Partly. Programmers predict what code will do, run it, look at what happened, and change it. That is the same loop used in the Compound Click practice."],
+["Tech","Why did the Vault use a cipher?","Ciphers make loops and conditions matter, and they connect to encryption in banking. The Caesar shift is a simple example of the same idea."],
+["Quantum","Is that a real quantum computer?","No. Everything ran on the laptop as a simulation of the maths. Real quantum computers exist, but they are small and error-prone today."],
+["Quantum","Are Shor's and Grover's algorithms real?","Yes. Shor's was published in 1994 and Grover's in 1996. The code shown is a plain-English version of the real steps."],
+["Quantum","Will quantum break my bank account tomorrow?","No. No machine big enough exists. The concern is about data captured now and opened in the future."],
+["Quantum","What is 'harvest now, decrypt later'?","Someone copies encrypted data today, stores it, and waits until a quantum computer can open it. It matters most for data that must stay secret for many years."],
+["Quantum","What is the bank doing about it?","Do not speak for the bank. Say that standards bodies such as NIST published the first post-quantum encryption standards in August 2024, and organisations are planning to move. Point to the security team."],
+["Quantum","When will quantum computers be a real threat?","Estimates vary widely. The session text says 10 to 20 years for machines that matter. Nobody knows, and the honest answer is uncertainty."],
+["Quantum","Why does Grover need 6 steps for 64 boxes?","The steps grow with the square root of the boxes. Roughly 0.785 times the square root of 64, which is about 6. Quadruple the boxes and you only double the steps."],
+["Quantum","Does quantum make everything faster?","No. Only certain problems, such as searching and factoring, get a proven speed-up."],
+["Quantum","Is 'quantum-safe' the same as quantum?","No. Quantum-safe or post-quantum encryption runs on ordinary computers. It is designed to resist quantum attacks."],
+["Session","Do I need an account or to install anything?","No. The four resources run in the browser. Scratch needs the internet but no sign-in."],
+["Session","Will my progress be saved?","MindForge saves scores in the browser only. The others do not save. Screenshot the certificate."],
+["Session","Can I try this at home?","Yes. Give the follow-up link from the Checklists tab."],
+["Session","Can I do it on my phone?","The resources work on a phone. A laptop is better for Scratch."],
+["Session","Is my data collected?","The four resources run in the browser and send nothing. Scratch is run by MIT and needs no account for this session."],
+["Session","I am lost. Is it me?","No. Everyone is lost sometimes. Use Predict, Run, Investigate, Modify: guess, try, look, change one thing."],
+["Session","Can I stop early?","Yes, and say it at the start. Even the smallest working version is real software."]
+];
+function renderQA(){
+  const el=document.createElement("div");
+  const cats=["All",...new Set(QA.map(x=>x[0]))];
+  el.innerHTML=`<div class="h-row"><div><h2>Questions</h2><p class="sub">Likely questions and honest answers. Type to search.</p></div></div>
+  <input class="search" id="qsearch" type="search" placeholder="Search questions, for example: maths, AI, quantum, phone" aria-label="Search questions">
+  <div class="chips" id="qchips">${cats.map((c,i)=>`<button type="button" data-cat="${c}" aria-pressed="${i===0}">${c}</button>`).join("")}</div>
+  <div id="qlist"></div>`;
+  let cat="All";
+  const draw=()=>{
+    const q=el.querySelector("#qsearch").value.trim().toLowerCase();
+    const items=QA.filter(x=>(cat==="All"||x[0]===cat)&&(!q||(x[1]+" "+x[2]).toLowerCase().includes(q)));
+    el.querySelector("#qlist").innerHTML=items.length?items.map(x=>`<details class="qa"><summary>${esc(x[1])}<span class="tag">${x[0]}</span></summary><div class="a">${esc(x[2])}</div></details>`).join(""):`<p class="sub">No match. Try another word, or answer honestly and say you will find out.</p>`;
+  };
+  el.querySelector("#qsearch").addEventListener("input",draw);
+  el.querySelectorAll("#qchips button").forEach(b=>b.addEventListener("click",()=>{cat=b.dataset.cat;el.querySelectorAll("#qchips button").forEach(x=>x.setAttribute("aria-pressed",x===b));draw()}));
+  draw();return el;
+}
+
+/* ============================================================
+   FIXES
+   ============================================================ */
+const FIX=[
+["LoomSTEM","A block will not drag or drop","Trackpad or touch dragging is hard for new users. The drop target is the grey box.","Say: click and hold, move, then let go inside the grey box. Offer a mouse. A helper can drag once, then hand back. On a tablet, use a finger and hold."],
+["LoomSTEM","The cart stalls with a dizzy face","The climb asked for is higher than the speed allows. This is real energy conservation.","Say it is not a bug. Lower the final height or drop further first. Rule in Loops: climb must be less than total drop."],
+["LoomSTEM","Nothing happens when I press Run","Blocks in the wrong order, or a step was missed.","Restart the taster from the menu and follow the step text. Check the Real Code tab for a missing line."],
+["LoomSTEM","The error message appears in the sandbox","The engine box is not set to physics.","This is the reveal. If it is by accident, set the engine back to physics and Run."],
+["LoomSTEM","Someone is on the hub, not the taster","The Full hub link opened the menu.","Tell them to choose Rollercoaster from the menu."],
+["Vault","The button on the story screen stays greyed","A blank is not filled, or the value is wrong.","Click a blank and choose one of the options. On the variable scene, only 7 decodes VAULT. On the loop scene: it_is_a_word and 1."],
+["Vault","Someone is panicking about the clock","They think the clock is real time.","Say: it only moves when you guess wrong, and if it runs out someone rescues you. You cannot lose. Point at the Vale drawer."],
+["Vault","The clock hit zero","Normal. Okonjo, then Vale, then random rescues cover the player.","Say it out loud as part of the story. It is designed to happen."],
+["Vault","Room Two or Three says 'stopped short'","Too few cycles chosen.","Calculate boxes divided by boxes per cycle. Room Two 4, Room Three 8. Costs a few seconds only."],
+["Vault","The Ledger rule turns red","= instead of !=, or UK without quotes, or a wrong number.","Read the red message aloud. Right answers: greater than, 10000, !=, \"UK\"."],
+["Vault","I cannot find the red button","It is on the start screen, not inside the heist.","After the certificate, use the home icon at the top left and confirm, or refresh the page. That returns to the start screen."],
+["Vault","The red button does nothing","Modal already open, or a pop-up blocker or an old cached page.","Refresh the page and press again. On touch, tap once and wait for the confirmation."],
+["Vault","No sound, no hum","Sound is muted, or the browser needs a click first.","Click anywhere on the page, then hover or touch the button. The visuals work without sound. Do not delay the session for audio."],
+["Vault","The static burst is too intense","Some people are sensitive to flashing.","Warn before pressing. Offer: look away for two seconds. The Vale call follows."],
+["Vault","Someone has progressed far ahead","They are a fast learner.","Point them to the Quantum Playground or ask them to help a neighbour. Do not let them press the button early: ask them to wait for the countdown."],
+["Vault","Someone is a whole scene behind","They are stuck or slow.","A helper sits with them. The group waits at the next flashback screen. If they are far behind, let them watch the group screen for the button, then return later."],
+["Compound Click","Scratch will not load or is blocked","The network blocks scratch.mit.edu.","Fallback: facilitator demos on screen and people follow along on paper. Or pre-install the Scratch desktop app. Tell people they can finish at home."],
+["Compound Click","Blocks will not snap together","There is a small gap between blocks.","Drag the lower block until its top edge touches the block above and clicks in."],
+["Compound Click","Savings does not appear on the stage","The variable checkbox is not ticked.","Variables category, tick the box beside Savings."],
+["Compound Click","Clicking the crystal does nothing","The script is on the wrong sprite, or the hat block is missing.","Click the crystal in the sprite list and check the scripts area belongs to it."],
+["Compound Click","No sound plays","The sprite has no sounds, or the volume is off.","Open the Sounds tab and add one. Or skip the sound block. The core version does not need it."],
+["Compound Click","The colour flash is not visible","The wait block is missing.","Add wait 0.1 seconds between the two colour effect blocks."],
+["Compound Click","R key does nothing","The key dropdown still says space.","Change the dropdown to r."],
+["Compound Click","The variable is stuck at a big number","No reset script.","Press the green flag or the R key after Step 3."],
+["Room","Wi-Fi drops","Network outage.","The four resources are single files and keep working once loaded. Scratch needs the internet. Continue with the group screen and take-home."],
+["Room","The projector or screen share fails","Cable, input or remote share problem.","Use a helper's laptop as the shared screen. Remote: switch to the backup share plan in the Remote tab."],
+["Room","A laptop crashes","Old machine or too many tabs.","Refresh. Progress in MindForge stays. Others restart from the start of the taster. Pair the person with a neighbour."],
+["Room","Fire alarm or emergency","Real world.","Follow the building procedure. Stop the clock (Pause). Restart at the segment you left."],
+["Room","We are running late","Over time on a segment.","Use the cuts list on the Run tab. Never cut the reveal, the button or the showcase."],
+["Room","Someone dominates the questions","Very keen or expert.","Say: great question, hold it for the end or ask a helper to take it aside. Give them a stretch task."],
+["Room","Someone is upset or overwhelmed","Personal reaction to the topic.","Pause the group work. A helper sits with them quietly. Do not put anyone on the spot."]
+];
+function renderFix(){
+  const el=document.createElement("div");
+  const areas=["All",...new Set(FIX.map(x=>x[0]))];
+  el.innerHTML=`<div class="h-row"><div><h2>Fixes</h2><p class="sub">Type what you see. The fix is next to it.</p></div></div>
+  <input class="search" id="fsearch" type="search" placeholder="Search a symptom, for example: sound, snap, clock, blocked" aria-label="Search fixes">
+  <div class="chips" id="fchips">${areas.map((c,i)=>`<button type="button" data-cat="${c}" aria-pressed="${i===0}">${c}</button>`).join("")}</div>
+  <div id="flist"></div>`;
+  let cat="All";
+  const draw=()=>{
+    const q=el.querySelector("#fsearch").value.trim().toLowerCase();
+    const items=FIX.filter(x=>(cat==="All"||x[0]===cat)&&(!q||x.join(" ").toLowerCase().includes(q)));
+    el.querySelector("#flist").innerHTML=items.length?items.map(x=>`<div class="fix"><span class="pill">${x[0]}</span><h4 style="margin-top:6px">${esc(x[1])}</h4><dl><dt>Cause</dt><dd>${esc(x[2])}</dd><dt>Fix</dt><dd>${esc(x[3])}</dd></dl></div>`).join(""):`<p class="sub">No match. Say you will look into it, ask a helper, and keep the group moving.</p>`;
+  };
+  el.querySelector("#fsearch").addEventListener("input",draw);
+  el.querySelectorAll("#fchips button").forEach(b=>b.addEventListener("click",()=>{cat=b.dataset.cat;el.querySelectorAll("#fchips button").forEach(x=>x.setAttribute("aria-pressed",x===b));draw()}));
+  draw();return el;
+}
+
+/* ============================================================
+   REMOTE AND HELPERS
+   ============================================================ */
+function renderTeam(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Remote and helpers</h2><p class="sub">One facilitator dials in to one site. Helpers are the hands and eyes in every room.</p></div></div>
+  <div class="grid2">
+   <div class="card"><h3>If you are the remote facilitator</h3><ul class="tight">
+    <li><b>T minus 10 tech check.</b> Camera, sound both ways, screen share of the resources. Ask the room helper to read out what they see and hear.</li>
+    <li><b>Two screens.</b> One for this desk, one for the shared resource. Or use this desk on a phone.</li>
+    <li><b>Slow down.</b> Lag adds about a second. Pause after every instruction. Ask for a thumbs up from the helper.</li>
+    <li><b>Use the helper as your hands.</b> Agree signals: thumbs up means most people are ready. Two hands up means slow down. A helper holding a card means a question.</li>
+    <li><b>Timing.</b> Tick Remote (+5) at the top. It adds a small buffer in LoomSTEM and the Vault.</li>
+    <li><b>Mic drops.</b> Do the reveal and the button countdown slowly. Ask the helper to say 'now' at the right moment if the delay is bad.</li>
+    <li><b>Backup share plan.</b> If your share fails, a helper shares their own screen on the room display and you talk over it.</li></ul></div>
+   <div class="card"><h3>If the link drops</h3><ol class="tight">
+    <li>Helper says: 'We have lost the connection for a moment. Carry on with the puzzle you are on.'</li>
+    <li>The lead helper opens this desk and reads the current segment's Say lines.</li>
+    <li>Group work continues. Nothing in the resources needs a live link.</li>
+    <li>If the link is not back in five minutes, the lead helper runs the Vault and the button using the Answers tab, then closes with the take-home link.</li>
+    <li>Note the time you lost and tell the organiser afterwards.</li></ol></div>
+   <div class="card"><h3>What helpers do</h3><ul class="tight">
+    <li>Greet by name. Sit next to the nervous people first.</li>
+    <li>Point, do not click. Ask: 'What do you think will happen?' before touching anything.</li>
+    <li>Watch for the silent ones. People who avoid computers will not ask for help.</li>
+    <li>Keep the pace: help people back to the right screen at each breather.</li>
+    <li>Tell the facilitator quickly if more than three people are stuck on the same thing.</li>
+    <li>Do the checklists (Before, During, After).</li></ul></div>
+   <div class="card"><h3>What helpers say</h3><ul class="tight">
+    <li>'Nothing can break here.'</li>
+    <li>'Shall I show you once, and then you try?'</li>
+    <li>'That is a great mistake. Look at what it tells you.'</li>
+    <li>'You are not behind. This is the hard bit for everyone.'</li>
+    <li>'Try the smallest version first.'</li>
+    <li>'Let us find the help together.'</li></ul></div>
+   <div class="card"><h3>What helpers avoid</h3><ul class="tight">
+    <li>Taking the mouse and doing it for the person.</li>
+    <li>Jargon without a plain-English meaning. Use the Glossary.</li>
+    <li>Saying 'it is easy'. It is not easy the first time.</li>
+    <li>Answering career or job security questions with promises.</li>
+    <li>Talking over the facilitator during a moment.</li></ul></div>
+   <div class="card"><h3>Helper signals</h3><div class="tw"><table><thead><tr><th>Signal</th><th>Meaning</th></tr></thead><tbody>
+    <tr><td>Thumbs up</td><td>Most people are ready</td></tr><tr><td>Two hands up</td><td>Slow down</td></tr><tr><td>Hand flat, palm down</td><td>Quiet, wait</td></tr><tr><td>Tap wrist</td><td>Running behind on time</td></tr><tr><td>Point at a person</td><td>This person needs help</td></tr></tbody></table></div></div>
+  </div>`;
+  return el;
+}
+
+/* ============================================================
+   CHECKLISTS
+   ============================================================ */
+const CHK=[
+["The day before",["Open all four resources on a test laptop. Confirm they load and the buttons work.","Check the Scratch site loads on the venue network, with no sign-in.","Confirm the number of laptops, the number of helpers and where they stand.","Brief the helpers with the Team tab. Agree the helper signals.","Decide the mode: Full 110, Core 90 or Express 72. Set it at the top.","Fill in the details below for the closing."]],
+["60 to 30 minutes before",["Laptops on charge and logged in. Fresh browser tab for each resource.","On shared machines, clear site data for MindForge so old scores do not appear.","Sound on low. Speakers tested for the button hum.","Projector or remote share tested. Fonts and colours readable from the back.","Water, pens and paper for the fallback.","Certificate print or screenshot plan agreed."]],
+["10 minutes before (remote: also do the tech check)",["Camera and sound checked both ways with the room helper.","This desk open on a second screen or phone. Clock at 00:00.","Helpers know their spots. Doors ready to open.","Every laptop is on 01 MindForge."]],
+["During: quick cues",["Start the clock at doors open.","Press Next segment as you move on.","Say the clock line before the Vault starts: it never runs out.","Warn about the static before the button.","Pause after the reveal. Pause after the button.","Call the Compound Click checkpoints at +5 and +10 minutes."]],
+["After the session",["Thank everyone. Give the follow-up link.","Take a photo of the board or the room if allowed.","Note what ran long and what worked.","Note any questions you could not answer and pass them on.","Reset laptops: close tabs, clear scores if shared.","Tell the organiser about anything that broke."]]
+];
+function renderChecklists(){
+  const el=document.createElement("div");
+  const state=load("checks",{});const det=load("details",{});
+  let n=0,doneN=0;CHK.forEach((g,gi)=>g[1].forEach((x,i)=>{n++;if(state[gi+"_"+i])doneN++}));
+  el.innerHTML=`<div class="h-row"><div><h2>Checklists</h2><p class="sub">Ticks are saved in this browser only.</p></div><button class="btn small" id="clearChecks" type="button">Clear all ticks</button></div>
+  <div class="prog"><i id="progBar"></i></div><p class="sub" id="progTxt"></p>
+  <div class="card" style="margin-bottom:14px"><h3>Your details for today</h3><p class="sub">Type these once. They are for you to read out at the close.</p>
+   <div class="fields">
+    <label>Follow-up link<input class="field" style="width:min(100%,22em)" id="d_link" placeholder="Where to go next" value="${esc(det.link||"")}"></label>
+    <label>Contact name or team<input class="field" style="width:min(100%,16em)" id="d_who" value="${esc(det.who||"")}"></label>
+    <label>Room, Wi-Fi or code<input class="field" style="width:min(100%,16em)" id="d_room" value="${esc(det.room||"")}"></label>
+    <label>Lead helper<input class="field" style="width:min(100%,14em)" id="d_help" value="${esc(det.help||"")}"></label>
+    <label>Who to call if stuck<input class="field" style="width:min(100%,16em)" id="d_mark" value="${esc(det.mark||"")}"></label>
+   </div></div>
+  <div class="grid2" id="chkGrid">${CHK.map((g,gi)=>`<div class="card checks"><h3>${esc(g[0])}</h3>${g[1].map((x,i)=>`<label class="${state[gi+"_"+i]?"on":""}"><input type="checkbox" data-k="${gi}_${i}" ${state[gi+"_"+i]?"checked":""}><span>${esc(x)}</span></label>`).join("")}</div>`).join("")}</div>`;
+  const upd=()=>{const s=load("checks",{});let d=0;CHK.forEach((g,gi)=>g[1].forEach((x,i)=>{if(s[gi+"_"+i])d++}));el.querySelector("#progBar").style.width=(d/n*100)+"%";el.querySelector("#progTxt").textContent=d+" of "+n+" done"};
+  el.querySelectorAll("#chkGrid input").forEach(c=>c.addEventListener("change",()=>{const s=load("checks",{});s[c.dataset.k]=c.checked;store("checks",s);c.parentElement.classList.toggle("on",c.checked);upd()}));
+  el.querySelector("#clearChecks").addEventListener("click",()=>{store("checks",{});el.querySelectorAll("#chkGrid input").forEach(c=>{c.checked=false;c.parentElement.classList.remove("on")});upd()});
+  ["link","who","room","help","mark"].forEach(k=>el.querySelector("#d_"+k).addEventListener("input",e=>{const d=load("details",{});d[k]=e.target.value;store("details",d)}));
+  upd();return el;
+}
+
+/* ============================================================
+   PEOPLE
+   ============================================================ */
+const PEOPLE=[
+["Jamie, Frank, Colin","Avoid computers, will not ask for help, may sit and watch.","Helper sits beside in the first two minutes. Say: 'Press Start. Nothing can break. I am here.'","Skipping is fine. Small wins count."],
+["Jack, Tommy","Willing but nervous, read every word, take warnings literally.","Read the clock line twice. Give one clear instruction at a time.","'That red message is a clue, not a mistake.'"],
+["Lucy, Viktor, Ingrid","Fast, logical, may be under-challenged. Excel users.","Ask them to predict, then explain to the table. Link to IF, VLOOKUP and dragging a formula down.","'Same rule as the IF in Excel. What would you change?'"],
+["Ben, Wei Ling","Comfortable with tech, sceptical of gimmicks.","Show the Real Code tab and the error. Give them the Playground or the Compound Click extensions.","'Look at the code. It is a real interpreter.'"],
+["Yuki, Chidinma, Beatriz, Sandra","Fluent in English but idiom and humour may be missed.","Short plain sentences. Repeat the key action once. Avoid puns and sarcasm.","'Click here. Then click here.'"],
+["Tommy, Kwame, Deborah","Worried about their career and their age.","Be honest. Do not promise a job. Link skills they already use.","'This is a taster to see what you think. Your experience is an asset.'"],
+["Liam, Aisling","Low stakes, here for a change of scene.","Let them enjoy it. Give them a fun stretch, like the adventure or the random returns.","'Nice one. Try changing that.'"],
+["Kwame, Esther, Wei Ling","Curious about quantum, may worry about security.","Pair the worry with the answer: post-quantum standards and the need for people.","'That is exactly the right worry. Here is what is being done.'"],
+["Meera, Nadia","Younger, may feel they should be the techy one.","Reassure that being wrong is the point. Invite them to help a neighbour.","'A lot of people find this bit tricky.'"],
+["Marcus, Grace","Motivated by a family member's interest in tech.","Show them something to take home and share.","'Take the certificate. Show them the Compound Click.'"],
+["Devraj, Andre","Managers, want vocabulary and context.","Give the Glossary words. Explain what roles do.","'Here is what a developer, tester and analyst do.'"],
+["Raymond","Sent by his manager, sceptical.","Give a quick early win. Do not force him.","'What would you build if you could?'"]
+];
+function renderPeople(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Who you will meet</h2><p class="sub">From the persona walkthrough. Look for the pattern, not the name.</p></div></div>
+  <div class="tw"><table><thead><tr><th>Who</th><th>What you will see</th><th>What to do</th><th>Line to say</th></tr></thead><tbody>${PEOPLE.map(p=>`<tr><td><b>${esc(p[0])}</b></td><td>${esc(p[1])}</td><td>${esc(p[2])}</td><td>${esc(p[3])}</td></tr>`).join("")}</tbody></table></div>
+  <div class="card"><h3>Three lines that work for anyone</h3><ul class="tight"><li>'It is fine to stop early.'</li><li>'What do you think will happen?'</li><li>'That is a great mistake. What does it tell you?'</li></ul></div>`;
+  return el;
+}
+
+/* ============================================================
+   GLOSSARY
+   ============================================================ */
+const GL=[
+["Variable","A box with a name that holds a value you can change."],
+["Loop","Doing something again. A counted loop runs a set number of times. An until loop keeps going until something is true."],
+["Conditional (if)","A question the program asks, then acts on the answer."],
+["Event or trigger","Something that happens, like a click, that starts a script."],
+["Function","A named set of steps you can run when you need it, like trackPoint()."],
+["Algorithm","A set of steps to solve a problem."],
+["Linear search","Checking one item at a time, in order."],
+["Cipher","A way of scrambling a message. A Caesar cipher shifts each letter along."],
+["Interpreter or compiler","The program that reads your code and makes the computer do it."],
+["Engine (LoomScript)","A part of the language, such as physics or chemistry, that owns certain commands."],
+["Sprite","A character or object on the Scratch stage."],
+["Bug and debug","A bug is a mistake in a program. Debugging is finding and fixing it."],
+["PRIMM","Predict, Run, Investigate, Modify. A way to learn by guessing first."],
+["Grover's algorithm","A quantum method for searching. It needs about the square root of the number of items in steps."],
+["Shor's algorithm","A quantum method for finding the factors of a big number. It threatens some encryption."],
+["Oracle","A rule that says yes or no to each item without showing how it decided."],
+["Post-quantum encryption","Encryption designed to resist quantum computers. It runs on ordinary computers."],
+["Harvest now, decrypt later","Copying encrypted data today to open it when quantum computers are big enough."],
+["Domain-specific language","A small language built for one job, like a bank's rules language."],
+["NIST","The US standards body. It published the first post-quantum encryption standards in August 2024."]
+];
+function renderGlossary(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Glossary</h2><p class="sub">Plain English you can say out loud.</p></div></div>
+  <input class="search" id="gsearch" type="search" placeholder="Search a word" aria-label="Search glossary"><div class="tw" style="margin-top:12px"><table><thead><tr><th style="width:32%">Word</th><th>Say it like this</th></tr></thead><tbody id="gbody"></tbody></table></div>`;
+  const draw=()=>{const q=el.querySelector("#gsearch").value.trim().toLowerCase();el.querySelector("#gbody").innerHTML=GL.filter(x=>!q||(x[0]+" "+x[1]).toLowerCase().includes(q)).map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td></tr>`).join("")};
+  el.querySelector("#gsearch").addEventListener("input",draw);draw();return el;
+}
+
+/* ============================================================
+   ROUTER AND RENDER (grouped tabs)
+   ============================================================ */
+const DOC_URL="https://claude.ai/artifact/Wc5NmcyQFYZvouZBMuataP";
+const DECK_URL="https://claude.ai/artifact/2GfafxvpEzhzh95s8NibZo";
+const TABS=[["run","Today"],["answers","Answers"],["help","Help"],["team","Team"],["prep","Prep"],["plan","Plan and files"]];
+const SUBS={
+  help:[["panic","Panic card"],["questions","Questions"],["fixes","Fixes"],["gloss","Glossary"]],
+  team:[["helpers","Helpers and remote"],["briefing","Helper briefing"],["people","People and access"]],
+  prep:[["checks","Checklists"],["rehearsal","Rehearsal"],["kit","Kit and room"],["messages","Messages"]],
+  plan:[["overview","Session plan"],["walk","Persona walkthrough"],["files","Files and links"]]
+};
+const HASHMAP={run:["run"],answers:["answers"],help:["help","panic"],panic:["help","panic"],questions:["help","questions"],fixes:["help","fixes"],gloss:["help","gloss"],
+  team:["team","helpers"],briefing:["team","briefing"],people:["team","people"],prep:["prep","checks"],checks:["prep","checks"],rehearsal:["prep","rehearsal"],kit:["prep","kit"],messages:["prep","messages"],
+  plan:["plan","overview"],walk:["plan","walk"],files:["plan","files"]};
+S.sub={help:"panic",team:"helpers",prep:"checks",plan:"overview"};
+const COPY={};
+function buildTabs(){
+  const t=$("#tabs");t.innerHTML=TABS.map(x=>`<button type="button" role="tab" data-tab="${x[0]}" aria-selected="${x[0]===S.tab}">${x[1]}</button>`).join("");
+  t.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
+}
+function setTab(id,sub){
+  S.tab=id;if(sub)S.sub[id]=sub;
+  $("#tabs").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===id));
+  try{history.replaceState(null,"","#"+(SUBS[id]?S.sub[id]:id))}catch(e){}
+  render(false);window.scrollTo({top:0,behavior:"auto"});
+}
+function goToken(tok){const m=HASHMAP[tok];if(!m)return false;S.tab=m[0];if(m[1])S.sub[m[0]]=m[1];return true}
+function copyBtn(key,text,label){COPY[key]=text;return `<button class="btn small" type="button" data-copy="${key}">${label||"Copy text"}</button>`}
+const RENDER={
+  help:{panic:()=>renderPanic(),questions:()=>renderQA(),fixes:()=>renderFix(),gloss:()=>renderGlossary()},
+  team:{helpers:()=>renderTeam(),briefing:()=>renderBriefing(),people:()=>renderPeople()},
+  prep:{checks:()=>renderChecklists(),rehearsal:()=>renderRehearsal(),kit:()=>renderKit(),messages:()=>renderMessages()},
+  plan:{overview:()=>renderPlan(),walk:()=>renderWalk(),files:()=>renderFiles()}
+};
+function render(keep){
+  const y=window.scrollY;
+  const m=$("#main");m.innerHTML="";
+  let el;
+  if(S.tab==="run"){el=renderRun()}
+  else if(S.tab==="answers"){el=renderAnswers()}
+  else{
+    el=document.createElement("div");
+    const nav=document.createElement("div");nav.className="chips subnav";
+    nav.innerHTML=SUBS[S.tab].map(x=>`<button type="button" data-sub="${x[0]}" aria-pressed="${x[0]===S.sub[S.tab]}">${x[1]}</button>`).join("");
+    nav.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setTab(S.tab,b.dataset.sub)));
+    el.appendChild(nav);el.appendChild(RENDER[S.tab][S.sub[S.tab]]());
+  }
+  m.appendChild(el);
+  if(S.tab==="answers")bindAnswers(m);
+  if(S.tab==="run")bindRun(m);
+  m.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>copyText(COPY[b.dataset.copy]||"")));
+  if(keep)window.scrollTo(0,y);
+}
+
+/* ---------- checklist helper ---------- */
+function checkGroups(groups,key,title,sub){
+  const el=document.createElement("div");
+  const st=load(key,{});let n=0;groups.forEach(g=>n+=g[1].length);
+  el.innerHTML=`<div class="h-row"><div><h2>${title}</h2><p class="sub">${sub}</p></div><button class="btn small" data-clear type="button">Clear ticks</button></div>
+  <div class="prog"><i data-bar></i></div><p class="sub" data-txt></p>
+  <div class="grid2">${groups.map((g,gi)=>`<div class="card checks"><h3>${esc(g[0])}</h3>${g[1].map((x,i)=>`<label class="${st[gi+"_"+i]?"on":""}"><input type="checkbox" data-k="${gi}_${i}" ${st[gi+"_"+i]?"checked":""}><span>${esc(x)}</span></label>`).join("")}</div>`).join("")}</div>`;
+  const upd=()=>{const s=load(key,{});let d=0;groups.forEach((g,gi)=>g[1].forEach((x,i)=>{if(s[gi+"_"+i])d++}));el.querySelector("[data-bar]").style.width=(d/n*100)+"%";el.querySelector("[data-txt]").textContent=d+" of "+n+" done"};
+  el.querySelectorAll("input[data-k]").forEach(c=>c.addEventListener("change",()=>{const s=load(key,{});s[c.dataset.k]=c.checked;store(key,s);c.parentElement.classList.toggle("on",c.checked);upd()}));
+  el.querySelector("[data-clear]").addEventListener("click",()=>{store(key,{});el.querySelectorAll("input[data-k]").forEach(c=>{c.checked=false;c.parentElement.classList.remove("on")});upd()});
+  upd();return el;
+}
+
+/* ============================================================
+   HELP: panic card
+   ============================================================ */
+function renderPanic(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Panic card</h2><p class="sub">Read this if the session is going wrong. It is one screen.</p></div></div>
+  <div class="grid2">
+   <div class="card"><h3>Do these five things</h3><ol class="tight">
+    <li><b>Breathe and smile.</b> Nobody knows your plan except you.</li>
+    <li><b>Press Pause</b> at the top and say: 'Let us take two minutes.'</li>
+    <li><b>Pick the smallest thing that still works</b> (the list on the right).</li>
+    <li><b>Send a helper</b> to check the room while you carry on.</li>
+    <li><b>Never cut</b> the reveal, the red button or the showcase.</li></ol>
+    <p class="sub" style="margin-top:10px">It is fine to say: 'I do not know. I will find out and tell you.'</p></div>
+   <div class="card"><h3>Smallest thing that still works</h3><ul class="tight">
+    <li><b>Running late:</b> skip the chemistry demo, the loops, the quiz or the routing code. See Today, 'Running late or early?'.</li>
+    <li><b>Vault will not load:</b> demo the red button on your own screen. Read the button script from the Answers tab.</li>
+    <li><b>Scratch blocked:</b> demo on the big screen. Tell people they can finish at home.</li>
+    <li><b>Projector or link fails:</b> use a helper's laptop as the shared screen.</li>
+    <li><b>Room goes quiet or flat:</b> stand up, ask everyone to stand, take a two-minute breather.</li></ul></div>
+   <div class="card"><h3>The emergency 45 minutes</h3><div class="tw"><table><thead><tr><th>Minutes</th><th>What</th></tr></thead><tbody>
+    <tr><td>2</td><td>Welcome and the three rules</td></tr>
+    <tr><td>12</td><td>Rollercoaster steps 1 to 5, then the reveal</td></tr>
+    <tr><td>16</td><td>Vault: Act 1a and 1b, then the red button and the worry</td></tr>
+    <tr><td>12</td><td>Compound Click: demo, then the smallest version (click adds 10)</td></tr>
+    <tr><td>3</td><td>Showcase and close</td></tr></tbody></table></div></div>
+   <div class="card"><h3>If your link or your voice drops</h3><ol class="tight"><li>The lead helper says: 'Carry on with the puzzle you are on.'</li><li>The lead helper opens this desk and reads the Say lines for the current segment.</li><li>Group work continues. Nothing in the games needs a live link.</li></ol></div>
+  </div>`;
+  return el;
+}
+
+/* ============================================================
+   TEAM: helper briefing
+   ============================================================ */
+const HUDDLE=`Helper huddle (5 minutes, before the doors open)
+1. Welcome. Thank you for helping. You do not need to know the answers. The Desk does.
+2. Your three jobs: greet people by name; sit beside the nervous ones first; keep everyone on the right screen.
+3. Point, do not click. Ask 'What do you think will happen?' before touching anything.
+4. Watch the quiet ones. People who avoid computers will not ask for help.
+5. The three moments we protect: the reveal, the red button, the showcase. Do not talk over them.
+6. Signals: thumbs up = ready; two hands up = slow down; tap wrist = running behind; point at a person = needs help.
+7. If more than three people are stuck on the same thing, tell the facilitator quickly.
+8. Say 'nothing can break here' often.
+9. If the link drops, the lead helper reads the Say lines from the Desk.
+10. Questions? Where do you each stand?`;
+const CARDS=`HELPER CUE CARDS (cut out)
+
+CARD 1: YOUR JOBS
+Greet by name. Sit with the nervous first. Keep people on the right screen.
+
+CARD 2: SAY
+'Nothing can break here.'
+'Shall I show you once, then you try?'
+'That is a great mistake. What does it tell you?'
+'Try the smallest version first.'
+
+CARD 3: AVOID
+Taking the mouse. Jargon. 'It is easy.' Promising jobs. Talking over the moments.
+
+CARD 4: SIGNALS
+Thumbs up: ready. Two hands up: slow down. Tap wrist: behind. Point: this person needs help.
+
+CARD 5: THE SESSION (Core)
+00:00 MindForge. 00:11 LoomSTEM. 00:35 The Vault. 01:09 Compound Click. 01:30 Close.
+Protect: the reveal, the red button, the showcase.`;
+function renderBriefing(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Helper briefing</h2><p class="sub">A five minute huddle to read aloud, and cue cards to copy and print.</p></div></div>
+  <div class="grid2">
+   <div class="card"><h3>Five minute huddle</h3><pre class="pre">${esc(HUDDLE)}</pre>${copyBtn("huddle",HUDDLE,"Copy huddle script")}</div>
+   <div class="card"><h3>Cue cards</h3><pre class="pre">${esc(CARDS)}</pre>${copyBtn("cards",CARDS,"Copy cue cards")}<p class="sub" style="margin-top:10px">Paste into a document and print one set per helper.</p></div>
+   <div class="card"><h3>Traffic-light cards</h3><p>Quiet people will not ask for help. Give everyone three small cards or sticky notes:</p><ul class="tight"><li><b>Green:</b> I am fine.</li><li><b>Amber:</b> Please slow down.</li><li><b>Red:</b> Please come over.</li></ul><p class="sub" style="margin-top:8px">Sticky notes work if you cannot print. This is a suggestion, not something the games need.</p></div>
+   <div class="card"><h3>Helper numbers</h3><p>A suggestion: one helper for every six to eight people, with one lead helper who has this Desk open. Spread them across the room, not at the front.</p></div>
+  </div>`;
+  return el;
+}
+
+/* ============================================================
+   TEAM: people and access
+   ============================================================ */
+const _oldPeople=renderPeople;
+renderPeople=function(){
+  const el=_oldPeople();
+  const a=document.createElement("div");
+  a.innerHTML=`<div class="card" style="margin-top:14px"><h3>Inclusion and access</h3><ul class="tight">
+   <li><b>Flashing:</b> the red button has a short burst of static. Warn people before, and say they can look away.</li>
+   <li><b>Sound:</b> nothing depends on sound. The visuals work without it.</li>
+   <li><b>Dragging:</b> the block dragging is hard on a trackpad. Offer a mouse, or a helper drags once and hands back.</li>
+   <li><b>Screen readers:</b> the games are visual and drag-based and are not fully accessible. Be honest and pair the person with a helper as a co-driver.</li>
+   <li><b>Reading:</b> never ask anyone to read aloud. Read important on-screen text yourself.</li>
+   <li><b>English as a second language:</b> short plain sentences, repeat the key action once, no idioms or puns.</li>
+   <li><b>Anxiety:</b> tell people the plan first, do not cold-call, and keep the breathers.</li>
+   <li><b>Remote:</b> turn captions on, face the camera, and repeat what the room says.</li>
+   <li><b>Colour:</b> if someone struggles to tell colours apart in a game, describe what is on screen aloud.</li></ul></div>`;
+  el.appendChild(a);return el;
+};
+
+/* ============================================================
+   PREP: rehearsal, kit, messages
+   ============================================================ */
+const REHEARSAL=[
+ ["Read (about 10 minutes)",["Read the Session plan and the Persona walkthrough in this Desk.","Scroll through the Today tab once in Core mode.","Skim the Answers tab so you know where things are."]],
+ ["Do it as a learner (about 35 minutes)",["Do MindForge for five minutes.","Do the Rollercoaster and the reveal, with the Real Code tab and the chemistry error.","Play the Vault including the red button.","Build Compound Click steps 1 to 4 in Scratch.","Write down every moment you were unsure. Those are the moments the room will be unsure too."]],
+ ["Practise out loud (about 10 minutes)",["Say the reveal lines aloud twice. Record yourself on a phone and listen back.","Practise the button countdown and the static warning.","Say the 'harvest now, decrypt later' script in your own words."]],
+ ["Test the room hardware (about 10 minutes)",["Connect to the real projector or screen share.","Play the button hum through the real speakers.","Load Scratch on the venue Wi-Fi."]],
+ ["If you can (about 20 minutes)",["Run a short huddle with the helpers using the Helper briefing tab.","Remote: run the tech check with the room helper the day before.","Agree who is lead helper and where each helper stands."]]
+];
+function renderRehearsal(){return checkGroups(REHEARSAL,"rehearsal","Rehearsal","About 75 minutes in total. You cannot over-prepare the reveal and the button. Ticks are saved in this browser.")}
+const KIT=[
+ ["Technology",["One laptop per person, plus one or two spare.","Chargers and extension leads.","A mouse for each laptop if you can. Trackpads make dragging hard.","Projector or screen, with the right adaptors, or a tested remote share.","Speakers for the button hum (optional).","Wi-Fi details written down. Scratch tested on that network.","All four resources open in their own tab on every laptop."]],
+ ["People and paper",["Helper badges or lanyards that say 'Ask me'.","Green, amber and red cards or sticky notes.","Paper and pens for the fallback.","A printed copy of the Panic card and the Answers page.","Your printed run sheet (use Copy run sheet on the Today tab).","Water and something to eat if you can."]],
+ ["Room",["Seats where everyone can see the screen.","Helpers spread across the room, not clustered.","Space to stand and stretch at the breathers.","Exits and toilets known, and said once at the start.","A clock or a phone timer where you can see it."]]
+];
+function renderKit(){return checkGroups(KIT,"kit","Kit and room","Everything to bring or check. Ticks are saved in this browser.")}
+const MSG_JOIN=`Subject: Pivot into Tech: what to expect
+
+Thanks for signing up. Here is what to know before you come.
+
+- You do not need any coding or technology experience.
+- It is a hands-on taster of about 90 minutes. Nobody will be tested.
+- We will break a rollercoaster, crack a vault and build a small app.
+- Please bring nothing, or a laptop if we have asked you to.
+- It is fine to stop early and fine to ask for help.
+
+See you there.`;
+const MSG_FEEDBACK=`Feedback (30 seconds)
+1. How did you feel when you arrived? (1 to 5)
+2. How do you feel now? (1 to 5)
+3. What was the best moment?
+4. What was confusing or too fast?
+5. Would you like to try more? (yes / maybe / no)
+6. Anything else?`;
+const MSG_REPORT=`Report back after the session
+Date and place:
+Mode used (Full, Core, Express) and remote or in room:
+Number of people and helpers:
+What ran long or short:
+What broke or was confusing (with what you did):
+Questions I could not answer:
+Best moments:
+People who might want a follow-up chat (first names only, and only if they agreed):
+One thing I would change:`;
+const MSG_THANKS=`Thank you message to helpers
+Thank you for helping today. I could not have done it without you. Here is what worked well: [add your own]. If you noticed anything I could do better, I would love to hear it.`;
+function renderMessages(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Messages</h2><p class="sub">Ready-made text to copy, edit and send or print.</p></div></div>
+  <div class="grid2">
+   <div class="card"><h3>Joining instructions for attendees</h3><pre class="pre">${esc(MSG_JOIN)}</pre>${copyBtn("join",MSG_JOIN)}</div>
+   <div class="card"><h3>Feedback questions (paper or form)</h3><pre class="pre">${esc(MSG_FEEDBACK)}</pre>${copyBtn("fb",MSG_FEEDBACK)}</div>
+   <div class="card"><h3>Report back after the session</h3><pre class="pre">${esc(MSG_REPORT)}</pre>${copyBtn("rep",MSG_REPORT)}<p class="sub" style="margin-top:8px">Send this to the organiser within a day. It is the most useful thing you can give them.</p></div>
+   <div class="card"><h3>Thank you to helpers</h3><pre class="pre">${esc(MSG_THANKS)}</pre>${copyBtn("thx",MSG_THANKS)}</div>
+  </div>`;
+  return el;
+}
+
+/* ============================================================
+   PLAN: overview, walkthrough, files
+   ============================================================ */
+const WALK=[
+["MindForge","Jamie, Frank, Colin","Do not know it is safe to click; hover at the edge","A helper greets each person by name and says: press the big Start button, nothing can break"],
+["MindForge","Lucy, Ingrid","Early levels feel easy, bored before it starts","Point them to the harder tiers of Sequence Sense"],
+["Welcome","Tommy, Kwame, Deborah","Career anxiety turns to cynicism","One honest line: this is a taster, and banks hire people who understand both worlds"],
+["LoomSTEM","Jack","A failed ride feels like his fault","Say out loud that failing is the point"],
+["LoomSTEM","Lucy, Viktor","Feels like a spreadsheet, under-challenged","Ask them to predict the number first, then link to Excel"],
+["LoomSTEM","Yuki, Chidinma","Wordplay read literally","Paraphrase jokes in plain English and keep the pace slow"],
+["The reveal","Ben, Wei Ling","Expect a gimmick","Show the Real Code tab and the engine error"],
+["The Vault","Jack, Jamie","Take the clock literally and panic","Say before starting that the clock never really expires"],
+["The Vault","Colin, Frank","Silent, do not ask for a hint","Pair with a helper; the Vale drawer is the safe hint"],
+["The Vault","Lucy, Ingrid","Too easy","Ask them to explain why to the table"],
+["Quantum button","Everyone","Novelty peak, then confusion about Shor and Grover","Say it is a taster, one sentence per scenario"],
+["Quantum discussion","Kwame, Tommy","Alarm about jobs and data","Pair the worry with the answer: NIST standards and the need for people"],
+["Compound Click","Jamie, Frank","A blank Scratch stage","Build the first block live; say: copy me, then change one thing"],
+["Compound Click","Ben, Lucy, Ingrid","Finish early and idle","Give the stretch step and the extensions"],
+["Close","Liam, Aisling","Low stakes, nothing to do next","Take-home link and: you just built something with no coding background"]
+];
+function renderWalk(){
+  const el=document.createElement("div");
+  el.innerHTML=`<div class="h-row"><div><h2>Persona walkthrough</h2><p class="sub">The session was run in sequence past 28 imagined attendees. These are the risks that came up and how the plan handles them.</p></div></div>
+  <div class="tw"><table><thead><tr><th>Segment</th><th>Who</th><th>Risk</th><th>Built-in fix</th></tr></thead><tbody>${WALK.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody></table></div>
+  <div class="grid2"><div class="card"><h3>Nine risks to watch</h3><ol class="tight">
+   <li>Silent drop-out: check in with each avoidant person within 2 minutes of each segment.</li>
+   <li>Literal clock: say the reassurance before pressing Start.</li>
+   <li>Idiom overload: short plain sentences.</li>
+   <li>Under-challenge: prediction tasks and spreadsheet links.</li>
+   <li>Quantum overwhelm: one sentence per scenario.</li>
+   <li>Career anxiety: honest, no promises.</li>
+   <li>Shared machines: clear MindForge site data first.</li>
+   <li>Audio: needs one click first; test speakers.</li>
+   <li>Remote lag: use helpers as hands and cue cards.</li></ol></div>
+   <div class="card"><h3>Optional small edits to the games</h3><ul class="tight">
+   <li>MindForge: change 'Six' to 'Eight' in the hero, add 'Nothing can break here' by Start.</li>
+   <li>Vault: introduce Okonjo by name; note on the first screen that the clock never truly runs out.</li>
+   <li>Compound Click: add a 'start sound' step in the demo.</li>
+   <li>LoomSTEM: add a plain-English gloss under the jokes.</li></ul><p class="sub" style="margin-top:8px">None are applied yet. The session works without them.</p></div></div>`;
+  return el;
+}
+function renderPlan(){
+  const el=document.createElement("div");
+  const P=[0,1,2].map(m=>{let t=0;return SEGS.map(s=>{const d=s.dur[m];const o={s,start:t,d};t+=d;return o})});
+  el.innerHTML=`<div class="h-row"><div><h2>Session plan</h2><p class="sub">Why it is built the way it is.</p></div></div>
+  <div class="card" style="margin-bottom:14px"><h3>How long it needs</h3><p>The full content needs about 110 minutes. To fit a 60 to 90 minute slot there are three modes: <b>Full</b> (about 110), <b>Core</b> (about 90, the recommended default) and <b>Express</b> (about 72). Choose it at the top of this Desk.</p>
+   <ul class="tight"><li>MindForge is an arrival activity, so it costs almost no facilitated time.</li><li>LoomSTEM and the Vault are group-run. The reveal and the red button each get room to land.</li><li>Compound Click starts together and then goes self-paced. It has a take-home fallback.</li><li>Breathers are protected: about 7 minutes across the session in Full.</li><li>Remote facilitator: add 5 minutes and a 10 minute tech check beforehand.</li></ul></div>
+  <div class="tw"><table><thead><tr><th>Segment</th><th>Full</th><th>Core</th><th>Express</th></tr></thead><tbody>
+  ${SEGS.map((s,i)=>`<tr><td><b>${esc(s.name)}</b></td>${[0,1,2].map(m=>`<td class="num">${hm(P[m][i].start)} (${P[m][i].d})</td>`).join("")}</tr>`).join("")}
+  <tr><td><b>Total</b></td><td class="num">110</td><td class="num">90</td><td class="num">72</td></tr></tbody></table></div>
+  <div class="note ok"><b>The three moments never to squeeze:</b> the reveal at the end of LoomSTEM, the red button in the Vault, and the showcase. Cut anything else first.</div>
+  <p class="sub">Times show start (minutes in brackets). The full analysis and the persona walkthrough are also in the Session Analysis doc: see Files and links.</p>`;
+  return el;
+}
+function renderFiles(){
+  const el=document.createElement("div");
+  const det=load("res",{});
+  el.innerHTML=`<div class="h-row"><div><h2>Files and links</h2><p class="sub">Everything that goes with this Desk.</p></div></div>
+  <div class="note"><b>Sharing:</b> these three pages are private until the owner shares them. If a link asks you to sign in or says you do not have access, ask the organiser to share it with you.</div>
+  <div class="grid2">
+   <div class="card"><h3>Facilitator deck</h3><p>27 slides with speaker notes. Use it on the big screen.</p><a class="btn primary" style="display:inline-block;text-decoration:none" href="${DECK_URL}" target="_blank" rel="noopener">Open the deck</a></div>
+   <div class="card"><h3>Session analysis and persona walkthrough</h3><p>The full write-up: timings, persona walkthrough, risks and patch list.</p><a class="btn primary" style="display:inline-block;text-decoration:none" href="${DOC_URL}" target="_blank" rel="noopener">Open the analysis doc</a></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>The four session resources</h3><p class="sub">Paste the web address of each one. They are saved in this browser and become quick links.</p>
+   <div class="fields" style="flex-direction:column;align-items:stretch">
+   ${[["r1","01 MindForge"],["r2","02 LoomSTEM"],["r3","03 The Vault"],["r4","04 Compound Click"]].map(x=>`<div class="fields" style="align-items:end"><label style="flex:1 1 260px">${x[1]}<input class="field" style="width:100%" id="${x[0]}" type="url" placeholder="https://" value="${esc(det[x[0]]||"")}"></label><a class="btn small" style="text-decoration:none" id="${x[0]}a" target="_blank" rel="noopener" ${det[x[0]]?`href="${esc(det[x[0]])}"`:'aria-disabled="true"'}>Open</a></div>`).join("")}
+   </div></div>
+  <div class="card" style="margin-top:14px"><h3>Scratch</h3><p>Compound Click uses Scratch. Open <b>scratch.mit.edu</b> and choose Create. No account is needed. Test it on the venue network.</p></div>`;
+  ["r1","r2","r3","r4"].forEach(k=>el.querySelector("#"+k).addEventListener("input",e=>{const d=load("res",{});d[k]=e.target.value.trim();store("res",d);const a=el.querySelector("#"+k+"a");if(/^https?:\/\//.test(d[k])){a.href=d[k];a.removeAttribute("aria-disabled")}else{a.removeAttribute("href");a.setAttribute("aria-disabled","true")}}));
+  return el;
+}
+
+function bindRun(m){
+  m.querySelectorAll("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.toggle;const card=document.getElementById("seg-"+id);const body=card.querySelector(".segbody");
+    body.hidden=!body.hidden;b.setAttribute("aria-expanded",!body.hidden);S.open[id]=!body.hidden;
+  }));
+  m.querySelectorAll("[data-goans]").forEach(b=>b.addEventListener("click",()=>{const id=b.dataset.goans;setTab("answers");setTimeout(()=>openAns(id),50)}));
+  m.querySelectorAll("[data-startseg]").forEach(b=>b.addEventListener("click",()=>{if(!S.running&&S.elapsed===0){startClock()}goSeg(+b.dataset.startseg)}));
+  const hs=m.querySelector("#hideStart");hs&&hs.addEventListener("click",()=>{store("hidestart",true);render(true)});
+  const ex=m.querySelector("#expandAll"),co=m.querySelector("#collapseAll");
+  ex&&ex.addEventListener("click",()=>{SEGS.forEach(s=>S.open[s.id]=true);render(true)});
+  co&&co.addEventListener("click",()=>{SEGS.forEach(s=>S.open[s.id]=false);render(true)});
+  const cp=m.querySelector("#copySheet");
+  cp&&cp.addEventListener("click",()=>{
+    const P=plan();let t="Pivot into Tech run sheet ("+MODES[S.mode]+", "+total()+" min"+(S.remote?", remote":"")+")\n";
+    P.forEach(p=>{t+="\n"+hm(p.start)+" "+p.s.name+" ("+p.dur+" min)\n";stepRows(p.s,p.start).forEach(r=>{if(r.d>0)t+="   "+hm(r.start)+" "+r.st.n+"\n"})});
+    copyText(t);
+  });
+}
+function copyText(t){
+  const done=()=>toast("Copied");
+  try{navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t))}catch(e){fallbackCopy(t)}
+}
+function fallbackCopy(t){
+  const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand("copy")}catch(e){}
+  ta.remove();toast(ok?"Copied":"Copy did not work. Select the text and copy it by hand.");
+}
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},2200)}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function setMode(i){S.mode=i;store("mode",i);$("#modeCtl").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.mode===i));buildBar();render(true);updateDesk()}
+(function init(){
+  S.mode=load("mode",1);S.remote=!!load("remote",false);
+  goToken((location.hash||"").replace("#",""));
+  $("#remoteChk").checked=S.remote;
+  $("#remoteChk").addEventListener("change",e=>{S.remote=e.target.checked;store("remote",S.remote);buildBar();render(true);updateDesk()});
+  $("#modeCtl").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setMode(+b.dataset.mode)));
+  $("#startBtn").addEventListener("click",()=>{if(S.running)pauseClock();else startClock()});
+  $("#nextBtn").addEventListener("click",()=>{if(!S.running&&S.elapsed===0)startClock();else goSeg(Math.min(S.cur+1,SEGS.length-1))});
+  $("#backBtn").addEventListener("click",()=>{if(S.cur>0)goSeg(S.cur-1)});
+  $("#resetBtn").addEventListener("click",()=>{if(S.elapsed>0&&!S.confirmReset){S.confirmReset=true;$("#resetBtn").textContent="Tap again to reset";setTimeout(()=>{S.confirmReset=false;$("#resetBtn").textContent="Reset"},3000);return}S.confirmReset=false;$("#resetBtn").textContent="Reset";resetClock()});
+  $("#themeBtn").addEventListener("click",()=>{
+    const cur=document.documentElement.getAttribute("data-theme");
+    const sysDark=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches;
+    const next=(cur||(sysDark?"dark":"light"))==="dark"?"light":"dark";
+    document.documentElement.setAttribute("data-theme",next);store("theme",next);
+  });
+  const th=load("theme",null);if(th)document.documentElement.setAttribute("data-theme",th);
+  window.addEventListener("hashchange",()=>{const x=(location.hash||"").replace("#","");if(HASHMAP[x]){const m=HASHMAP[x];if(m[0]!==S.tab||(m[1]&&m[1]!==S.sub[m[0]]))setTab(m[0],m[1])}});
+  $("#panicBtn").addEventListener("click",()=>setTab("help","panic"));
+  buildTabs();buildBar();setMode(S.mode);updateDesk();
+})();
+</script>
+</body>
+</html>
