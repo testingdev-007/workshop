@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- File version: 1 — v3: all four independent tasters merged into one self-contained file with a card menu -->
+<!-- File version: 2 — fixed restart across all 4 modules: re-opening a finished module from the menu now resets it instead of showing wherever it was left; fixed the same dropzone-placeholder crash as the standalone files; fixed the loop track (rollercoaster part 2) running off the edge of the canvas at higher iteration counts -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -882,9 +882,21 @@ trackPoint(45)</div>
 <script>
 // ============ Shared menu/module switching (outer scope, not inside any module IIFE) ============
 const ALL_MODULES = ['stem1Module', 'stem2Module', 'loomModule', 'chemModule'];
+const MODULE_RESETTERS = {
+  stem1Module: () => window.__resetStem1Module && window.__resetStem1Module(),
+  stem2Module: () => window.__resetStem2Module && window.__resetStem2Module(),
+  loomModule:  () => window.__resetLoomModule && window.__resetLoomModule(),
+  chemModule:  () => window.__resetChemModule && window.__resetChemModule()
+};
 function showModule(id){
   document.getElementById('menuScreen').classList.add('hidden');
   ALL_MODULES.forEach(m => document.getElementById(m).classList.toggle('hidden', m !== id));
+  // Every module is a persistent DOM subtree (just hidden via CSS), not
+  // recreated on entry -- so without this, re-opening a card you'd already
+  // finished showed whatever screen you left it on (usually the celebration
+  // screen), which looked exactly like "start over" was broken.
+  const reset = MODULE_RESETTERS[id];
+  if(reset) reset();
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 function showMenu(){
@@ -1203,11 +1215,15 @@ function renderStep(){
 function renderDroppedBlocks(){
   const dz = document.getElementById('stem1_dropzone');
   const placeholder = document.getElementById('stem1_dropPlaceholder');
-  dz.innerHTML = '';
+  // Only remove the placed-block elements -- never wipe the placeholder
+  // itself via dz.innerHTML='', which detached it from the document the
+  // first time a block was placed, breaking every restart after that.
+  dz.querySelectorAll('.placed').forEach(el => el.remove());
   if(placedBlocks.length === 0){
-    dz.appendChild(placeholder);
+    if(placeholder) placeholder.classList.remove('hidden');
     return;
   }
+  if(placeholder) placeholder.classList.add('hidden');
   placedBlocks.forEach(b=>{
     const div = document.createElement('div');
     div.className = 'placed';
@@ -1609,6 +1625,8 @@ document.getElementById('stem1_startOverBtn').addEventListener('click', goToWelc
 
 renderProgress();
 
+window.__resetStem1Module = goToWelcome;
+
 })();
 </script>
 
@@ -1922,11 +1940,15 @@ function renderStep(){
 function renderDroppedBlocks(){
   const dz = document.getElementById('stem2_dropzone');
   const placeholder = document.getElementById('stem2_dropPlaceholder');
-  dz.innerHTML = '';
+  // Only remove the placed-block elements -- never wipe the placeholder
+  // itself via dz.innerHTML='', which detached it from the document the
+  // first time a block was placed, breaking every restart after that.
+  dz.querySelectorAll('.placed').forEach(el => el.remove());
   if(placedBlocks.length === 0){
-    dz.appendChild(placeholder);
+    if(placeholder) placeholder.classList.remove('hidden');
     return;
   }
+  if(placeholder) placeholder.classList.add('hidden');
   placedBlocks.forEach(b=>{
     const div = document.createElement('div');
     div.className = 'placed';
@@ -2113,6 +2135,39 @@ function validateAction(name, declaredEngines){
   return { ok: true };
 }
 
+// Works out how many points the track will actually have, and the
+// tallest/lowest of them, BEFORE drawing anything -- so the real pass can
+// pick a horizontal spacing and vertical scale that always fits inside the
+// canvas, however many times the loop runs. A fixed spacing (the original
+// approach) looked fine at the default 5 iterations but ran the track
+// straight off the right edge of the canvas at higher iteration counts.
+// This is a real, silent dry-run of the same physics: same AST, same
+// stall rule, just no canvas calls and no animation delay.
+async function planTrackLayout(ast, declaredEngines){
+  const env = {};
+  const points = [];
+  let prevHeight = null, prevV = 0, stalled = false;
+  await runProgram(ast, env, {
+    onAction: async (name, args)=>{
+      if(name !== 'trackPoint' || stalled) return;
+      const check = validateAction(name, declaredEngines);
+      if(!check.ok) return; // real run will surface the engine error
+      const val = args[0];
+      if(prevHeight === null){
+        points.push(val);
+        prevHeight = val; prevV = 0;
+      } else {
+        const vSq = prevV*prevV + 2*(env.gravity||0)*(prevHeight-val);
+        if(vSq <= 0){ stalled = true; points.push(val); return; }
+        const newV = Math.sqrt(vSq);
+        points.push(val);
+        prevHeight = val; prevV = newV;
+      }
+    }
+  });
+  return points;
+}
+
 async function runCoasterSource(fullSource, faceEl, canvasId, readoutId){
   const { engines: declaredEngines, code: source } = parseEngineDeclaration(fullSource);
   const ast = parseLoomScript(source.split('\n'));
@@ -2122,8 +2177,20 @@ async function runCoasterSource(fullSource, faceEl, canvasId, readoutId){
   drawScene(canvasId);
 
   let prevHeight = null, prevV = 0, thrill = 0, tick = 0, stalled = false, stalledHeight = null, engineError = null;
-  const scaleY = 1.5, stepX = 65, startX = 25;
   const groundY = canvas.height - 12;
+
+  const plannedPoints = await planTrackLayout(ast, declaredEngines);
+  const pointCount = Math.max(1, plannedPoints.length);
+  const startX = 25, rightPad = 20, topPad = 12, bottomPad = 5;
+  const availableWidth = canvas.width - startX - rightPad;
+  const stepX = pointCount > 1 ? Math.min(65, availableWidth / (pointCount - 1)) : 65;
+  const maxH = Math.max(0, ...plannedPoints);
+  const minH = Math.min(0, ...plannedPoints);
+  const baselineY = groundY - 15;
+  let scaleY = 1.5;
+  if(maxH > 0) scaleY = Math.min(scaleY, (baselineY - topPad) / maxH);
+  if(minH < 0) scaleY = Math.min(scaleY, (canvas.height - bottomPad - baselineY) / (-minH));
+  scaleY = Math.max(scaleY, 0.2);
   const toCanvasY = h => groundY - 15 - h*scaleY;
   let currentFace = '🙂';
   if(faceEl) faceEl.textContent = currentFace;
@@ -2373,6 +2440,8 @@ document.getElementById('stem2_restartBtn').addEventListener('click', goToWelcom
 document.getElementById('stem2_startOverBtn').addEventListener('click', goToWelcome);
 
 renderProgress();
+
+window.__resetStem2Module = goToWelcome;
 
 })();
 </script>
@@ -2701,8 +2770,16 @@ function renderStep(){
 function renderDroppedBlocks(){
   const dz = document.getElementById('loom_dropzone');
   const placeholder = document.getElementById('loom_dropPlaceholder');
-  dz.innerHTML = '';
-  if(placedBlocks.length === 0){ dz.appendChild(placeholder); renderStoryPreview(); return; }
+  // Only remove the placed-block elements -- never wipe the placeholder
+  // itself via dz.innerHTML='', which detached it from the document the
+  // first time a block was placed, breaking every restart after that.
+  dz.querySelectorAll('.placed').forEach(el => el.remove());
+  if(placedBlocks.length === 0){
+    if(placeholder) placeholder.classList.remove('hidden');
+    renderStoryPreview();
+    return;
+  }
+  if(placeholder) placeholder.classList.add('hidden');
   placedBlocks.forEach(b=>{
     const div = document.createElement('div');
     div.className = 'placed';
@@ -2891,6 +2968,8 @@ document.getElementById('loom_restartBtn').addEventListener('click', goToWelcome
 document.getElementById('loom_startOverBtn').addEventListener('click', goToWelcome);
 
 renderProgress();
+
+window.__resetLoomModule = goToWelcome;
 
 })();
 </script>
@@ -3333,6 +3412,19 @@ document.getElementById('chem_runBtn').addEventListener('click', async ()=>{
   btn.disabled = false;
 });
 renderPhScale(7);
+
+function resetChemModule(){
+  selectedA = null; selectedB = null;
+  renderPickers();
+  updateCodePreview();
+  document.getElementById('chem_chemNarration').innerHTML = '';
+  document.getElementById('chem_workingPanel').classList.add('hidden');
+  document.getElementById('chem_chemVerdict').textContent = '';
+  document.getElementById('chem_runBtn').disabled = false;
+  switchDemoTab('result');
+  renderPhScale(7);
+}
+window.__resetChemModule = resetChemModule;
 
 })();
 </script>
