@@ -282,6 +282,17 @@
   .ext-card .desc{ font-size:13.5px; color:var(--paper-dim); margin-bottom:8px;}
   .ext-card .uses{ font-family:var(--mono); font-size:11px; color:var(--teal);}
 
+  .primm-list{ margin-top:24px; display:flex; flex-direction:column; gap:14px; max-width:64ch;}
+  .primm-stage{ background:var(--panel); border:1px solid var(--hairline); border-left:3px solid var(--gold); border-radius:10px; padding:14px 18px;}
+  .primm-stage .stage-label{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--gold); margin-bottom:6px; display:block;}
+  .primm-stage p{ margin:0; font-size:14.5px; color:var(--paper);}
+  .primm-stage.run{ border-left-color:var(--teal);}
+  .primm-stage.run .stage-label{ color:var(--teal);}
+  .primm-stage.investigate{ border-left-color:var(--rust);}
+  .primm-stage.investigate .stage-label{ color:var(--rust);}
+  .primm-stage.modify{ border-left-color:var(--c-looks);}
+  .primm-stage.modify .stage-label{ color:var(--c-looks);}
+
   .stuck{
     margin-top:16px;
     max-width:64ch;
@@ -451,6 +462,7 @@
     <button class="reset-link" id="resetProgress" type="button">Reset progress</button>
     <ol id="railList">
       <li><a class="step-link" href="#welcome" data-step="0"><span class="num">00</span><span>Welcome</span></a></li>
+      <li><a class="step-link" href="#demo" data-step="0.5"><span class="num">~</span><span>Watch &amp; try it</span><span class="check" data-check="0"></span></a></li>
       <li><a class="step-link" href="#step-1" data-step="1"><span class="num">01</span><span>Clear the stage</span><span class="check" data-check="1"></span></a></li>
       <li><a class="step-link" href="#step-2" data-step="2"><span class="num">02</span><span>Give it a memory</span><span class="check" data-check="2"></span></a></li>
       <li><a class="step-link" href="#step-3" data-step="3"><span class="num">03</span><span>Start at zero</span><span class="check" data-check="3"></span></a></li>
@@ -467,7 +479,7 @@
 
     <div class="mobile-progress">
       <div class="progress-track"><div class="progress-fill" id="railProgressMobile"></div></div>
-      <div class="now-on" id="mobileStepsDone">0 of 6 steps done</div>
+      <div class="now-on" id="mobileStepsDone">0 of 7 steps done</div>
       <button class="reset-link" id="resetProgressMobile" type="button" style="margin-top:6px; margin-bottom:0;">Reset progress</button>
     </div>
 
@@ -482,8 +494,69 @@
 
       <div class="callout" style="margin-top:24px;">
         <span class="tag">BEFORE YOU START</span>
-        <p>You'll be right-clicking, dragging blocks, and clicking buttons throughout — if any of that feels unfamiliar, that's completely normal and not a sign you're behind. Just ask. And if you've ever built a formula in a spreadsheet, quite a lot of what's coming will feel more familiar than you'd expect.</p>
+        <p>Two physical actions come up again and again today. <strong>Right-clicking:</strong> on a mouse, the button on the right; on a trackpad, tap with two fingers at once, or press and hold until a little menu pops up. <strong>Dragging:</strong> click and hold on something, move it where you want, then let go. If neither is familiar yet, that's completely normal — you'll have done both a few times by the end of Step 1, and that's exactly what Step 1 is for. Just ask if you get stuck.</p>
       </div>
+
+      <div class="callout" style="margin-top:14px;">
+        <span class="tag">IT'S OKAY TO STOP EARLY</span>
+        <p>You don't need to finish every step to leave with something real. Even the smallest working version — one click that changes a number on screen — is a complete, working piece of software you wrote yourself. Everything after that is a bonus, not a requirement.</p>
+      </div>
+    </section>
+
+    <section class="step" id="demo">
+      <div class="step-head">
+        <span class="step-num">~</span>
+        <h2>Watch, then try it yourself</h2>
+        <span class="step-time">~8 min</span>
+      </div>
+      <p class="step-intro">Before the real build, we'll walk through one tiny example twice: first watching the facilitator do it, then building the exact same thing yourself, on your own laptop, low-stakes. This is where you learn how Scratch actually behaves, so the real build afterwards feels familiar rather than brand new.</p>
+
+      <div class="callout">
+        <span class="tag">WHY IT MATTERS</span>
+        <p>This is a method called Predict–Run–Investigate–Modify, used to teach programming to complete beginners. You look before you touch, and you practise on something tiny before you build something real — so the first time it actually matters, you've already done it once.</p>
+      </div>
+
+      <div class="stack">
+        <div class="block-list">
+          <div class="block hat b-events">when this sprite clicked</div>
+          <div class="block b-looks">say <strong>&nbsp;"Hello!"&nbsp;</strong> for 2 seconds</div>
+        </div>
+      </div>
+
+      <div class="primm-list">
+        <div class="primm-stage predict">
+          <span class="stage-label">1 · PREDICT (watch)</span>
+          <p>Before anything runs, look at the two blocks above on the big screen. What do you think happens when the facilitator clicks the cat? Nobody's marked right or wrong here — just have a guess ready.</p>
+        </div>
+        <div class="primm-stage run">
+          <span class="stage-label">2 · RUN (watch)</span>
+          <p>Watch it run on the facilitator's screen. Did it match what you guessed? Programmes doing exactly what you expect — or teaching you something when they don't — is the whole game from here on.</p>
+        </div>
+        <div class="primm-stage investigate">
+          <span class="stage-label">3 · INVESTIGATE (watch)</span>
+          <p>Two blocks, two jobs. The top one (gold) is an <strong>event</strong> — it listens for something to happen, in this case a click. The bottom one (purple) is the <strong>action</strong> — what happens in response. Trigger, then response. That pattern is the whole session, just with more blocks added to it as we go.</p>
+        </div>
+        <div class="primm-stage modify">
+          <span class="stage-label">4 · MODIFY (your turn)</span>
+          <p>Now open Scratch on your own laptop — the default cat sprite is already there, nothing to add. Build the same two blocks: an event block on top, an action underneath. Click the cat to test it. Then change one thing — the message, or "2 seconds" to something else — and test again. One small edit, nothing else breaks. That's the confidence this whole session runs on.</p>
+        </div>
+      </div>
+
+      <div class="try-it">
+        <strong>Do this:</strong> From <strong>Events</strong>, drag <strong>when this sprite clicked</strong> into the scripts area. From <strong>Looks</strong>, drag <strong>say "Hello!" for 2 seconds</strong> underneath it until it snaps. Click the cat on the stage to test. Then change the message to whatever you like — make it daft if you want, this one doesn't count for anything — and test again.
+      </div>
+
+      <details class="stuck">
+        <summary>Stuck? Open this</summary>
+        <div class="stuck-body">
+          <p>If clicking the cat does nothing, the two blocks probably aren't actually snapped together — drag the bottom one so its top edge touches the hat block above it until you feel it click into place.</p>
+          <p>If you can't find "say ... for 2 seconds," it's in the <strong>Looks</strong> category (purple), a little way down the palette — there are a few similar-looking "say" blocks, this is the one with "for 2 seconds" written on it.</p>
+        </div>
+      </details>
+
+      <label class="mark-done"><input type="checkbox" data-mark="0"> Mark this step done</label>
+
+      <p style="font-size:13.5px; color:var(--paper-dim); max-width:64ch; margin-top:20px;">Now we reset. Right-click the cat sprite and delete it — you'll do this anyway in Step 1. Nothing from this practice run carries forward, and that's the point: it was just practice. Step 1 starts fresh from here.</p>
     </section>
 
     <section class="step" id="step-1">
@@ -496,11 +569,11 @@
 
       <div class="callout">
         <span class="tag">WHY IT MATTERS</span>
-        <p>Sprites are UI components. Every screen, button and icon in the apps you use started as a piece someone chose or designed, just like you're about to.</p>
+        <p>Sprites are the characters, buttons and images on screen — coders sometimes call them "UI components." Every screen, button and icon in the apps you use started as a piece someone chose or designed, just like you're about to.</p>
       </div>
 
       <div class="try-it">
-        <strong>Do this:</strong> Right-click the cat sprite in the sprite list and delete it. Click <strong>Choose a Sprite</strong> — it's below the stage, on the right of the screen — and add the <strong>Crystal</strong> sprite. Then choose any backdrop you like from the button next to it.
+        <strong>Do this:</strong> Right-click the cat sprite in the sprite list (mouse: click the right-hand button; trackpad: tap with two fingers, or press and hold) and choose delete. Click <strong>Choose a Sprite</strong> — it's below the stage, on the right of the screen — and add the <strong>Crystal</strong> sprite. Then choose any backdrop you like from the button next to it.
       </div>
 
       <details class="stuck">
@@ -524,7 +597,7 @@
 
       <div class="callout">
         <span class="tag">WHY IT MATTERS</span>
-        <p>This is exactly what a database field or an app's "state" is. Your bank balance, right now, is a variable sitting on a server somewhere — conceptually no different from the one you're about to make. If you've ever kept a running total in a spreadsheet cell, that's the same idea — it's just going to live inside a programme instead of a grid.</p>
+        <p>Think of it as a labelled box that holds one number and remembers it. Your bank balance, right now, is exactly this — a number sitting somewhere on a computer, updating every time you spend or save. (If you've ever kept a running total in a spreadsheet cell, it's the same idea. If you haven't, the labelled box is all you need to picture — you're not missing anything.)</p>
       </div>
 
       <div class="stack">
@@ -643,7 +716,7 @@
       <div class="step-head">
         <span class="step-num">05</span>
         <h2>Make it yours</h2>
-        <span class="step-time">~4 min</span>
+        <span class="step-time">~2 min</span>
       </div>
       <p class="step-intro">You have a working programme. Now put your own stamp on it — this stops being "the exercise" and starts being something you built.</p>
 
@@ -669,13 +742,13 @@
       <div class="step-head">
         <span class="step-num">06</span>
         <h2>Stretch goal — celebrate a milestone</h2>
-        <span class="step-time">~3 min, if there's time</span>
+        <span class="step-time">~1 min, if there's time</span>
       </div>
       <p class="step-intro">Optional: make the programme notice when you've hit a target, and say something about it.</p>
 
       <div class="callout">
         <span class="tag">WHY IT MATTERS</span>
-        <p>This is business logic — the same shape as the rules that decide interest, fraud flags, or loan eligibility inside a real financial system: <em>if</em> a condition is true, <em>then</em> do something. If you've ever written an IF formula in a spreadsheet, this is the identical logic wearing a different outfit.</p>
+        <p>This is business logic — the same shape as the rules that decide interest, fraud flags, or loan eligibility inside a real financial system: <em>if</em> a condition is true, <em>then</em> do something. (If you've ever written an IF formula in a spreadsheet, this is the identical logic wearing a different outfit — and if you haven't, the plain-English version above is all you need.)</p>
       </div>
 
       <div class="stack">
@@ -708,7 +781,7 @@
         </div>
         <div class="ext-card">
           <div class="title">Real compound interest</div>
-          <div class="desc">Add a second script: <code>forever</code> → <code>wait 2 seconds</code> → <code>change Savings by (Savings × 0.01)</code>. Now Savings grows on its own, 1% at a time — the thing this whole project is named after. If you've ever built a self-updating spreadsheet formula, this will click fast.</div>
+          <div class="desc">Add a second script: <code>forever</code> → <code>wait 2 seconds</code> → <code>change Savings by (Savings × 0.01)</code>. Now Savings grows on its own, 1% at a time — the thing this whole project is named after. (Familiar with self-updating spreadsheet formulas? This will click fast.)</div>
           <div class="uses">USES: CONTROL, OPERATORS</div>
         </div>
         <div class="ext-card">
