@@ -1,106 +1,74 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Facilitator Desk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout concept: a control-room desk. Sticky clock bar on top, tab strip beneath, one working panel below.
-   The desk is used standing up, on a phone or a laptop, so everything is large, scannable and one tap away. */
+/* ===== Pivot into Tech: Facilitator Desk v3. Dark control-room look, card based. Single look by choice. ===== */
 :root{
-  --bg:#EDF0F4; --surface:#FFFFFF; --surface2:#F5F7FA; --ink:#14202B; --muted:#54657A; --line:#D3DBE4;
-  --accent:#0A7C76; --accent-ink:#FFFFFF; --accent-soft:#D9F0EE;
-  --group:#3B4FC4; --group-soft:#E3E7FA;
-  --moment:#B45A00; --moment-soft:#FCE9D2;
-  --warn:#9A6400; --warn-soft:#FBEFC9;
-  --bad:#B3261E; --bad-soft:#FADAD6;
-  --ok:#1E7A3C; --ok-soft:#D8F0DF;
-  --break:#6B7785;
+  --bg:#070B12; --surface:rgba(20,30,44,.78); --surface2:rgba(30,44,62,.7); --ink:#EAF1F7; --muted:#9DB0C3; --line:rgba(160,190,220,.16);
+  --accent:#3CC7BD; --accent-ink:#031C1A; --accent-soft:rgba(60,199,189,.14);
+  --group:#8F9DFF; --group-soft:rgba(143,157,255,.16);
+  --moment:#FFB35C; --moment-soft:rgba(255,179,92,.14);
+  --warn:#F2C14E; --warn-soft:rgba(242,193,78,.13);
+  --bad:#FF8A80; --bad-soft:rgba(255,138,128,.14);
+  --ok:#6FD68B; --ok-soft:rgba(111,214,139,.14);
+  --break:#8797A8;
   --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0D141B; --surface:#152029; --surface2:#1B2833; --ink:#E7EEF4; --muted:#9FB0C0; --line:#26384A;
-  --accent:#3CC7BD; --accent-ink:#04211F; --accent-soft:#12413F;
-  --group:#8F9DFF; --group-soft:#222B5C;
-  --moment:#FFB35C; --moment-soft:#4A3110;
-  --warn:#F2C14E; --warn-soft:#41330E;
-  --bad:#FF8A80; --bad-soft:#4B1F1B;
-  --ok:#6FD68B; --ok-soft:#173D24;
-  --break:#8797A8; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0D141B; --surface:#152029; --surface2:#1B2833; --ink:#E7EEF4; --muted:#9FB0C0; --line:#26384A;
-  --accent:#3CC7BD; --accent-ink:#04211F; --accent-soft:#12413F;
-  --group:#8F9DFF; --group-soft:#222B5C;
-  --moment:#FFB35C; --moment-soft:#4A3110;
-  --warn:#F2C14E; --warn-soft:#41330E;
-  --bad:#FF8A80; --bad-soft:#4B1F1B;
-  --ok:#6FD68B; --ok-soft:#173D24;
-  --break:#8797A8; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0}
-h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0;min-height:100vh}
+.bg{position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(900px 520px at 8% -8%,rgba(60,199,189,.20),transparent 62%),
+  radial-gradient(820px 520px at 100% 0,rgba(143,157,255,.18),transparent 62%),
+  radial-gradient(760px 480px at 50% 115%,rgba(255,179,92,.09),transparent 62%),var(--bg)}
+.bg::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000 0,transparent 72%);mask-image:radial-gradient(ellipse at 50% 0,#000 0,transparent 72%)}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.12;margin:0;text-wrap:balance}
 p{margin:0 0 .6em}
 a{color:var(--accent)}
 button,select,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
 code,.mono{font-family:var(--f-mono);font-size:.88em}
-code{background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:.05em .35em}
-.wrap{max-width:1100px;margin-inline:auto;padding-inline:16px}
-
-/* ---------- desk bar ---------- */
-.desk{background:var(--surface)}
-.deskstick{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.desk-top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding-block:10px}
-.brand{font-family:var(--f-display);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;margin-right:auto;min-width:0}
-.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.seg-ctl{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface2)}
-.seg-ctl button{border:0;background:transparent;padding:8px 12px;font-weight:600;font-size:.9rem;min-height:40px}
-.seg-ctl button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-.chk{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;font-weight:500;min-height:40px}
-.chk input{width:20px;height:20px;accent-color:var(--accent)}
-.iconbtn{border:1px solid var(--line);background:var(--surface2);border-radius:10px;padding:8px 12px;min-height:40px;font-weight:600;font-size:.9rem}
-.clockrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding-bottom:10px}
-.clock{font-family:var(--f-mono);font-weight:600;font-size:2rem;letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
-.clock small{font-size:.7rem;color:var(--muted);font-family:var(--f-body);font-weight:500;display:block;letter-spacing:.06em;text-transform:uppercase}
-.btn{border:1px solid var(--line);background:var(--surface2);border-radius:10px;padding:9px 14px;font-weight:600;min-height:44px}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
-.btn.small{min-height:36px;padding:6px 10px;font-size:.88rem}
-.nownext{flex:1 1 320px;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.nn{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
-.nn b{display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.nn span{display:block;font-weight:600;overflow-wrap:anywhere}
-.nn.now{border-color:var(--accent);background:var(--accent-soft)}
-.cue{margin:0 0 10px;padding:9px 12px;border-radius:10px;font-weight:600;background:var(--surface2);border:1px solid var(--line)}
-.cue.warn{background:var(--warn-soft);border-color:var(--warn);color:var(--ink)}
-.cue.bad{background:var(--bad-soft);border-color:var(--bad)}
-.cue.ok{background:var(--ok-soft);border-color:var(--ok)}
-.bar{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--line);position:relative;margin-bottom:10px}
-.bar button{border:0;padding:0;height:100%;border-right:2px solid var(--surface);min-width:3px}
-.bar button.self{background:var(--accent)} .bar button.group{background:var(--group)} .bar button.break{background:var(--break)}
-.bar button.cur{outline:3px solid var(--ink);outline-offset:-3px}
-.bar i{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--bad);border-radius:2px;pointer-events:none}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted);margin:-4px 0 10px}
-.legend s{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;text-decoration:none}
-
-.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:0;scrollbar-width:thin}
-.tabs button{flex:0 0 auto;border:0;border-bottom:3px solid transparent;background:transparent;padding:10px 12px;font-weight:600;color:var(--muted);min-height:44px}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-
-/* ---------- panels ---------- */
-main{padding-block:18px 60px}
-.panel[hidden]{display:none!important}
-.h-row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:end;justify-content:space-between;margin-bottom:12px}
-.h-row h2{font-size:1.6rem}
+code{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:5px;padding:.05em .35em}
+.wrap{max-width:1280px;margin-inline:auto;padding-inline:20px}
+.eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
 .sub{color:var(--muted);margin:0}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.ico{display:inline-grid;place-items:center;width:28px;height:28px;flex:0 0 auto}
+.ico svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(7,11,18,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-block:10px}
+.logo{display:flex;align-items:center;gap:10px;border:0;background:transparent;padding:2px 6px 2px 0;font-family:var(--f-display);font-weight:700;font-size:1.05rem;letter-spacing:-.01em}
+.logo i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--group));color:#04121A;font-style:normal;font-weight:800;box-shadow:0 6px 18px -6px var(--accent)}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+.crumb{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:999px;padding:7px 15px;font-weight:600;font-size:.98rem;min-height:38px;color:var(--ink)}
+button.crumb:hover{background:rgba(255,255,255,.1)}
+.crumb.cur{background:var(--accent-soft);border-color:rgba(60,199,189,.5);color:var(--accent);display:inline-flex;align-items:center}
+.sep{color:var(--muted);font-size:1.2rem}
+.grow{flex:1 1 auto}
+.pillbtn{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:999px;padding:8px 16px;font-weight:700;font-size:.92rem;min-height:40px}
+.pillbtn.panic{background:var(--bad-soft);border-color:rgba(255,138,128,.5);color:var(--bad)}
+.pillbtn.back{background:var(--accent-soft);border-color:rgba(60,199,189,.5);color:var(--accent)}
+.clockbox{display:flex;align-items:center;gap:10px}
+#clockT{font-family:var(--f-mono);font-weight:600;font-size:1.7rem;letter-spacing:.02em;font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(60,199,189,.5)}
+
+/* ---------- buttons, cards, common ---------- */
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:12px;padding:9px 15px;font-weight:600;min-height:44px;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#2BA9C4);color:var(--accent-ink);border-color:transparent;box-shadow:0 10px 28px -12px var(--accent)}
+.btn.small{min-height:36px;padding:6px 11px;font-size:.88rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 18px;min-width:0;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .card h3{font-size:1.1rem;margin-bottom:8px}
-.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface2);color:var(--muted);white-space:nowrap}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.h-row{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:end;justify-content:space-between;margin-bottom:14px}
+.h-row h2{font-size:1.9rem}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--muted);white-space:nowrap}
 .pill.self{background:var(--accent-soft);color:var(--accent);border-color:transparent}
 .pill.group{background:var(--group-soft);color:var(--group);border-color:transparent}
 .pill.moment{background:var(--moment-soft);color:var(--moment);border-color:transparent}
@@ -108,61 +76,162 @@ main{padding-block:18px 60px}
 .pill.late{background:var(--bad-soft);color:var(--bad);border-color:transparent}
 .pill.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
 
-.segcard{background:var(--surface);border:1px solid var(--line);border-left-width:6px;border-radius:14px;margin-bottom:12px;overflow:hidden}
-.segcard.self{border-left-color:var(--accent)} .segcard.group{border-left-color:var(--group)} .segcard.break{border-left-color:var(--break)}
-.segcard[data-st="now"]{box-shadow:0 0 0 2px var(--accent)}
-.segcard[data-st="done"]{opacity:.72}
-.seghead{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;width:100%;text-align:left;border:0;background:transparent;padding:12px 14px;min-height:56px}
-.seghead .t{font-family:var(--f-mono);font-weight:600;font-size:.95rem;color:var(--muted);min-width:8.5em}
-.seghead .nm{font-family:var(--f-display);font-weight:700;font-size:1.15rem;line-height:1.15;flex:1 1 200px;min-width:0}
-.segbody{padding:4px 16px 16px;border-top:1px solid var(--line)}
-.goal{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:12px 0}
-.step{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
-.step:first-of-type{border-top:0;margin-top:0;padding-top:0}
-.step[data-skip="1"]{opacity:.5}
-.step h4{font-size:1.02rem;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
-.step h4 .t{font-family:var(--f-mono);font-size:.82rem;color:var(--muted);font-weight:600}
-.lbl{font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px;display:block}
-.say{margin:0;border-left:4px solid var(--accent);background:var(--accent-soft);padding:8px 12px;border-radius:0 10px 10px 0}
-.say p{margin:.25em 0}
-.moment-box{border:2px solid var(--moment);background:var(--moment-soft);border-radius:12px;padding:10px 14px;margin-top:10px}
-.moment-box b{color:var(--moment)}
-ul.tight{margin:0;padding-left:1.15em} ul.tight li{margin:.15em 0}
-.watch li::marker{color:var(--warn)}
-.watch{background:var(--warn-soft);border-radius:10px;padding:8px 12px 8px 1.6em;margin:0}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+/* ---------- home ---------- */
+main{padding-block:26px 90px}
+.hero{padding:18px 0 22px}
+.hero h1{font-size:clamp(2.6rem,7vw,4.8rem);letter-spacing:-.03em;background:linear-gradient(120deg,#fff 20%,var(--accent) 60%,var(--group));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:1.2rem;color:var(--muted);max-width:44rem;margin-top:12px}
+.tile{display:flex;flex-direction:column;gap:10px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:22px;padding:22px;color:var(--ink);position:relative;overflow:hidden;min-height:170px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:rgba(60,199,189,.55);box-shadow:0 18px 40px -22px var(--accent)}
+.tile .ico{width:52px;height:52px;padding:12px;border-radius:16px;background:linear-gradient(135deg,rgba(60,199,189,.25),rgba(143,157,255,.25));color:var(--accent);border:1px solid var(--line)}
+.tile h3{font-size:1.4rem}
+.tile p{color:var(--muted);margin:0}
+.tile .go{margin-top:auto;font-weight:700;color:var(--accent);font-size:.92rem}
+.hero-tile{flex-direction:row;align-items:center;gap:22px;min-height:0;padding:28px;margin-bottom:22px;border-color:rgba(60,199,189,.5);background:linear-gradient(120deg,rgba(60,199,189,.22),rgba(143,157,255,.16) 60%,rgba(20,30,44,.8))}
+.hero-tile .ico{width:84px;height:84px;padding:22px;background:linear-gradient(135deg,var(--accent),var(--group));color:#04121A;border:0;box-shadow:0 14px 34px -12px var(--accent)}
+.hero-tile h3{font-size:clamp(1.8rem,4vw,2.6rem)}
+.hero-tile p{font-size:1.1rem;color:#cfe0ec}
+.hero-tile .go{font-size:1.05rem}
+.sect{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px;font-family:var(--f-body);font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.path{display:flex;flex-wrap:wrap;gap:10px}
+.path span{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:999px;padding:8px 16px}
+.path b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.85rem}
+.dl{display:flex;align-items:center;gap:16px;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:16px 18px}
+.dl .ico{width:44px;height:44px;padding:10px;border-radius:12px;background:var(--group-soft);color:var(--group)}
+.dl div{min-width:0;flex:1}
+.dl b{display:block}
 
+/* ---------- two-column layout: rail of cards on the left ---------- */
+.pres{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+.rail{position:sticky;top:78px;display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 98px);overflow-y:auto;padding:2px 4px 8px 2px;scrollbar-width:thin}
+.railh{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:2px 4px 2px}
+.pc{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:10px 12px;position:relative;overflow:hidden;min-height:58px;color:var(--ink)}
+.pc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent)}
+.pc.group::before{background:var(--group)} .pc.break::before{background:var(--break)}
+.pc:hover:not(:disabled){border-color:rgba(255,255,255,.3)}
+.pc .pn{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);font-family:var(--f-mono);font-weight:700;font-size:.9rem}
+.pc .pt{min-width:0}
+.pc b{display:block;font-size:.95rem;line-height:1.25;overflow-wrap:anywhere}
+.pc small{color:var(--muted);font-size:.78rem;font-family:var(--f-mono)}
+.pc.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 14px 34px -16px var(--accent);background:linear-gradient(120deg,rgba(60,199,189,.18),var(--surface))}
+.pc.now .pn{background:var(--accent);color:var(--accent-ink)}
+.pc.done{opacity:.6} .pc.done .pn{background:var(--ok-soft);color:var(--ok)}
+.pc.skip{opacity:.32;cursor:default}
+.pc.sub{display:block;padding:12px 14px 12px 18px}
+.pc.sub b{font-size:1.02rem;font-family:var(--f-display)}
+.pc.sub small{display:block;font-family:var(--f-body);margin-top:2px}
+.pc.sub.now::before{background:var(--accent)}
+
+/* ---------- stage (the one thing to do now) ---------- */
+.stagewrap{min-width:0;display:flex;flex-direction:column;gap:14px}
+#lateBox:empty{display:none}
+.cue{padding:11px 16px;border-radius:14px;font-weight:600;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.cue.warn{background:var(--warn-soft);border-color:var(--warn)}
+.cue.bad{background:var(--bad-soft);border-color:var(--bad)}
+.cue.ok{background:var(--ok-soft);border-color:var(--ok)}
+.late{border:2px solid var(--warn);background:var(--warn-soft);border-radius:16px;padding:12px 16px}
+.late ul{margin:.4em 0 0;padding-left:1.2em}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:clamp(18px,3.2vw,34px);position:relative;overflow:hidden;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.stage::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--accent),var(--group))}
+.stage.k-group::before{background:linear-gradient(90deg,var(--group),#C08CFF)}
+.stage.k-break::before{background:var(--break)}
+.stagehead{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:flex-start}
+.partname{font-size:1.1rem;color:var(--muted);font-weight:600;font-family:var(--f-body)}
+.left{text-align:right}
+.left small{display:block;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.left b{font-family:var(--f-mono);font-size:1.7rem;font-variant-numeric:tabular-nums}
+.goal{color:var(--muted);margin:8px 0 0;max-width:52rem}
+.dots{display:flex;gap:6px;margin:16px 0 8px;flex-wrap:wrap}
+.dots button{flex:1 1 0;min-width:22px;height:10px;border:0;border-radius:6px;background:rgba(255,255,255,.12);padding:0}
+.dots button.on{background:var(--accent)} .dots button.cur{background:linear-gradient(90deg,var(--accent),var(--group));box-shadow:0 0 14px var(--accent)}
+.stepno{font-family:var(--f-mono);font-size:.82rem;color:var(--muted)}
+.stepname{font-size:clamp(1.9rem,4.4vw,3rem);letter-spacing:-.02em;margin:6px 0 12px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.blk{border-radius:20px;padding:18px 20px;margin-top:14px}
+.blk .lbl{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+.say{background:linear-gradient(120deg,rgba(60,199,189,.2),rgba(60,199,189,.07));border:1px solid rgba(60,199,189,.4)}
+.say .lbl{background:var(--accent);color:var(--accent-ink)}
+.say p{font-size:clamp(1.25rem,2.3vw,1.7rem);line-height:1.45;margin:.3em 0;font-weight:500}
+.dob{background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.dob .lbl{background:rgba(255,255,255,.14);color:var(--ink)}
+ol.dolist{list-style:none;margin:0;padding:0;counter-reset:d;display:flex;flex-direction:column;gap:10px}
+ol.dolist li{counter-increment:d;display:grid;grid-template-columns:30px 1fr;gap:12px;font-size:1.12rem;line-height:1.45}
+ol.dolist li::before{content:counter(d);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.12);font-family:var(--f-mono);font-weight:700;font-size:.85rem;margin-top:1px}
+.watchb{background:var(--warn-soft);border:1px solid rgba(242,193,78,.5)}
+.watchb .lbl{background:var(--warn);color:#2a1d00}
+.watchb ul{margin:0;padding-left:1.2em;font-size:1.05rem} .watchb li{margin:.3em 0}
+.moment-box{border:2px solid var(--moment);background:var(--moment-soft);border-radius:18px;padding:14px 18px;margin-top:14px;font-size:1.15rem}
+.moment-box b{color:var(--moment)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.actbar{position:sticky;bottom:0;z-index:20;display:flex;gap:12px;align-items:stretch;padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,transparent,rgba(7,11,18,.92) 30%)}
+.actbar .back{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:18px;padding:0 22px;font-weight:700;font-size:1.05rem;min-height:72px}
+.actbar .next{flex:1 1 auto;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;border:0;border-radius:18px;padding:10px 26px;min-height:72px;background:linear-gradient(135deg,var(--accent),#2BA9C4 55%,var(--group));color:var(--accent-ink);box-shadow:0 18px 40px -16px var(--accent);text-align:left}
+.actbar .next b{font-family:var(--f-display);font-size:1.6rem;letter-spacing:.01em;line-height:1}
+.actbar .next small{font-weight:600;font-size:.92rem;opacity:.85}
+.actbar .next:hover{filter:brightness(1.07)}
+.hint{color:var(--muted);font-size:.82rem;text-align:center;margin:0}
+
+/* ---------- setup ---------- */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;margin:14px 0}
+.modecard{text-align:left;border:2px solid var(--line);background:rgba(255,255,255,.04);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:4px;position:relative}
+.modecard b{font-family:var(--f-display);font-size:1.3rem}
+.modecard .mins{font-family:var(--f-mono);font-size:2rem;font-weight:600;color:var(--accent)}
+.modecard span{color:var(--muted);font-size:.93rem}
+.modecard[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent),0 16px 36px -18px var(--accent)}
+.modecard .rec{position:absolute;top:12px;right:12px}
+.setrow{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;margin:8px 0 14px}
+.setrow label{display:flex;gap:10px;align-items:center;font-weight:600}
+.setrow input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+.setrow input[type=time]{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:42px;color-scheme:dark}
+.summary{border:1px dashed rgba(60,199,189,.5);background:var(--accent-soft);border-radius:14px;padding:12px 16px;font-weight:600}
+
+/* ---------- area content ---------- */
+.content{min-width:0}
+.content>div>.h-row:first-child{margin-top:0}
+.solo{border:0!important;background:transparent!important}
+.solo>summary{display:none!important}
+.solo .in{padding:0!important}
+.ansall>details.accbox{display:none}
+.ansall>details.accbox.solo{display:block}
+.note{border-left:4px solid var(--moment);background:var(--moment-soft);padding:10px 14px;border-radius:0 14px 14px 0;margin:12px 0}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+.note.bad{border-color:var(--bad);background:var(--bad-soft)}
+
+/* ---------- legacy content styles used by the reference pages ---------- */
+ul.tight,ol.tight{margin:0;padding-left:1.2em} ul.tight li,ol.tight li{margin:.2em 0}
+.watch li::marker{color:var(--warn)}
 table{border-collapse:collapse;width:100%;font-size:.93rem}
-th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
-th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--surface2);position:sticky;top:0}
-.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:8px 0 14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.05)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:8px 0 14px}
 .tw table{min-width:520px}
 .num{font-variant-numeric:tabular-nums}
 .key{font-weight:700;color:var(--ok)}
-.accbox{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:10px}
+.accbox{border:1px solid var(--line);border-radius:18px;background:var(--surface);margin-bottom:10px}
 .accbox>summary{list-style:none;cursor:pointer;padding:14px 16px;font-family:var(--f-display);font-weight:700;font-size:1.1rem;display:flex;gap:10px;align-items:center;min-height:52px}
 .accbox>summary::-webkit-details-marker{display:none}
 .accbox>summary::after{content:"+";margin-left:auto;font-family:var(--f-mono);font-size:1.3rem;color:var(--muted)}
 .accbox[open]>summary::after{content:"\2212"}
 .accbox .in{padding:0 16px 16px}
-.tool{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.tool{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
 .tool h4{font-size:1rem;margin-bottom:8px}
 .fields{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end}
 .fields label{display:flex;flex-direction:column;font-size:.78rem;color:var(--muted);font-weight:600;gap:3px}
-.fields input,.fields select,.field{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:40px;width:6.5em}
+.fields input,.fields select,.field{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:40px;width:6.5em;color-scheme:dark}
 .fields select{width:auto;max-width:100%}
-.out{margin-top:10px;font-family:var(--f-mono);font-size:.9rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere}
-.search{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:1.05rem;min-height:48px}
+.out{margin-top:10px;font-family:var(--f-mono);font-size:.9rem;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere}
+.search{width:100%;background:rgba(255,255,255,.07);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:1.05rem;min-height:48px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:600;font-size:.85rem;min-height:36px}
+.chips button{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:999px;padding:6px 12px;font-weight:600;font-size:.85rem;min-height:36px}
 .chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.qa{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.qa{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:8px}
 .qa summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;gap:10px;min-height:48px;align-items:center}
 .qa summary::-webkit-details-marker{display:none}
 .qa summary::before{content:"Q";font-family:var(--f-mono);color:var(--accent);font-weight:700}
 .qa .a{padding:0 14px 14px 34px}
 .qa .tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-left:auto;padding-left:8px}
-.fix{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.fix{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
 .fix h4{font-size:1rem;margin-bottom:4px}
 .fix dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
 .fix dt{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:2px}
@@ -171,83 +240,41 @@ th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mu
 .checks input{width:22px;height:22px;margin-top:1px;accent-color:var(--accent);flex:0 0 auto}
 .checks label.on span{text-decoration:line-through;color:var(--muted)}
 .prog{height:8px;border-radius:6px;background:var(--line);overflow:hidden;margin:6px 0 10px}
-.prog i{display:block;height:100%;background:var(--accent);width:0}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50;max-width:calc(100% - 32px)}
-.note{border-left:4px solid var(--moment);background:var(--moment-soft);padding:8px 12px;border-radius:0 10px 10px 0;margin:10px 0}
-.note.ok{border-color:var(--ok);background:var(--ok-soft)}
-.note.bad{border-color:var(--bad);background:var(--bad-soft)}
-
-.subnav{margin-top:0}
-.menu{position:relative}
-.menu>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center}
-.menu>summary::-webkit-details-marker{display:none}
-.menubox{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:250px}
-.pre{white-space:pre-wrap;font-family:var(--f-body);font-size:.92rem;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 10px;overflow-wrap:anywhere}
-.start{border:2px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:14px 16px;margin-bottom:14px}
-.start h3{font-size:1.1rem;margin-bottom:6px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--group));width:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:50;max-width:calc(100% - 32px)}
+.pre{white-space:pre-wrap;font-family:var(--f-body);font-size:.92rem;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 10px;overflow-wrap:anywhere}
+.start{border:2px solid var(--accent);background:var(--accent-soft);border-radius:18px;padding:14px 16px;margin-bottom:14px}
 a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
-@media (max-width:560px){
-  .brand{flex-basis:100%}
-  .clock{font-size:1.6rem}
-  .nownext{grid-template-columns:1fr;flex-basis:100%}
-  .nownext .nn:not(.now){display:none}
-  .legend{display:none}
-  .cue{font-size:.9rem;padding:6px 10px;margin-bottom:8px}
-  .clockrow{gap:6px 10px;padding-bottom:6px}
-  .btn{padding:8px 12px}
-  .seghead .t{min-width:0;flex-basis:100%}
-  .fix dl{grid-template-columns:1fr}
+
+/* ---------- phones and small screens ---------- */
+@media (max-width:900px){
+  .pres{grid-template-columns:1fr;gap:14px}
+  .rail{position:static;flex-direction:row;overflow-x:auto;overflow-y:hidden;max-height:none;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .rail .railh{display:none}
+  .pc{flex:0 0 190px}
+  .pc.sub{flex:0 0 200px}
+  .hero-tile{flex-direction:column;align-items:flex-start}
 }
-@media (prefers-reduced-motion:no-preference){.segcard,.card{transition:box-shadow .2s}}
-</style>
+@media (max-width:560px){
+  .wrap{padding-inline:16px}
+  .crumb{padding:6px 11px;font-size:.9rem}
+  #clockT{font-size:1.35rem}
+  .actbar .back{padding:0 14px;min-height:64px}
+  .actbar .next{min-height:64px;padding:8px 16px} .actbar .next b{font-size:1.3rem} .actbar .next small{font-size:.8rem}
+  .left{text-align:left}
+  .fix dl{grid-template-columns:1fr}
+  .logo span{display:none}
+}
+@media (prefers-reduced-motion:reduce){.tile{transition:none}.tile:hover{transform:none}}
 
-</head>
+</style></head>
 <body>
-<header class="desk">
-  <div class="wrap">
-    <div class="desk-top">
-      <div class="brand">Pivot into Tech<small>Facilitator Desk</small></div>
-      <div class="seg-ctl" role="group" aria-label="Session length" id="modeCtl">
-        <button data-mode="0" aria-pressed="false">Full 110</button>
-        <button data-mode="1" aria-pressed="true">Core 90</button>
-        <button data-mode="2" aria-pressed="false">Express 72</button>
-      </div>
-      <button class="iconbtn" id="panicBtn" type="button">Panic card</button>
-      <details class="menu"><summary class="iconbtn">Settings</summary><div class="menubox">
-        <label class="chk"><input type="checkbox" id="remoteChk"> Remote facilitator (+5 min)</label>
-        <button class="iconbtn" id="themeBtn" type="button" aria-label="Switch light or dark theme">Switch light or dark</button>
-      </div></details>
-    </div>
-  </div>
-</header>
-<div class="deskstick">
-  <div class="wrap">
-    <div class="clockrow" style="padding-top:10px">
-      <div class="clock" id="clock" aria-live="off"><small>Session clock</small><span id="clockT">00:00:00</span></div>
-      <button class="btn primary" id="startBtn" type="button">Start session</button>
-      <button class="btn" id="nextBtn" type="button">Next segment</button>
-      <button class="btn small" id="backBtn" type="button">Back</button>
-      <button class="btn small" id="resetBtn" type="button">Reset</button>
-      <div class="nownext">
-        <div class="nn now"><b>Now</b><span id="nowTxt">Not started</span></div>
-        <div class="nn"><b>Next</b><span id="nextTxt">MindForge</span></div>
-      </div>
-    </div>
-    <div class="cue" id="cue" role="status">Press Start session when the doors open. The clock runs from 00:00.</div>
-    <div class="bar" id="bar" aria-label="Session timeline"></div>
-    <nav class="tabs" role="tablist" id="tabs" aria-label="Sections"></nav>
-  </div>
-</div>
-
-<main class="wrap" id="main"></main>
+<div class="bg" aria-hidden="true"></div>
+<header class="top" id="top"></header>
+<main class="wrap" id="app"></main>
 <div class="toast" id="toast" hidden></div>
-
 <script>
 "use strict";
-/* ============================================================
-   DATA
-   Durations are minutes as [Full, Core, Express].
-   ============================================================ */
 const MODES=["Full","Core","Express"];
 const TOTALS=[110,90,72];
 const SEGS=[
@@ -300,7 +327,7 @@ const SEGS=[
   moment:"Land the reveal, then pause. Let the room react before you say anything else.",
   watch:["Some people will think it is a gimmick. Show the Real Code tab and the error again. It is a real interpreter.","Yuki and Chidinma may need the sentence repeated in simpler words: 'We made this language. You used it.'"]},
  {n:"Wrap and breathe",d:[2,2,3],say:["Well done. You just used variables, loops and events. Those three ideas are in every programming language. Stand up, stretch, get water in a minute."],
-  do:["Tell early finishers to try Build an Adventure (10 steps) or wait. Answers are on the Answers tab.","Helpers open 03 Vault on every laptop during the breather."]}
+  do:["Tell early finishers to try Build an Adventure (10 steps) or wait. Answers are on the Answers card.","Helpers open 03 Vault on every laptop during the breather."]}
  ]},
 {id:"br1",name:"Breather",kind:"break",dur:[3,2,0],goal:"Let people breathe. Do not skip it in Full or Core.",
  steps:[{n:"Stand, drink, one question",d:[3,2,0],say:["Stand up. Stretch. Get some water. One question from anyone before we start the heist?"],do:["Helpers switch every laptop to 03 Vault and make sure the sound is on low.","Check the projector or the remote screen share is showing the Vault start screen."],watch:["If someone is confused about LoomSTEM, a helper sits with them now, not during the Vault."]}]},
@@ -334,13 +361,13 @@ const SEGS=[
   watch:["In Core, do this quickly and keep moving. In Express, keep it."]},
  {n:"Out: five ideas and the certificate",d:[3,3,2],ans:"ans-vault",
   say:["You are out. You wrote five programming constructs tonight: a variable, an until loop, a counted loop, a conditional, and a search. Take the short quiz. Then fill in your certificate."],
-  do:["Quiz has five questions. Answers are on the Answers tab.","Certificate: they can screenshot it. The number on screen is how many boxes they checked by hand."],
+  do:["Quiz has five questions. Answers are on the Answers card.","Certificate: they can screenshot it. The number on screen is how many boxes they checked by hand."],
   watch:["In Express skip the quiz: go straight to the certificate."]},
  {n:"The button: ritual and press",d:[2,2,1],moment:true,ans:"ans-button",
   say:["You solved four problems by hand. Now I want you to do the one thing the screen tells you not to do.","Press the home icon at the top, confirm (or refresh the page), and find the red button. It says do not press. Everyone find it? Hands over it. Three, two, one, press.","(A message asks: press the quantum button? Everyone says yes together.)"],
   do:["Do the countdown out loud.","There is a short burst of screen static. Warn once: 'There is a flash of static. Look away if flashing bothers you.'","The hum needs a prior click to play. It will work because they have already clicked on the page.","After the static: a call from Vale."],
   moment:"This is the mic drop. Build it up, do the countdown, and let the static do the work.",
-  watch:["Speakers off on shared floors: the visual still works.","If the button does not respond, use the Fixes tab."]},
+  watch:["Speakers off on shared floors: the visual still works.","If the button does not respond, use the Fixes page (Help card)."]},
  {n:"Four scenarios: same jobs, quantum",d:[4,3,3],ans:"ans-button",
   say:["Vale shows you the same four jobs, the way a quantum computer would do them. For each one: read the classical code, press Convert to quantum, then Run the quantum code, then Next.","Everything Vale shows is real. Shor's algorithm and Grover's algorithm, written in plain English."],
   do:["Scenario 1, outer door: Shor's. 26 shifts by hand, one pass with quantum.","Scenario 2, Room One: Grover's. 4 boxes, one tuned step, odds 100%.","Scenario 3, Rooms 2 and 3: 64 boxes need just 6 steps. 16 boxes need 3.","Scenario 4, Ledger: the same if-rule handed to a quantum machine as the oracle. 6 steps.","Keep each scenario to about a minute. Do not lecture."],
@@ -351,7 +378,7 @@ const SEGS=[
   watch:["Kwame, Tommy and Esther: they may feel alarm. Pair the worry with the answer above.","Do not speak for the bank's own plans. Say: 'The security team owns that. I can point you to them.'"]}
  ]},
 {id:"br2",name:"Breather and switch",kind:"break",dur:[2,2,0],goal:"Reset. The next part is different: they drive.",
- steps:[{n:"Stand, then change gear",d:[2,2,0],say:["Take a breath. The last part is different. So far I have led. Now you drive. You will build a small app, and I will show you the first step."],do:["Helpers open Scratch on every laptop and switch to the Compound Click page.","Check Scratch loads with no sign-in. Nobody needs an account."],watch:["If Scratch is blocked on the network, use the Fixes tab now."]}]},
+ steps:[{n:"Stand, then change gear",d:[2,2,0],say:["Take a breath. The last part is different. So far I have led. Now you drive. You will build a small app, and I will show you the first step."],do:["Helpers open Scratch on every laptop and switch to the Compound Click page.","Check Scratch loads with no sign-in. Nobody needs an account."],watch:["If Scratch is blocked on the network, use the Fixes page (Help card) now."]}]},
 {id:"ccb",name:"Compound Click: brief and demo",kind:"group",dur:[8,5,4],goal:"Show the pattern: trigger, logic, feedback. Practise it on a tiny example. Then let people go.",
  steps:[
  {n:"The pattern",d:[1,1,1],say:["Every app you use has three parts. A trigger: something happens, like a tap. Logic: the app decides. Feedback: it shows you something. Today you build all three."]},
@@ -382,7 +409,7 @@ const SEGS=[
  {n:"What you actually did",d:[1,1,2],say:["In this session you used a variable, a loop, a conditional and an event. You wrote in a language we built. You solved a heist. You built an app. That is what a junior developer does. It is also what analysts, testers and security people do every day. None of this needed a degree today."],
   do:["Optional: show the skills slide.","Repeat the taster line: this does not promise a job. It shows the work."]},
  {n:"Next steps and close",d:[2,1,3],say:["If you liked it, here is what to do next. (Point to the follow-up link.) Take the certificate. Try Compound Click again at home. Talk to a helper. Thank you."],
-  do:["Give the follow-up link and contact from the Checklists tab.","Express: this is where you say they can finish Compound Click at home from the same link.","Ask for feedback by a show of hands: energy, pace, clarity."]}
+  do:["Give the follow-up link and contact from the Checklists page (Prepare card).","Express: this is where you say they can finish Compound Click at home from the same link.","Ask for feedback by a show of hands: energy, pace, clarity."]}
  ]}
 ];
 
@@ -396,14 +423,8 @@ const CUTS=[
  {seg:"br1",label:"Shorten the first breather to one minute",mins:[2,1,0]}
 ];
 const EXTRAS=["Loom: Build an Adventure (10 steps), for early finishers, about 8 minutes","Quantum Playground, seven mini-labs, about 10 minutes for keen people","Compound Click extensions: random returns, compound interest, expenses, milestone broadcast"];
-
-/* ============================================================
-   STATE
-   ============================================================ */
-const S={mode:1,remote:false,tab:"run",running:false,elapsed:0,cur:-1,segStart:[],base:0,open:{}};
 function store(k,v){try{localStorage.setItem("ptt_"+k,JSON.stringify(v))}catch(e){}}
 function load(k,d){try{const v=localStorage.getItem("ptt_"+k);return v===null?d:JSON.parse(v)}catch(e){return d}}
-
 function segDur(s){return s.dur[S.mode]+(S.remote&&s.slack?s.slack:0)}
 function plan(){let t=0;return SEGS.map(s=>{const d=segDur(s);const o={s,start:t,end:t+d,dur:d};t+=d;return o})}
 function total(){return plan().reduce((a,p)=>a+p.dur,0)}
@@ -412,145 +433,12 @@ const hms=sec=>{sec=Math.max(0,Math.floor(sec));return String(Math.floor(sec/360
 const ms=sec=>{const neg=sec<0;sec=Math.abs(Math.round(sec));return (neg?"-":"")+String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")};
 const $=s=>document.querySelector(s);
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
-
-/* ============================================================
-   RUN OF SHOW
-   ============================================================ */
 function stepRows(seg,segStartMin){
   let t=segStartMin;const rows=[];
   seg.steps.forEach(st=>{const d=st.d[S.mode];rows.push({st,d,start:t,end:t+d});t+=d});
   if(S.remote&&seg.slack){rows.push({st:{n:"Remote buffer for lag and screen-share delay",d:[seg.slack,seg.slack,seg.slack],say:[],do:["Use this only if the link is slow. If not needed, move on early and gain the time."],watch:[]},d:seg.slack,start:t,end:t+seg.slack,buffer:true})}
   return rows;
 }
-function renderRun(){
-  const P=plan();
-  const el=document.createElement("div");
-  const total_=total();
-  let h=`<div class="h-row"><div><h2>Run of show</h2><p class="sub">${MODES[S.mode]}, ${total_} minutes${S.remote?", remote":""}. Times run from 00:00. Protect the reveal, the red button and the showcase.</p></div>
-   <div class="actions" style="margin:0"><button class="btn small" id="expandAll" type="button">Open all</button><button class="btn small" id="collapseAll" type="button">Close all</button><button class="btn small" id="copySheet" type="button">Copy run sheet</button></div></div>`;
-  if(!load("hidestart",false)){h+=`<div class="start"><h3>First time here? Three steps</h3><ol class="tight"><li>Before the day: open <b>Prep</b> and do the Rehearsal.</li><li>On the day: choose your length above, then press <b>Start session</b>. This page tells you what to say and do next.</li><li>Stuck? Press <b>Panic card</b> at the top, or open <b>Help</b>.</li></ol><div class="actions"><button class="btn small" id="hideStart" type="button">Got it, hide this</button></div></div>`}
-  P.forEach((p,i)=>{
-    const st=segState(i);
-    const seg=p.s;
-    const kindLbl=seg.kind==="self"?"Self-paced":seg.kind==="group"?"Group-run":"Breather";
-    const isMoment=seg.steps.some(x=>x.moment);
-    const open=S.open[seg.id]!==undefined?S.open[seg.id]:(st==="now"||(S.cur<0&&i===0));
-    const rows=stepRows(seg,p.start);
-    h+=`<article class="segcard ${seg.kind}" id="seg-${seg.id}" data-st="${st}">
-      <button class="seghead" type="button" data-toggle="${seg.id}" aria-expanded="${open}">
-        <span class="t">${hm(p.start)} to ${hm(p.end)}</span>
-        <span class="nm">${esc(seg.name)}</span>
-        <span class="pill ${seg.kind==='self'?'self':seg.kind==='group'?'group':''}">${kindLbl}</span>
-        ${isMoment?'<span class="pill moment">Mic drop</span>':''}
-        <span class="pill">${p.dur} min</span>
-        ${st==="now"?'<span class="pill now">Now</span>':st==="done"?'<span class="pill done">Done</span>':''}
-      </button>
-      <div class="segbody" ${open?"":"hidden"}>
-       <div class="goal"><b>Goal.</b> ${esc(seg.goal)}</div>`;
-    rows.forEach(r=>{
-      const st_=r.st;const skip=r.d===0;
-      h+=`<section class="step" ${skip?'data-skip="1"':''}>
-        <h4>${skip?'':`<span class="t">${hm(r.start)} to ${hm(r.end)}</span>`}${esc(st_.n)}${skip?' <span class="pill">Skipped in '+MODES[S.mode]+'</span>':`<span class="pill">${r.d} min</span>`}${st_.moment?' <span class="pill moment">Moment</span>':''}</h4>`;
-      if(!skip){
-        if(st_.say&&st_.say.length){h+=`<span class="lbl">Say</span><div class="say">${st_.say.map(x=>`<p>${esc(x.replace("{TOTAL}",TOTALS[S.mode]))}</p>`).join("")}</div>`}
-        if(st_.do&&st_.do.length){h+=`<span class="lbl">Do</span><ul class="tight">${st_.do.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}
-        if(typeof st_.moment==="string"){h+=`<div class="moment-box"><b>Mic drop.</b> ${esc(st_.moment)}</div>`}
-        if(st_.watch&&st_.watch.length){h+=`<span class="lbl">Watch for</span><ul class="tight watch">${st_.watch.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}
-        if(st_.ans){h+=`<div class="actions"><button class="btn small" type="button" data-goans="${st_.ans}">Open answers</button></div>`}
-      }
-      h+=`</section>`;
-    });
-    h+=`<div class="actions"><button class="btn small primary" type="button" data-startseg="${i}">Start this segment now</button></div>
-      </div></article>`;
-  });
-  h+=`<details class="accbox"><summary>Running late or early?</summary><div class="in"><div class="grid2"><div class="card"><h3>If you are running late</h3><p class="sub">Cut in this order. Times are minutes saved in ${MODES[S.mode]} mode.</p><ul class="tight" id="cutList">${CUTS.map(c=>{const m=c.mins[S.mode];return `<li data-cut="${c.seg}" ${m===0?'style="opacity:.45"':''}>${esc(c.label)} <span class="pill">${m===0?"not in this mode":"saves "+m+" min"}</span></li>`}).join("")}</ul></div>
-   <div class="card"><h3>If you are running early</h3><p class="sub">Add one of these. Never add to a segment that has a mic-drop moment.</p><ul class="tight">${EXTRAS.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div></details>`;
-  el.innerHTML=h;return el;
-}
-function segState(i){
-  if(S.cur<0)return i===0?"next":"later";
-  if(i<S.cur)return "done";if(i===S.cur)return "now";return "later";
-}
-
-/* ============================================================
-   CLOCK
-   ============================================================ */
-let tick=null,wake=null;
-function startClock(){
-  if(S.running)return;
-  S.running=true;S.base=Date.now()-S.elapsed*1000;
-  if(S.cur<0){S.cur=0;S.segStart[0]=0}
-  clearInterval(tick);tick=setInterval(()=>{S.elapsed=(Date.now()-S.base)/1000;updateDesk()},500);
-  try{if(navigator.wakeLock){navigator.wakeLock.request("screen").then(w=>{wake=w}).catch(()=>{})}}catch(e){}
-  $("#startBtn").textContent="Pause";render(true);
-}
-function pauseClock(){S.running=false;clearInterval(tick);$("#startBtn").textContent="Resume";try{if(wake){wake.release();wake=null}}catch(e){}updateDesk()}
-function resetClock(){pauseClock();S.elapsed=0;S.cur=-1;S.segStart=[];$("#startBtn").textContent="Start session";render(true);updateDesk()}
-function goSeg(i){
-  const P=plan();if(i<0||i>=P.length)return;
-  S.cur=i;S.segStart[i]=S.elapsed;
-  if(!S.running&&S.elapsed===0){}
-  S.open={};render(true);updateDesk();
-  const a=document.getElementById("seg-"+P[i].s.id);if(a&&S.tab==="run"){a.scrollIntoView({behavior:"smooth",block:"start"})}
-}
-function drift(){
-  const P=plan();if(S.cur<0||S.cur>=P.length)return 0;
-  const p=P[S.cur];const start=S.segStart[S.cur]!==undefined?S.segStart[S.cur]:p.start*60;
-  const projEnd=Math.max(S.elapsed,start+p.dur*60);
-  return projEnd-p.end*60;
-}
-function updateDesk(){
-  const P=plan();
-  $("#clockT").textContent=hms(S.elapsed);
-  const cur=S.cur>=0?P[S.cur]:null;
-  $("#nowTxt").textContent=cur?cur.s.name:"Not started";
-  const nx=S.cur+1<P.length?P[S.cur+1]:null;
-  $("#nextTxt").textContent=S.cur<0?P[0].s.name:(nx?nx.s.name:"Session ends");
-  const bar=$("#bar");
-  const tot=total()*60;
-  let pos=bar.querySelector("i");if(!pos){pos=document.createElement("i");bar.appendChild(pos)}
-  pos.style.left=Math.min(100,S.elapsed/tot*100)+"%";
-  bar.querySelectorAll("button").forEach((b,i)=>b.classList.toggle("cur",i===S.cur));
-  const cue=$("#cue");cue.className="cue";
-  if(!S.running&&S.elapsed===0){cue.textContent="Press Start session when the doors open. The clock runs from 00:00.";return}
-  if(!S.running){cue.textContent="Paused at "+ms(S.elapsed)+". Press Resume.";cue.classList.add("warn");return}
-  if(!cur){return}
-  const start=S.segStart[S.cur]!==undefined?S.segStart[S.cur]:cur.start*60;
-  const left=start+cur.dur*60-S.elapsed;
-  const d=drift();
-  const dTxt=Math.abs(d)<30?"on time":(d>0?ms(d)+" behind plan":ms(-d)+" ahead of plan");
-  if(S.elapsed>=tot+60&&S.cur===P.length-1){cue.classList.add("ok");cue.textContent="Session complete. Thank everyone and hand over to the helpers.";return}
-  if(left<0){
-    const over=-left;
-    cue.classList.add(over>180?"bad":"warn");
-    cue.textContent=(over>180?"Over by ":"Over by ")+ms(over)+" on "+cur.s.name+". "+(over>180?"Wrap up now and move on. See the cuts below.":"Start wrapping up.")+" ("+dTxt+")";
-  }else if(left<=120){
-    cue.classList.add("warn");cue.textContent=ms(left)+" left in "+cur.s.name+". Start the wrap-up line. ("+dTxt+")";
-  }else{
-    cue.textContent=cur.s.name+": "+ms(left)+" left of "+cur.dur+" min. ("+dTxt+")";
-  }
-  document.querySelectorAll("#cutList li").forEach(li=>li.style.outline="");
-  if(d>=180){
-    let need=d/60;const P2=plan();
-    CUTS.forEach(c=>{
-      const idx=P2.findIndex(p=>p.s.id===c.seg);const m=c.mins[S.mode];
-      if(need>0&&m>0&&idx>=S.cur){document.querySelectorAll('#cutList li[data-cut="'+c.seg+'"]').forEach(li=>{if(li.textContent.includes(c.label))li.style.outline="3px solid var(--warn)"});need-=m}
-    });
-  }
-}
-function buildBar(){
-  const P=plan();const bar=$("#bar");bar.innerHTML="";
-  P.forEach((p,i)=>{
-    const b=document.createElement("button");b.className=p.s.kind;b.type="button";
-    b.style.flex=p.dur+" 1 0";b.title=p.s.name+" "+p.dur+" min";b.setAttribute("aria-label",p.s.name+", "+p.dur+" minutes");
-    b.addEventListener("click",()=>{S.tab="run";setTab("run");const a=document.getElementById("seg-"+p.s.id);if(a){S.open[p.s.id]=true;render(false);document.getElementById("seg-"+p.s.id).scrollIntoView({behavior:"smooth",block:"start"})}});
-    bar.appendChild(b);
-  });
-}
-
-/* ============================================================
-   ANSWERS
-   ============================================================ */
 function coaster(g,pts){
   let ph=null,pv=0,th=0;const log=[];
   for(const h of pts){
@@ -743,7 +631,7 @@ const QA=[
 ["Careers","What should I learn first?","A common route is spreadsheet logic, then SQL for data, then a language such as Python, alongside how software teams work. Say it is one route, not the only one."],
 ["Careers","Do I need a degree?","Not always. Many roles accept experience, apprenticeships, or certifications. It varies by employer and role."],
 ["Careers","What does a developer actually do all day?","Mostly reading existing code, fixing problems, testing, and talking to colleagues. Writing new code is a smaller part. Compound Click is the small version of trigger, logic, feedback."],
-["Careers","Does the bank offer training or secondments?","Say what you know. If you do not know the current programme, say so and point to the follow-up contact in the Checklists tab. Never guess."],
+["Careers","Does the bank offer training or secondments?","Say what you know. If you do not know the current programme, say so and point to the follow-up contact in the Checklists page (Prepare card). Never guess."],
 ["Careers","I am worried about my own job. What should I do?","Listen first. Say it is a reasonable worry and that this session is a taster, not advice about their job. Point them to HR or their manager for their own situation, and to the follow-up link for learning options."],
 ["Tech","Is LoomScript a real programming language?","Yes. It has its own tokenizer, parser and interpreter, written by the session creator. It is a small teaching language and the engine check is a prototype feature. The ideas are the same as in any language."],
 ["Tech","Is the Real Code tab what actually runs?","Yes. The block code is joined into a text script and that text is what the interpreter reads."],
@@ -764,7 +652,7 @@ const QA=[
 ["Quantum","Is 'quantum-safe' the same as quantum?","No. Quantum-safe or post-quantum encryption runs on ordinary computers. It is designed to resist quantum attacks."],
 ["Session","Do I need an account or to install anything?","No. The four resources run in the browser. Scratch needs the internet but no sign-in."],
 ["Session","Will my progress be saved?","MindForge saves scores in the browser only. The others do not save. Screenshot the certificate."],
-["Session","Can I try this at home?","Yes. Give the follow-up link from the Checklists tab."],
+["Session","Can I try this at home?","Yes. Give the follow-up link from the Checklists page (Prepare card)."],
 ["Session","Can I do it on my phone?","The resources work on a phone. A laptop is better for Scratch."],
 ["Session","Is my data collected?","The four resources run in the browser and send nothing. Scratch is run by MIT and needs no account for this session."],
 ["Session","I am lost. Is it me?","No. Everyone is lost sometimes. Use Predict, Run, Investigate, Modify: guess, try, look, change one thing."],
@@ -817,10 +705,10 @@ const FIX=[
 ["Compound Click","R key does nothing","The key dropdown still says space.","Change the dropdown to r."],
 ["Compound Click","The variable is stuck at a big number","No reset script.","Press the green flag or the R key after Step 3."],
 ["Room","Wi-Fi drops","Network outage.","The four resources are single files and keep working once loaded. Scratch needs the internet. Continue with the group screen and take-home."],
-["Room","The projector or screen share fails","Cable, input or remote share problem.","Use a helper's laptop as the shared screen. Remote: switch to the backup share plan in the Remote tab."],
+["Room","The projector or screen share fails","Cable, input or remote share problem.","Use a helper's laptop as the shared screen. Remote: switch to the backup share plan in Helpers and remote (Your team card)."],
 ["Room","A laptop crashes","Old machine or too many tabs.","Refresh. Progress in MindForge stays. Others restart from the start of the taster. Pair the person with a neighbour."],
 ["Room","Fire alarm or emergency","Real world.","Follow the building procedure. Stop the clock (Pause). Restart at the segment you left."],
-["Room","We are running late","Over time on a segment.","Use the cuts list on the Run tab. Never cut the reveal, the button or the showcase."],
+["Room","We are running late","Over time on a segment.","Use the yellow cuts box that appears on the Run the session card. Never cut the reveal, the button or the showcase."],
 ["Room","Someone dominates the questions","Very keen or expert.","Say: great question, hold it for the end or ask a helper to take it aside. Give them a stretch task."],
 ["Room","Someone is upset or overwhelmed","Personal reaction to the topic.","Pause the group work. A helper sits with them quietly. Do not put anyone on the spot."]
 ];
@@ -861,7 +749,7 @@ function renderTeam(){
     <li>Helper says: 'We have lost the connection for a moment. Carry on with the puzzle you are on.'</li>
     <li>The lead helper opens this desk and reads the current segment's Say lines.</li>
     <li>Group work continues. Nothing in the resources needs a live link.</li>
-    <li>If the link is not back in five minutes, the lead helper runs the Vault and the button using the Answers tab, then closes with the take-home link.</li>
+    <li>If the link is not back in five minutes, the lead helper runs the Vault and the button using the Answers card, then closes with the take-home link.</li>
     <li>Note the time you lost and tell the organiser afterwards.</li></ol></div>
    <div class="card"><h3>What helpers do</h3><ul class="tight">
     <li>Greet by name. Sit next to the nervous people first.</li>
@@ -893,7 +781,7 @@ function renderTeam(){
    CHECKLISTS
    ============================================================ */
 const CHK=[
-["The day before",["Open all four resources on a test laptop. Confirm they load and the buttons work.","Check the Scratch site loads on the venue network, with no sign-in.","Confirm the number of laptops, the number of helpers and where they stand.","Brief the helpers with the Team tab. Agree the helper signals.","Decide the mode: Full 110, Core 90 or Express 72. Set it at the top.","Fill in the details below for the closing."]],
+["The day before",["Open all four resources on a test laptop. Confirm they load and the buttons work.","Check the Scratch site loads on the venue network, with no sign-in.","Confirm the number of laptops, the number of helpers and where they stand.","Brief the helpers with the Helper briefing page (Your team card). Agree the helper signals.","Decide the mode: Full 110, Core 90 or Express 72. Set it on the Run the session card.","Fill in the details below for the closing."]],
 ["60 to 30 minutes before",["Laptops on charge and logged in. Fresh browser tab for each resource.","On shared machines, clear site data for MindForge so old scores do not appear.","Sound on low. Speakers tested for the button hum.","Projector or remote share tested. Fonts and colours readable from the back.","Water, pens and paper for the fallback.","Certificate print or screenshot plan agreed."]],
 ["10 minutes before (remote: also do the tech check)",["Camera and sound checked both ways with the room helper.","This desk open on a second screen or phone. Clock at 00:00.","Helpers know their spots. Doors ready to open.","Every laptop is on 01 MindForge."]],
 ["During: quick cues",["Start the clock at doors open.","Press Next segment as you move on.","Say the clock line before the Vault starts: it never runs out.","Warn about the static before the button.","Pause after the reveal. Pause after the button.","Call the Compound Click checkpoints at +5 and +10 minutes."]],
@@ -980,60 +868,6 @@ function renderGlossary(){
 }
 
 /* ============================================================
-   ROUTER AND RENDER (grouped tabs)
-   ============================================================ */
-const DOC_URL="https://claude.ai/artifact/Wc5NmcyQFYZvouZBMuataP";
-const DECK_URL="https://claude.ai/artifact/2GfafxvpEzhzh95s8NibZo";
-const TABS=[["run","Today"],["answers","Answers"],["help","Help"],["team","Team"],["prep","Prep"],["plan","Plan and files"]];
-const SUBS={
-  help:[["panic","Panic card"],["questions","Questions"],["fixes","Fixes"],["gloss","Glossary"]],
-  team:[["helpers","Helpers and remote"],["briefing","Helper briefing"],["people","People and access"]],
-  prep:[["checks","Checklists"],["rehearsal","Rehearsal"],["kit","Kit and room"],["messages","Messages"]],
-  plan:[["overview","Session plan"],["walk","Persona walkthrough"],["files","Files and links"]]
-};
-const HASHMAP={run:["run"],answers:["answers"],help:["help","panic"],panic:["help","panic"],questions:["help","questions"],fixes:["help","fixes"],gloss:["help","gloss"],
-  team:["team","helpers"],briefing:["team","briefing"],people:["team","people"],prep:["prep","checks"],checks:["prep","checks"],rehearsal:["prep","rehearsal"],kit:["prep","kit"],messages:["prep","messages"],
-  plan:["plan","overview"],walk:["plan","walk"],files:["plan","files"]};
-S.sub={help:"panic",team:"helpers",prep:"checks",plan:"overview"};
-const COPY={};
-function buildTabs(){
-  const t=$("#tabs");t.innerHTML=TABS.map(x=>`<button type="button" role="tab" data-tab="${x[0]}" aria-selected="${x[0]===S.tab}">${x[1]}</button>`).join("");
-  t.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
-}
-function setTab(id,sub){
-  S.tab=id;if(sub)S.sub[id]=sub;
-  $("#tabs").querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===id));
-  try{history.replaceState(null,"","#"+(SUBS[id]?S.sub[id]:id))}catch(e){}
-  render(false);window.scrollTo({top:0,behavior:"auto"});
-}
-function goToken(tok){const m=HASHMAP[tok];if(!m)return false;S.tab=m[0];if(m[1])S.sub[m[0]]=m[1];return true}
-function copyBtn(key,text,label){COPY[key]=text;return `<button class="btn small" type="button" data-copy="${key}">${label||"Copy text"}</button>`}
-const RENDER={
-  help:{panic:()=>renderPanic(),questions:()=>renderQA(),fixes:()=>renderFix(),gloss:()=>renderGlossary()},
-  team:{helpers:()=>renderTeam(),briefing:()=>renderBriefing(),people:()=>renderPeople()},
-  prep:{checks:()=>renderChecklists(),rehearsal:()=>renderRehearsal(),kit:()=>renderKit(),messages:()=>renderMessages()},
-  plan:{overview:()=>renderPlan(),walk:()=>renderWalk(),files:()=>renderFiles()}
-};
-function render(keep){
-  const y=window.scrollY;
-  const m=$("#main");m.innerHTML="";
-  let el;
-  if(S.tab==="run"){el=renderRun()}
-  else if(S.tab==="answers"){el=renderAnswers()}
-  else{
-    el=document.createElement("div");
-    const nav=document.createElement("div");nav.className="chips subnav";
-    nav.innerHTML=SUBS[S.tab].map(x=>`<button type="button" data-sub="${x[0]}" aria-pressed="${x[0]===S.sub[S.tab]}">${x[1]}</button>`).join("");
-    nav.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setTab(S.tab,b.dataset.sub)));
-    el.appendChild(nav);el.appendChild(RENDER[S.tab][S.sub[S.tab]]());
-  }
-  m.appendChild(el);
-  if(S.tab==="answers")bindAnswers(m);
-  if(S.tab==="run")bindRun(m);
-  m.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>copyText(COPY[b.dataset.copy]||"")));
-  if(keep)window.scrollTo(0,y);
-}
-
 /* ---------- checklist helper ---------- */
 function checkGroups(groups,key,title,sub){
   const el=document.createElement("div");
@@ -1063,7 +897,7 @@ function renderPanic(){
     <p class="sub" style="margin-top:10px">It is fine to say: 'I do not know. I will find out and tell you.'</p></div>
    <div class="card"><h3>Smallest thing that still works</h3><ul class="tight">
     <li><b>Running late:</b> skip the chemistry demo, the loops, the quiz or the routing code. See Today, 'Running late or early?'.</li>
-    <li><b>Vault will not load:</b> demo the red button on your own screen. Read the button script from the Answers tab.</li>
+    <li><b>Vault will not load:</b> demo the red button on your own screen. Read the button script from the Answers card.</li>
     <li><b>Scratch blocked:</b> demo on the big screen. Tell people they can finish at home.</li>
     <li><b>Projector or link fails:</b> use a helper's laptop as the shared screen.</li>
     <li><b>Room goes quiet or flat:</b> stand up, ask everyone to stand, take a two-minute breather.</li></ul></div>
@@ -1148,16 +982,16 @@ renderPeople=function(){
    PREP: rehearsal, kit, messages
    ============================================================ */
 const REHEARSAL=[
- ["Read (about 10 minutes)",["Read the Session plan and the Persona walkthrough in this Desk.","Scroll through the Today tab once in Core mode.","Skim the Answers tab so you know where things are."]],
+ ["Read (about 10 minutes)",["Read the Session plan and the Persona walkthrough in this Desk.","Click through Run the session once in Core mode.","Skim the Answers card so you know where things are."]],
  ["Do it as a learner (about 35 minutes)",["Do MindForge for five minutes.","Do the Rollercoaster and the reveal, with the Real Code tab and the chemistry error.","Play the Vault including the red button.","Build Compound Click steps 1 to 4 in Scratch.","Write down every moment you were unsure. Those are the moments the room will be unsure too."]],
  ["Practise out loud (about 10 minutes)",["Say the reveal lines aloud twice. Record yourself on a phone and listen back.","Practise the button countdown and the static warning.","Say the 'harvest now, decrypt later' script in your own words."]],
  ["Test the room hardware (about 10 minutes)",["Connect to the real projector or screen share.","Play the button hum through the real speakers.","Load Scratch on the venue Wi-Fi."]],
- ["If you can (about 20 minutes)",["Run a short huddle with the helpers using the Helper briefing tab.","Remote: run the tech check with the room helper the day before.","Agree who is lead helper and where each helper stands."]]
+ ["If you can (about 20 minutes)",["Run a short huddle with the helpers using the Helper briefing page (Your team card).","Remote: run the tech check with the room helper the day before.","Agree who is lead helper and where each helper stands."]]
 ];
 function renderRehearsal(){return checkGroups(REHEARSAL,"rehearsal","Rehearsal","About 75 minutes in total. You cannot over-prepare the reveal and the button. Ticks are saved in this browser.")}
 const KIT=[
  ["Technology",["One laptop per person, plus one or two spare.","Chargers and extension leads.","A mouse for each laptop if you can. Trackpads make dragging hard.","Projector or screen, with the right adaptors, or a tested remote share.","Speakers for the button hum (optional).","Wi-Fi details written down. Scratch tested on that network.","All four resources open in their own tab on every laptop."]],
- ["People and paper",["Helper badges or lanyards that say 'Ask me'.","Green, amber and red cards or sticky notes.","Paper and pens for the fallback.","A printed copy of the Panic card and the Answers page.","Your printed run sheet (use Copy run sheet on the Today tab).","Water and something to eat if you can."]],
+ ["People and paper",["Helper badges or lanyards that say 'Ask me'.","Green, amber and red cards or sticky notes.","Paper and pens for the fallback.","A printed copy of the Panic card and the Answers page.","Your printed run sheet (use Copy run sheet on the Run the session card).","Water and something to eat if you can."]],
  ["Room",["Seats where everyone can see the screen.","Helpers spread across the room, not clustered.","Space to stand and stretch at the breathers.","Exits and toilets known, and said once at the start.","A clock or a phone timer where you can see it."]]
 ];
 function renderKit(){return checkGroups(KIT,"kit","Kit and room","Everything to bring or check. Ticks are saved in this browser.")}
@@ -1248,7 +1082,7 @@ function renderPlan(){
   const el=document.createElement("div");
   const P=[0,1,2].map(m=>{let t=0;return SEGS.map(s=>{const d=s.dur[m];const o={s,start:t,d};t+=d;return o})});
   el.innerHTML=`<div class="h-row"><div><h2>Session plan</h2><p class="sub">Why it is built the way it is.</p></div></div>
-  <div class="card" style="margin-bottom:14px"><h3>How long it needs</h3><p>The full content needs about 110 minutes. To fit a 60 to 90 minute slot there are three modes: <b>Full</b> (about 110), <b>Core</b> (about 90, the recommended default) and <b>Express</b> (about 72). Choose it at the top of this Desk.</p>
+  <div class="card" style="margin-bottom:14px"><h3>How long it needs</h3><p>The full content needs about 110 minutes. To fit a 60 to 90 minute slot there are three modes: <b>Full</b> (about 110), <b>Core</b> (about 90, the recommended default) and <b>Express</b> (about 72). Choose it on the Run the session card, before you press start.</p>
    <ul class="tight"><li>MindForge is an arrival activity, so it costs almost no facilitated time.</li><li>LoomSTEM and the Vault are group-run. The reveal and the red button each get room to land.</li><li>Compound Click starts together and then goes self-paced. It has a take-home fallback.</li><li>Breathers are protected: about 7 minutes across the session in Full.</li><li>Remote facilitator: add 5 minutes and a 10 minute tech check beforehand.</li></ul></div>
   <div class="tw"><table><thead><tr><th>Segment</th><th>Full</th><th>Core</th><th>Express</th></tr></thead><tbody>
   ${SEGS.map((s,i)=>`<tr><td><b>${esc(s.name)}</b></td>${[0,1,2].map(m=>`<td class="num">${hm(P[m][i].start)} (${P[m][i].d})</td>`).join("")}</tr>`).join("")}
@@ -1256,42 +1090,6 @@ function renderPlan(){
   <div class="note ok"><b>The three moments never to squeeze:</b> the reveal at the end of LoomSTEM, the red button in the Vault, and the showcase. Cut anything else first.</div>
   <p class="sub">Times show start (minutes in brackets). The full analysis and the persona walkthrough are also in the Session Analysis doc: see Files and links.</p>`;
   return el;
-}
-function renderFiles(){
-  const el=document.createElement("div");
-  const det=load("res",{});
-  el.innerHTML=`<div class="h-row"><div><h2>Files and links</h2><p class="sub">Everything that goes with this Desk.</p></div></div>
-  <div class="note"><b>Sharing:</b> these three pages are private until the owner shares them. If a link asks you to sign in or says you do not have access, ask the organiser to share it with you.</div>
-  <div class="grid2">
-   <div class="card"><h3>Facilitator deck</h3><p>27 slides with speaker notes. Use it on the big screen.</p><a class="btn primary" style="display:inline-block;text-decoration:none" href="${DECK_URL}" target="_blank" rel="noopener">Open the deck</a></div>
-   <div class="card"><h3>Session analysis and persona walkthrough</h3><p>The full write-up: timings, persona walkthrough, risks and patch list.</p><a class="btn primary" style="display:inline-block;text-decoration:none" href="${DOC_URL}" target="_blank" rel="noopener">Open the analysis doc</a></div>
-  </div>
-  <div class="card" style="margin-top:14px"><h3>The four session resources</h3><p class="sub">Paste the web address of each one. They are saved in this browser and become quick links.</p>
-   <div class="fields" style="flex-direction:column;align-items:stretch">
-   ${[["r1","01 MindForge"],["r2","02 LoomSTEM"],["r3","03 The Vault"],["r4","04 Compound Click"]].map(x=>`<div class="fields" style="align-items:end"><label style="flex:1 1 260px">${x[1]}<input class="field" style="width:100%" id="${x[0]}" type="url" placeholder="https://" value="${esc(det[x[0]]||"")}"></label><a class="btn small" style="text-decoration:none" id="${x[0]}a" target="_blank" rel="noopener" ${det[x[0]]?`href="${esc(det[x[0]])}"`:'aria-disabled="true"'}>Open</a></div>`).join("")}
-   </div></div>
-  <div class="card" style="margin-top:14px"><h3>Scratch</h3><p>Compound Click uses Scratch. Open <b>scratch.mit.edu</b> and choose Create. No account is needed. Test it on the venue network.</p></div>`;
-  ["r1","r2","r3","r4"].forEach(k=>el.querySelector("#"+k).addEventListener("input",e=>{const d=load("res",{});d[k]=e.target.value.trim();store("res",d);const a=el.querySelector("#"+k+"a");if(/^https?:\/\//.test(d[k])){a.href=d[k];a.removeAttribute("aria-disabled")}else{a.removeAttribute("href");a.setAttribute("aria-disabled","true")}}));
-  return el;
-}
-
-function bindRun(m){
-  m.querySelectorAll("[data-toggle]").forEach(b=>b.addEventListener("click",()=>{
-    const id=b.dataset.toggle;const card=document.getElementById("seg-"+id);const body=card.querySelector(".segbody");
-    body.hidden=!body.hidden;b.setAttribute("aria-expanded",!body.hidden);S.open[id]=!body.hidden;
-  }));
-  m.querySelectorAll("[data-goans]").forEach(b=>b.addEventListener("click",()=>{const id=b.dataset.goans;setTab("answers");setTimeout(()=>openAns(id),50)}));
-  m.querySelectorAll("[data-startseg]").forEach(b=>b.addEventListener("click",()=>{if(!S.running&&S.elapsed===0){startClock()}goSeg(+b.dataset.startseg)}));
-  const hs=m.querySelector("#hideStart");hs&&hs.addEventListener("click",()=>{store("hidestart",true);render(true)});
-  const ex=m.querySelector("#expandAll"),co=m.querySelector("#collapseAll");
-  ex&&ex.addEventListener("click",()=>{SEGS.forEach(s=>S.open[s.id]=true);render(true)});
-  co&&co.addEventListener("click",()=>{SEGS.forEach(s=>S.open[s.id]=false);render(true)});
-  const cp=m.querySelector("#copySheet");
-  cp&&cp.addEventListener("click",()=>{
-    const P=plan();let t="Pivot into Tech run sheet ("+MODES[S.mode]+", "+total()+" min"+(S.remote?", remote":"")+")\n";
-    P.forEach(p=>{t+="\n"+hm(p.start)+" "+p.s.name+" ("+p.dur+" min)\n";stepRows(p.s,p.start).forEach(r=>{if(r.d>0)t+="   "+hm(r.start)+" "+r.st.n+"\n"})});
-    copyText(t);
-  });
 }
 function copyText(t){
   const done=()=>toast("Copied");
@@ -1304,32 +1102,330 @@ function fallbackCopy(t){
 }
 let toastT;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},2200)}
-
 /* ============================================================
-   INIT
+   APP: views, routing, the step player
    ============================================================ */
-function setMode(i){S.mode=i;store("mode",i);$("#modeCtl").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.mode===i));buildBar();render(true);updateDesk()}
+const DECK_FILE="Pivot-into-Tech-Facilitator-Deck.pptx";
+const DOC_FILE="Session-Analysis-and-Persona-Walkthrough.docx";
+const RES=[["r1","01 MindForge","01_MindForge.html"],["r2","02 LoomSTEM","02_LoomSTEM.html"],["r3","03 The Vault","03_heist.html"],["r4","04 Compound Click","04_compound_click.html"]];
+const ICO={
+ play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
+ key:'<svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>',
+ life:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/></svg>',
+ people:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 0 5 2 5 5"/></svg>',
+ list:'<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.8 5M3.5 12l1.2 1.2L6.8 11M3.5 18l1.2 1.2L6.8 17"/></svg>',
+ file:'<svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>',
+ down:'<svg viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>'
+};
+const AREAS=[
+ {id:"answers",t:"Answers",d:"Every answer key and calculator for the puzzles.",ico:"key"},
+ {id:"help",t:"Help",d:"Panic card, common questions, tech fixes and a plain-English glossary.",ico:"life"},
+ {id:"team",t:"Your team",d:"What the helpers do, the 5-minute huddle and who is in the room.",ico:"people"},
+ {id:"prep",t:"Prepare",d:"Rehearsal, checklists, kit and messages to send before the day.",ico:"list"},
+ {id:"plan",t:"Plan and files",d:"Timings, the persona walkthrough and your downloads.",ico:"file"}
+];
+const SUBS={
+ answers:[["mf","MindForge","Nothing to look up"],["coaster","Rollercoaster","LoomSTEM, first ride"],["loops","Loops","LoomSTEM, part 2"],["ph","Chemistry mix","The pH demo"],["reveal","The reveal","What to click and say"],["adv","Build an Adventure","Optional extra"],["vault","The Vault","Every puzzle"],["button","The red button","Sequence and the worry"],["cc","Compound Click","Scratch, step by step"]],
+ help:[["panic","Panic card","Read this if it is going wrong"],["questions","Questions","What people will ask"],["fixes","Fixes","Tech problems, fast"],["gloss","Glossary","Plain-English words"]],
+ team:[["helpers","Helpers and remote","Who does what"],["briefing","Helper briefing","Huddle script and cue cards"],["people","People and access","Who is in the room"]],
+ prep:[["checks","Checklists","What to do, in order"],["rehearsal","Rehearsal","About 75 minutes"],["kit","Kit and room","What to bring"],["messages","Messages","Ready to send"]],
+ plan:[["overview","Session plan","Timings and the three lengths"],["walk","Persona walkthrough","How each type of person feels it"],["files","Files and links","Downloads and the four games"]]
+};
+const DEFSUB={answers:"coaster",help:"panic",team:"helpers",prep:"checks",plan:"overview"};
+const TOK={};Object.keys(SUBS).forEach(a=>SUBS[a].forEach(s=>{TOK[s[0]]=[a,s[0]];TOK["ans-"+s[0]]=[a,s[0]]}));
+Object.keys(DEFSUB).forEach(a=>{TOK[a]=[a,DEFSUB[a]]});
+
+const S={view:"home",area:"help",sub:Object.assign({},DEFSUB),mode:1,remote:false,doors:"",pos:-1,started:false,running:false,elapsed:0,base:0,segStart:{}};
+let FLOW=[],PL=[];
+const COPY={};
+function copyBtn(key,text,label){COPY[key]=text;return `<button class="btn small" type="button" data-copy="${key}">${label||"Copy text"}</button>`}
+
+function buildFlow(){
+  PL=plan();FLOW=[];
+  PL.forEach((p,i)=>{stepRows(p.s,p.start).forEach(r=>{if(r.d>0)FLOW.push({seg:i,row:r,p})})});
+  if(S.pos>FLOW.length)S.pos=FLOW.length;
+}
+const firstIdx=i=>FLOW.findIndex(f=>f.seg===i);
+const curSeg=()=>(S.pos>=0&&S.pos<FLOW.length)?FLOW[S.pos].seg:null;
+function wall(min){
+  if(!/^\d\d:\d\d$/.test(S.doors))return hm(min);
+  const [h,m]=S.doors.split(":").map(Number);const t=h*60+m+Math.round(min);
+  return String(Math.floor(t/60)%24).padStart(2,"0")+":"+String(t%60).padStart(2,"0");
+}
+
+/* ---------- persistence ---------- */
+function save(){store("run",{pos:S.pos,started:S.started,running:S.running,elapsed:S.elapsed,base:S.base,segStart:S.segStart,at:Date.now()});store("mode",S.mode);store("remote",S.remote);store("doors",S.doors)}
+
+/* ---------- clock ---------- */
+let tick=null,wake=null;
+function startTick(){clearInterval(tick);tick=setInterval(()=>{S.elapsed=(Date.now()-S.base)/1000;updateDesk();if(Math.floor(S.elapsed)%5===0)save()},500)}
+function reqWake(){try{if(navigator.wakeLock){navigator.wakeLock.request("screen").then(w=>{wake=w}).catch(()=>{})}}catch(e){}}
+function runClock(){S.started=true;S.running=true;S.base=Date.now()-S.elapsed*1000;startTick();reqWake();const c=curSeg();if(c!==null&&S.segStart[c]===undefined)S.segStart[c]=S.elapsed;save()}
+function pauseClock(){S.running=false;clearInterval(tick);try{if(wake){wake.release();wake=null}}catch(e){}save()}
+function resetAll(){pauseClock();S.elapsed=0;S.started=false;S.pos=-1;S.segStart={};save();render()}
+function drift(){
+  const c=curSeg();if(c===null)return 0;const p=PL[c];
+  const start=S.segStart[c]!==undefined?S.segStart[c]:p.start*60;
+  return Math.max(S.elapsed,start+p.dur*60)-p.end*60;
+}
+
+/* ---------- navigation inside the session ---------- */
+function go(pos){
+  pos=Math.max(-1,Math.min(FLOW.length,pos));
+  const before=curSeg();S.pos=pos;const c=curSeg();
+  if(S.started&&c!==null&&c!==before)S.segStart[c]=S.elapsed;
+  if(pos>=FLOW.length&&S.running)pauseClock();
+  save();render();window.scrollTo(0,0);
+}
+function next(){if(S.pos<0){if(!S.running)runClock();go(0);return}if(S.pos<FLOW.length)go(S.pos+1)}
+function back(){if(S.pos>=0)go(S.pos-1)}
+
+/* ---------- routing between views ---------- */
+function setHash(){let h="";if(S.view==="run")h="run";else if(S.view==="area")h=S.area==="answers"?"ans-"+S.sub.answers:S.sub[S.area];try{history.replaceState(null,"","#"+h)}catch(e){}}
+function nav(view,area,sub){S.view=view;if(area)S.area=area;if(area&&sub)S.sub[area]=sub;setHash();render();window.scrollTo(0,0)}
+function fromHash(tok){
+  tok=(tok||"").replace("#","");
+  if(tok==="run"){S.view="run";return}
+  if(TOK[tok]){S.view="area";S.area=TOK[tok][0];S.sub[S.area]=TOK[tok][1];return}
+  S.view="home";
+}
+
+/* ---------- pieces ---------- */
+const tile=(id,a)=>`<button class="tile" type="button" data-nav="${id}"><span class="ico">${ICO[a.ico]}</span><h3>${esc(a.t)}</h3><p>${esc(a.d)}</p><span class="go">Open</span></button>`;
+
+function viewHome(){
+  const el=document.createElement("div");
+  const inProg=S.pos>=0&&S.pos<FLOW.length;
+  let hero;
+  if(inProg){const f=FLOW[S.pos];hero=`<button class="tile hero-tile" type="button" data-nav="run"><span class="ico">${ICO.play}</span><div><span class="pill now">In progress</span><h3>Resume the session</h3><p>Part ${f.seg+1} of ${PL.length}: ${esc(f.p.s.name)}. Step: ${esc(f.row.st.n)}.</p></div></button>`}
+  else{hero=`<button class="tile hero-tile" type="button" data-nav="run"><span class="ico">${ICO.play}</span><div><span class="pill self">Start here on the day</span><h3>Run the session</h3><p>One step at a time. What to say, what to do, and the clock. Press NEXT to move on. You can click through it once to rehearse.</p></div></button>`}
+  el.innerHTML=`<section class="hero"><p class="eyebrow">Facilitator Desk</p><h1>Pivot into Tech</h1>
+   <p class="lead">Thank you for doing this. Everything is here, one card at a time. It is a taster, nobody is tested, and nothing on this page can break.</p></section>
+   ${hero}
+   <h2 class="sect">Your path</h2>
+   <div class="path"><span><b>1</b>Before the day: Prepare</span><span><b>2</b>On the day: Run the session</span><span><b>3</b>If it goes wrong: Panic</span></div>
+   <h2 class="sect">Everything else</h2>
+   <div class="tiles">${AREAS.map(a=>tile(a.id,a)).join("")}</div>
+   <h2 class="sect">Downloads</h2>
+   <div class="grid2">
+    <div class="dl"><span class="ico">${ICO.down}</span><div><b>Facilitator deck (.pptx)</b><span class="sub">27 slides with speaker notes</span></div><a class="btn primary" href="${DECK_FILE}" download>Download</a></div>
+    <div class="dl"><span class="ico">${ICO.down}</span><div><b>Session analysis (.docx)</b><span class="sub">Timings, personas, risks, Joe's review</span></div><a class="btn primary" href="${DOC_FILE}" download>Download</a></div>
+   </div>
+   <p class="sub" style="margin-top:26px">Ticks and settings are saved in this browser only. The two downloads sit in the same folder as this page.</p>`;
+  return el;
+}
+
+function railHTML(){
+  const cs=curSeg();
+  return PL.map((p,i)=>{
+    const skip=firstIdx(i)<0;
+    const st=skip?"skip":(S.pos>=FLOW.length?"done":cs===null?"later":i<cs?"done":i===cs?"now":"later");
+    return `<button class="pc ${p.s.kind} ${st}" type="button" ${skip?"disabled":""} data-part="${i}" ${st==="now"?'aria-current="step"':""}><span class="pn">${st==="done"?"\u2713":i+1}</span><span class="pt"><b>${esc(p.s.name)}</b><small>${wall(p.start)} \u00b7 ${p.dur} min${skip?" \u00b7 skipped":""}</small></span></button>`;
+  }).join("");
+}
+
+function viewRun(){
+  const el=document.createElement("div");el.className="pres";
+  const stage=S.pos<0?readyHTML():S.pos>=FLOW.length?doneHTML():stepHTML();
+  el.innerHTML=`<aside class="rail" aria-label="Parts of the session"><p class="railh">Parts of the session</p>${railHTML()}</aside><div class="stagewrap"><div class="cue" id="cue" role="status"></div><div id="lateBox"></div>${stage}</div>`;
+  return el;
+}
+
+function stepHTML(){
+  const f=FLOW[S.pos],seg=f.p.s,r=f.row,st=r.st;
+  const mine=FLOW.map((x,i)=>[x,i]).filter(x=>x[0].seg===f.seg);
+  const idx=mine.findIndex(x=>x[1]===S.pos);
+  const nx=FLOW[S.pos+1];
+  const nextLbl=!nx?"Finish the session":(nx.seg!==f.seg?"Next part: "+PL[nx.seg].s.name:nx.row.st.n);
+  const kind=seg.kind==="self"?"Self-paced":seg.kind==="group"?"Group-run":"Breather";
+  const say=(st.say||[]).map(x=>`<p>${esc(x.replace("{TOTAL}",TOTALS[S.mode]))}</p>`).join("");
+  const doL=(st.do||[]).map(x=>`<li><span>${esc(x)}</span></li>`).join("");
+  const watch=(st.watch||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+  return `<article class="stage k-${seg.kind}">
+   <div class="stagehead"><div><p class="eyebrow">Part ${f.seg+1} of ${PL.length} \u00b7 ${kind}</p><p class="partname">${esc(seg.name)}</p></div>
+    <div class="left"><small>Time left in this part</small><b id="partLeft">--:--</b></div></div>
+   ${idx===0?`<p class="goal"><b>Goal of this part.</b> ${esc(seg.goal)}</p>`:""}
+   <div class="dots" aria-label="Steps in this part">${mine.map((x,i)=>`<button type="button" data-step="${x[1]}" class="${x[1]===S.pos?"cur":i<idx?"on":""}" aria-label="Step ${i+1}: ${esc(x[0].row.st.n)}"></button>`).join("")}</div>
+   <p class="stepno">Step ${idx+1} of ${mine.length}</p>
+   <h1 class="stepname">${esc(st.n)}</h1>
+   <div class="badges"><span class="pill">${r.d} min</span><span class="pill">${wall(r.start)} to ${wall(r.end)}</span>${st.moment?'<span class="pill moment">Mic drop</span>':""}${r.buffer?'<span class="pill">Remote buffer</span>':""}</div>
+   ${say?`<div class="blk say"><span class="lbl">Say</span>${say}</div>`:""}
+   ${typeof st.moment==="string"?`<div class="moment-box"><b>Mic drop.</b> ${esc(st.moment)}</div>`:""}
+   ${doL?`<div class="blk dob"><span class="lbl">Do</span><ol class="dolist">${doL}</ol></div>`:""}
+   ${watch?`<div class="blk watchb"><span class="lbl">Watch for</span><ul>${watch}</ul></div>`:""}
+   ${st.ans?`<div class="actions"><button class="btn" type="button" data-ans="${st.ans}">Open the answers for this step</button></div>`:""}
+  </article>
+  <div class="actbar"><button class="back" type="button" data-back>\u2039 Back</button><button class="next" type="button" data-next><b>NEXT \u203a</b><small>${esc(nextLbl)}</small></button></div>
+  <p class="hint">Tip: on a laptop the left and right arrow keys work too.</p>`;
+}
+
+const MODEINFO=[["Full","110","Everything, with room to breathe."],["Core","90","The recommended run. Balanced."],["Express","72","Tightest. Skips loops, chemistry and both breathers."]];
+function readyHTML(){
+  const tot=total();
+  return `<article class="stage">
+   <p class="eyebrow">Before you start</p><h1 class="stepname">Ready when you are</h1>
+   <p class="lead" style="margin:0 0 6px">Pick how long you have. If you are unsure, choose Core.</p>
+   <div class="modes" role="group" aria-label="Session length">${MODEINFO.map((m,i)=>`<button class="modecard" type="button" data-mode="${i}" aria-pressed="${S.mode===i}">${i===1?'<span class="pill self rec">Recommended</span>':""}<b>${m[0]}</b><span class="mins">${m[1]} min</span><span>${m[2]}</span></button>`).join("")}</div>
+   <div class="setrow"><label><input type="checkbox" id="remoteChk" ${S.remote?"checked":""}> Someone is dialling in remotely (adds 5 minutes)</label>
+    <label>Doors open at <input type="time" id="doorsIn" value="${esc(S.doors)}"></label></div>
+   <div class="summary">${MODES[S.mode]} takes ${tot} minutes${S.remote?" with the remote buffer":""}.${/^\d\d:\d\d$/.test(S.doors)?` You finish at about ${wall(tot)}.`:" Add the time the doors open and every part shows real clock times."}</div>
+   <div class="blk dob"><span class="lbl">Before you press start</span><ol class="dolist"><li><span>Helpers are on the floor and every laptop shows 01 MindForge.</span></li><li><span>The projector or screen share is on and the sound is low.</span></li><li><span>You have water, and you have read the Panic card once.</span></li></ol></div>
+  </article>
+  <div class="actbar"><button class="back" type="button" data-browse>Browse without the clock</button><button class="next" type="button" data-next><b>${S.started?"CONTINUE \u203a":"START THE SESSION \u203a"}</b><small>${S.started?"Carry on where you left off":"The clock starts at 00:00 and Part 1 opens"}</small></button></div>`;
+}
+function doneHTML(){
+  return `<article class="stage"><p class="eyebrow">Finished</p><h1 class="stepname">That is a wrap. Well done.</h1>
+   <p class="lead">Thank everyone, thank the helpers by name, and point to the follow-up link and contact.${S.started?` Total time: ${hms(S.elapsed)}.`:""}</p>
+   <div class="actions">${copyBtn("thanks",MSG_THANKS,"Copy the thank-you message for helpers")}<button class="btn" type="button" data-nav="prep">Send the report-back (Prepare)</button><button class="btn" type="button" data-nav="home">Home</button></div></article>
+   <div class="actbar"><button class="back" type="button" data-back>\u2039 Back</button><button class="next" type="button" data-nav="home"><b>HOME</b><small>Back to all the cards</small></button></div>`;
+}
+
+function viewArea(){
+  const a=AREAS.find(x=>x.id===S.area);
+  const el=document.createElement("div");el.className="pres";
+  const cur=S.sub[S.area];
+  el.innerHTML=`<aside class="rail" aria-label="${esc(a.t)} pages"><p class="railh">${esc(a.t)}</p>${SUBS[S.area].map(s=>`<button class="pc sub ${s[0]===cur?"now":""}" type="button" data-sub="${s[0]}" ${s[0]===cur?'aria-current="page"':""}><b>${esc(s[1])}</b><small>${esc(s[2])}</small></button>`).join("")}</aside><div class="content" id="content"></div>`;
+  const c=el.querySelector("#content");
+  if(S.area==="answers")c.appendChild(answersPage(cur));else c.appendChild(RENDER[S.area][cur]());
+  return el;
+}
+const RENDER={
+  help:{panic:()=>renderPanic(),questions:()=>renderQA(),fixes:()=>renderFix(),gloss:()=>renderGlossary()},
+  team:{helpers:()=>renderTeam(),briefing:()=>renderBriefing(),people:()=>renderPeople()},
+  prep:{checks:()=>renderChecklists(),rehearsal:()=>renderRehearsal(),kit:()=>renderKit(),messages:()=>renderMessages()},
+  plan:{overview:()=>renderPlan(),walk:()=>renderWalk(),files:()=>renderFiles()}
+};
+function answersPage(id){
+  const w=document.createElement("div");w.className="ansall";
+  const all=renderAnswers();
+  const hr=all.querySelector(".h-row");hr&&hr.remove();const ch=all.querySelector("#ansChips");ch&&ch.remove();
+  w.appendChild(all);
+  const d=all.querySelector("#ans-"+id);
+  if(d){d.classList.add("solo");d.open=true;const t=d.querySelector("summary").textContent;const h=document.createElement("div");h.className="h-row";h.innerHTML=`<h2>${esc(t)}</h2>`;d.insertBefore(h,d.querySelector(".in"))}
+  bindAnswers(w);
+  return w;
+}
+
+function renderFiles(){
+  const el=document.createElement("div");
+  const det=load("res",{});
+  el.innerHTML=`<div class="h-row"><div><h2>Files and links</h2><p class="sub">Everything that goes with this Desk lives in the same folder.</p></div></div>
+  <div class="grid2">
+   <div class="dl"><span class="ico">${ICO.down}</span><div><b>Facilitator deck (.pptx)</b><span class="sub">27 slides with speaker notes. Use it on the big screen.</span></div><a class="btn primary" href="${DECK_FILE}" download>Download</a></div>
+   <div class="dl"><span class="ico">${ICO.down}</span><div><b>Session analysis (.docx)</b><span class="sub">Timings, persona walkthrough, risks and Joe's review.</span></div><a class="btn primary" href="${DOC_FILE}" download>Download</a></div>
+  </div>
+  <div class="note"><b>Nothing happens when you click?</b> Make sure the deck and document sit in the same folder as this page. On GitHub Pages that means the same directory of the repository.</div>
+  <h3 style="margin:18px 0 10px">The four games</h3>
+  <div class="grid2">${RES.map(x=>`<div class="dl"><div><b>${x[1]}</b><span class="sub" id="${x[0]}t">${esc(det[x[0]]||x[2])}</span></div><a class="btn primary" id="${x[0]}a" href="${esc(det[x[0]]||x[2])}" target="_blank" rel="noopener">Open</a></div>`).join("")}</div>
+  <details class="accbox" style="margin-top:14px"><summary>Games live somewhere else? Use a different address</summary><div class="in"><p class="sub">Paste the full web address. It is saved in this browser only.</p><div class="fields" style="flex-direction:column;align-items:stretch">${RES.map(x=>`<label>${x[1]}<input class="field" style="width:100%" id="${x[0]}" type="url" placeholder="${x[2]}" value="${esc(det[x[0]]||"")}"></label>`).join("")}</div></div></details>
+  <div class="card" style="margin-top:14px"><h3>Scratch</h3><p>Compound Click uses Scratch. Open <b>scratch.mit.edu</b> and choose Create. No account is needed. Test it on the venue network.</p></div>`;
+  RES.forEach(x=>el.querySelector("#"+x[0]).addEventListener("input",e=>{
+    const d=load("res",{});d[x[0]]=e.target.value.trim();store("res",d);
+    const v=/^https?:\/\//.test(d[x[0]])?d[x[0]]:x[2];
+    el.querySelector("#"+x[0]+"a").href=v;el.querySelector("#"+x[0]+"t").textContent=v;
+  }));
+  return el;
+}
+
+/* ---------- top bar ---------- */
+function renderTop(){
+  const sep='<span class="sep" aria-hidden="true">\u203a</span>';
+  let cr=`<button class="crumb" type="button" data-nav="home">Home</button>`;
+  if(S.view==="run")cr+=sep+`<span class="crumb cur">Run the session</span>`;
+  else if(S.view==="area"){const a=AREAS.find(x=>x.id===S.area);const s=SUBS[S.area].find(x=>x[0]===S.sub[S.area]);cr+=sep+`<span class="crumb">${esc(a.t)}</span>`+sep+`<span class="crumb cur">${esc(s[1])}</span>`}
+  const inSess=S.pos>=0&&S.view!=="run";
+  $("#top").innerHTML=`<div class="wrap"><button class="logo" type="button" data-nav="home" aria-label="Home"><i>P</i><span>Facilitator Desk</span></button><nav class="crumbs" aria-label="Where you are">${cr}</nav><span class="grow"></span>
+   ${inSess?`<button class="pillbtn back" type="button" data-nav="run">Back to the session</button>`:""}
+   ${S.view==="run"?`<div class="clockbox"><span id="clockT">00:00:00</span><button class="pillbtn" type="button" id="clkBtn" data-clock></button>${S.started?`<button class="pillbtn" type="button" id="rstBtn" data-reset>Reset</button>`:""}</div>`:""}
+   <button class="pillbtn panic" type="button" data-nav="panic">Panic card</button></div>`;
+}
+
+/* ---------- live updates (clock, cue, late box) ---------- */
+let lateCache="";
+function updateDesk(){
+  const c=$("#clockT");if(c)c.textContent=hms(S.elapsed);
+  const b=$("#clkBtn");if(b)b.textContent=!S.started?"Start clock":S.running?"Pause":"Resume";
+  if(S.view!=="run")return;
+  const cue=$("#cue");if(!cue)return;
+  cue.className="cue";
+  const cs=curSeg(),pl=$("#partLeft");
+  if(S.pos>=FLOW.length){cue.classList.add("ok");cue.textContent="Session complete. Thank everyone and hand over to the helpers.";return}
+  if(!S.started){cue.textContent=S.pos<0?"The clock is off. It starts when you press START THE SESSION.":"The clock is off, so you are browsing. Press Start clock at the top when the session really begins.";if(pl)pl.textContent="--:--";return}
+  if(!S.running){cue.classList.add("warn");cue.textContent="Paused at "+ms(S.elapsed)+". Press Resume at the top.";return}
+  if(cs===null){cue.textContent="Clock running. Press NEXT to open Part 1.";return}
+  const p=PL[cs];const start=S.segStart[cs]!==undefined?S.segStart[cs]:p.start*60;
+  const left=start+p.dur*60-S.elapsed;const d=drift();
+  const dTxt=Math.abs(d)<30?"on time":(d>0?ms(d)+" behind plan":ms(-d)+" ahead of plan");
+  if(pl)pl.textContent=left<0?"+"+ms(-left)+" over":ms(left);
+  if(left<0){const o=-left;cue.classList.add(o>180?"bad":"warn");cue.textContent="Over by "+ms(o)+" on "+p.s.name+". "+(o>180?"Wrap up now and move on.":"Start wrapping up.")+" ("+dTxt+")"}
+  else if(left<=120){cue.classList.add("warn");cue.textContent=ms(left)+" left in this part. Start the wrap-up line. ("+dTxt+")"}
+  else cue.textContent="You are "+dTxt+".";
+  let html="";
+  if(d>=180){
+    let need=d/60;const items=[];
+    CUTS.forEach(x=>{const idx=PL.findIndex(q=>q.s.id===x.seg);const m=x.mins[S.mode];if(need>0&&m>0&&idx>=cs&&items.length<3){items.push(`<li>${esc(x.label)} <span class="pill">saves ${m} min</span></li>`);need-=m}});
+    if(items.length)html=`<div class="late"><b>You are ${ms(d)} behind.</b> Cut these, in this order:<ul>${items.join("")}</ul></div>`;
+  }
+  if(html!==lateCache){lateCache=html;const lb=$("#lateBox");if(lb)lb.innerHTML=html}
+}
+
+/* ---------- render ---------- */
+function render(){
+  buildFlow();lateCache="";
+  const m=$("#app");
+  const v=S.view==="home"?viewHome():S.view==="run"?viewRun():viewArea();
+  m.replaceChildren(v);
+  renderTop();updateDesk();
+  const cur=m.querySelector(".rail .pc.now");
+  if(cur){const rail=cur.parentElement;if(rail.scrollHeight>rail.clientHeight||rail.scrollWidth>rail.clientWidth){rail.scrollTop=cur.offsetTop-rail.offsetTop-80;rail.scrollLeft=cur.offsetLeft-rail.offsetLeft-20}}
+}
+
+/* ---------- events (delegated) ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-nav],[data-part],[data-step],[data-next],[data-back],[data-browse],[data-mode],[data-sub],[data-ans],[data-copy],[data-clock],[data-reset]");
+  if(!t)return;
+  if(t.dataset.copy){copyText(COPY[t.dataset.copy]||"");return}
+  if(t.dataset.nav!==undefined){
+    const v=t.dataset.nav;
+    if(v==="home")nav("home");else if(v==="run")nav("run");
+    else if(v==="panic")nav("area","help","panic");
+    else nav("area",v,S.sub[v]||DEFSUB[v]);
+    return;
+  }
+  if(t.dataset.sub){S.sub[S.area]=t.dataset.sub;setHash();render();window.scrollTo(0,0);return}
+  if(t.dataset.ans){nav("area","answers",t.dataset.ans.replace("ans-",""));return}
+  if(t.dataset.part!==undefined){go(firstIdx(+t.dataset.part));return}
+  if(t.dataset.step!==undefined){go(+t.dataset.step);return}
+  if(t.dataset.next!==undefined){next();return}
+  if(t.dataset.back!==undefined){back();return}
+  if(t.dataset.browse!==undefined){go(0);return}
+  if(t.dataset.mode!==undefined){S.mode=+t.dataset.mode;save();render();return}
+  if(t.dataset.clock!==undefined){if(!S.started||!S.running)runClock();else pauseClock();updateDesk();return}
+  if(t.dataset.reset!==undefined){
+    if(!S.confirmReset){S.confirmReset=true;t.textContent="Tap again to reset";setTimeout(()=>{S.confirmReset=false;if(t.isConnected)t.textContent="Reset"},3000);return}
+    S.confirmReset=false;resetAll();
+  }
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="remoteChk"){S.remote=e.target.checked;save();render()}
+  if(e.target.id==="doorsIn"){S.doors=e.target.value;save();render()}
+});
+document.addEventListener("keydown",e=>{
+  if(S.view!=="run"||/INPUT|TEXTAREA|SELECT/.test((e.target.tagName||"")))return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){e.preventDefault();next()}
+  if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();back()}
+});
+window.addEventListener("hashchange",()=>{fromHash(location.hash);render()});
+
 (function init(){
-  S.mode=load("mode",1);S.remote=!!load("remote",false);
-  goToken((location.hash||"").replace("#",""));
-  $("#remoteChk").checked=S.remote;
-  $("#remoteChk").addEventListener("change",e=>{S.remote=e.target.checked;store("remote",S.remote);buildBar();render(true);updateDesk()});
-  $("#modeCtl").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setMode(+b.dataset.mode)));
-  $("#startBtn").addEventListener("click",()=>{if(S.running)pauseClock();else startClock()});
-  $("#nextBtn").addEventListener("click",()=>{if(!S.running&&S.elapsed===0)startClock();else goSeg(Math.min(S.cur+1,SEGS.length-1))});
-  $("#backBtn").addEventListener("click",()=>{if(S.cur>0)goSeg(S.cur-1)});
-  $("#resetBtn").addEventListener("click",()=>{if(S.elapsed>0&&!S.confirmReset){S.confirmReset=true;$("#resetBtn").textContent="Tap again to reset";setTimeout(()=>{S.confirmReset=false;$("#resetBtn").textContent="Reset"},3000);return}S.confirmReset=false;$("#resetBtn").textContent="Reset";resetClock()});
-  $("#themeBtn").addEventListener("click",()=>{
-    const cur=document.documentElement.getAttribute("data-theme");
-    const sysDark=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches;
-    const next=(cur||(sysDark?"dark":"light"))==="dark"?"light":"dark";
-    document.documentElement.setAttribute("data-theme",next);store("theme",next);
-  });
-  const th=load("theme",null);if(th)document.documentElement.setAttribute("data-theme",th);
-  window.addEventListener("hashchange",()=>{const x=(location.hash||"").replace("#","");if(HASHMAP[x]){const m=HASHMAP[x];if(m[0]!==S.tab||(m[1]&&m[1]!==S.sub[m[0]]))setTab(m[0],m[1])}});
-  $("#panicBtn").addEventListener("click",()=>setTab("help","panic"));
-  buildTabs();buildBar();setMode(S.mode);updateDesk();
+  S.mode=load("mode",1);S.remote=!!load("remote",false);S.doors=load("doors","");
+  const r=load("run",null);
+  if(r){S.pos=r.pos;S.started=!!r.started;S.elapsed=r.elapsed||0;S.segStart=r.segStart||{};
+    if(r.running){S.elapsed=(Date.now()-r.base)/1000;S.running=true;S.base=r.base;startTick();reqWake()}}
+  buildFlow();
+  fromHash(location.hash);
+  render();
 })();
+
 </script>
-</body>
-</html>
+</body></html>
