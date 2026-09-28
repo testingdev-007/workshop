@@ -1,6 +1,6 @@
 # The Compound Click — Facilitator Guide
 
-A 30-minute, laptop-based Scratch session for women in tech, 40+, with no prior coding experience. Participants leave having built a working programme: a clickable "savings" simulator that grows a number, plays a sound and animates — the same event → logic → feedback pattern behind every banking app and trading screen.
+A 30-minute, laptop-based Scratch session for women in tech, 40+, with no prior coding experience. Participants leave having built a working programme: a clickable "savings" simulator that grows a number, plays a sound and gives a brief colour flash — the same event → logic → feedback pattern behind every banking app and trading screen.
 
 Companion participant website: `index.html` (open in any browser, works on shared/locked-down school or venue machines, no install needed beyond Scratch itself).
 
@@ -56,7 +56,7 @@ A few things worth knowing before the day:
 | 0:03–0:07 | 4 min | Meet Scratch | Live demo tour: stage, sprite list, block palette, scripts area, green flag |
 | 0:07–0:10 | 3 min | Step 1 — Clear the stage | Delete the cat, add the Crystal sprite, pick a backdrop |
 | 0:10–0:15 | 5 min | Step 2 & 3 — Give it a memory | Create the `Savings` variable, build the green-flag reset script, add a dedicated key-press reset, test both |
-| 0:15–0:22 | 7 min | Step 4 — Make it respond | The main build: click → add money → sound → pulse animation. This is where most support is needed |
+| 0:15–0:22 | 7 min | Step 4 — Make it respond | The main build: click → add money → sound → colour flash. This is where most support is needed |
 | 0:22–0:26 | 4 min | Step 5 — Make it yours | Personalise backdrop, costume, click amount |
 | 0:26–0:28 | 2 min | Step 6 — Stretch goal (flexible) | Milestone message when savings pass 100. **This is your buffer** — skip or shorten if the room is behind |
 | 0:28–0:30 | 2 min | Wrap-up | Career connection, what to try next, close |
@@ -72,7 +72,9 @@ Open with the "why," not the "how." Something like:
 
 > "In the next 30 minutes, every one of you is going to build a working piece of software. Not a toy — the actual pattern that runs inside banking apps, trading platforms, and every fintech product you've ever tapped a button on: something happens (you click), the system does something (it updates a number), and it tells you it happened (a sound, an animation). That's it. That's the job. Today you write it yourself."
 
-Address the room directly: most people here have never written a line of code, and that's exactly who this is for. No prior experience needed, no "tech brain" required.
+Address the room directly: most people here have never written a line of code, and that's exactly who this is for. No prior experience needed, no "tech brain" required. Worth naming two things explicitly, right at the start:
+- If a mouse, trackpad, or right-clicking feels unfamiliar, that's completely normal — nobody's starting behind.
+- If you've ever built a spreadsheet formula — a running total, an IF statement, anything that updates itself — you already have more of the underlying logic than you think. You'll recognise it as you go.
 
 ### 0:03–0:07 — Meet Scratch
 Project your own screen. Point out, briefly:
@@ -93,9 +95,9 @@ Creating the variable is the first slightly fiddly bit (Variables category → "
 There are two reset scripts to build here, not one: the green-flag reset from before, plus a dedicated `when key r pressed` reset. Flag why explicitly — the green flag is a shared button that also restarts everything else in the programme, so a reset that's just a reset (and nothing else) is worth having on its own trigger. Once both are built, get everyone to test both together — click the green flag, then press R — a small synchronised "does it work" moment builds confidence before the harder step.
 
 ### 0:15–0:22 — Step 4: Make it respond (the main build)
-This is the longest block of time for a reason — it's the step with the most new concepts (event block, change vs. set, sound, two "change size" blocks for the pulse). Let people work at their own pace; this is where you and any co-facilitators should be circulating most.
+This is the longest block of time for a reason — it's the step with the most new concepts (event block, change vs. set, sound, two "change color effect" blocks for the flash). Let people work at their own pace; this is where you and any co-facilitators should be circulating most.
 
-Expect someone to ask why the `wait 0.1 seconds` block is there between the two size changes. Good question, worth having the answer ready: without it, the grow and shrink happen back to back so fast that Scratch never actually renders the bigger size on screen — the pulse would be invisible. The tiny pause is what makes the animation something the eye can actually catch.
+Expect someone to ask why the `wait 0.1 seconds` block is there between the two colour-effect changes. Good question, worth having the answer ready: without it, the colour shifts on and back off in the same instant, so the flash would be invisible. The tiny pause is what makes it something the eye can actually catch.
 
 If someone finishes early, that's what Step 6 is for — point them ahead rather than having them wait.
 
@@ -118,7 +120,8 @@ Point people to the certificate section on the site — type your name in, print
 
 | Problem | Fix |
 |---|---|
-| Accidentally deleted the wrong sprite | Right-click stage → nothing to undo in Scratch easily; just re-add the Crystal sprite from the library, no harm done |
+| Accidentally deleted a sprite | No confirmed way to bring back a deleted sprite specifically — just re-add Crystal from the library, no real harm done (it takes seconds) |
+| Accidentally deleted or moved a block | Right-click in the scripts area and choose **Undo** (or press **Ctrl+Z**, **Cmd+Z** on Mac) — this reverts the last change to the code. Worth knowing yourself and passing on; it covers most in-script slip-ups |
 | Can't find "Make a Variable" | It's a button inside the **Variables** category in the block palette, above the variable blocks themselves |
 | Clicking the crystal does nothing | Almost always the "when this sprite clicked" hat block isn't at the top of the stack, or blocks aren't snapped together — check for a gap |
 | No sound plays | Check system/laptop volume first; then check the sprite has a sound assigned in the Sounds tab |
@@ -133,7 +136,7 @@ Point people to the certificate section on the site — type your name in, print
 
 Some participants will hit Step 4 (the six-block build) and stall. That's expected — it's the step with the most new ideas at once. Three tools for this, roughly in order of how much intervention they need:
 
-**1. The buddy system.** Seat people in loose pairs from the start, ideally mixing anyone who mentions prior tech exposure with anyone who's more nervous. Frame it once, early: "If you finish a step, the fastest way to help is to turn to your neighbour before waving me over — I'll always come, but you'll get unstuck faster with someone right next to you." This also takes pressure off you as the only source of help in the room.
+**1. The buddy system.** Seat people in loose pairs from the start, ideally mixing anyone who's more nervous with anyone who's confident with logical or structured tools — that's not only "prior tech exposure." Someone who's spent years being the go-to for Excel at work will often pick this up just as fast as someone who's coded before, and pairing them with a first-timer works well for both: the confident one consolidates by explaining, the nervous one gets a patient, non-facilitator source of help. Frame it once, early: "If you finish a step, the fastest way to help is to turn to your neighbour before waving me over — I'll always come, but you'll get unstuck faster with someone right next to you." This also takes pressure off you as the only source of help in the room.
 
 **2. The core-4 fallback.** If someone is visibly behind by the time the room reaches Step 5, give them permission to drop to a minimal version rather than rushing the full six-block build:
 
@@ -142,11 +145,15 @@ when this sprite clicked
 change Savings by 10
 ```
 
-That's it — two blocks. It's still a real, working, testable programme: click the crystal, watch the number go up. Say this explicitly: *"That's a complete build. The sound and the wobble are polish, not the point — you've already written the part that matters."* People who came in anxious about "not being technical" need to hear that a small working thing counts as a win, not a shortfall. They can add the sound and animation back in during Step 5's personalise time if they want to, with no pressure to.
+That's it — two blocks. It's still a real, working, testable programme: click the crystal, watch the number go up. Say this explicitly: *"That's a complete build. The sound and the colour flash are polish, not the point — you've already written the part that matters."* People who came in anxious about "not being technical" need to hear that a small working thing counts as a win, not a shortfall. They can add the sound and flash back in during Step 5's personalise time if they want to, with no pressure to.
 
 **3. Narrate the fix, don't just make it.** When you sit with someone, resist doing the click-and-drag for them. Point at the gap between two blocks, or name the block they're missing ("you need one more block from the Sound category") and let them place it. The 30-minute win is "I did this," not "it got done."
 
 **Language that helps, generally:** avoid "it's easy" — for someone who's never done this, it isn't, and being told it is makes struggling feel like personal failure. Better: "this is the fiddliest step in the whole thing, everyone slows down here," which is true and normalises it.
+
+**Reading the room: two patterns you'll likely see.** You don't need to label anyone, but it helps to recognise these two shapes of participant in advance, because they need almost opposite things from you:
+- **The nervous first-timer.** Hesitates before clicking anything, apologises for "silly questions," may be worried about breaking the laptop. Needs reassurance before instruction — a quick "you can't break anything here, everything's undoable" goes further than another explanation of the block itself.
+- **The confident logical thinker — often someone respected for spreadsheet or analytical work, even with zero coding background.** Moves through Steps 1–4 quickly, may look for the "real" challenge, is at risk of feeling patronised by over-explanation. Best used two ways: point them at the compound-interest extension by name (it maps almost exactly onto a self-updating spreadsheet formula, and telling them that up front lands well), and/or pair them with a nervous first-timer once they're done — they're usually a better second teacher than you'd expect.
 
 ## Extension activities — for anyone who finishes early
 
@@ -171,7 +178,7 @@ If someone races through all four, the honest answer is "you've now covered vari
 2. Variables → **Make a Variable** → name it `Savings`.
 3. Drag: `when green flag clicked` + `set Savings to 0`. Click the green flag to test.
 4. Drag a second reset: `when key r pressed` + `set Savings to 0`. Press R to test.
-5. Drag: `when this sprite clicked` + `change Savings by 10` + `play sound` (pick whatever sound is already on your sprite, in the Sounds tab — or add any short one from the sound library) + `change size by 10` + `wait 0.1 seconds` + `change size by -10`. Click the crystal to test.
+5. Drag: `when this sprite clicked` + `change Savings by 10` + `play sound` (pick whatever sound is already on your sprite, in the Sounds tab — or add any short one from the sound library) + `change color effect by 25` + `wait 0.1 seconds` + `change color effect by -25`. Click the crystal to test.
 6. Personalise: change the backdrop, the costume, or the click amount.
 7. *(Stretch)* Add: `if Savings > 100 then` → `say "You just built your first fintech feature!"`.
 

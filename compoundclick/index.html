@@ -479,6 +479,11 @@
       <div class="hero-actions">
         <a class="btn primary" href="https://scratch.mit.edu/projects/editor/" target="_blank" rel="noopener">Open Scratch ↗</a>
       </div>
+
+      <div class="callout" style="margin-top:24px;">
+        <span class="tag">BEFORE YOU START</span>
+        <p>You'll be right-clicking, dragging blocks, and clicking buttons throughout — if any of that feels unfamiliar, that's completely normal and not a sign you're behind. Just ask. And if you've ever built a formula in a spreadsheet, quite a lot of what's coming will feel more familiar than you'd expect.</p>
+      </div>
     </section>
 
     <section class="step" id="step-1">
@@ -519,7 +524,7 @@
 
       <div class="callout">
         <span class="tag">WHY IT MATTERS</span>
-        <p>This is exactly what a database field or an app's "state" is. Your bank balance, right now, is a variable sitting on a server somewhere — conceptually no different from the one you're about to make.</p>
+        <p>This is exactly what a database field or an app's "state" is. Your bank balance, right now, is a variable sitting on a server somewhere — conceptually no different from the one you're about to make. If you've ever kept a running total in a spreadsheet cell, that's the same idea — it's just going to live inside a programme instead of a grid.</p>
       </div>
 
       <div class="stack">
@@ -598,7 +603,7 @@
         <h2>Make it respond</h2>
         <span class="step-time">~7 min</span>
       </div>
-      <p class="step-intro">This is the main build. When you click the crystal, three things should happen: your total goes up, a sound plays, and the crystal gives a little pulse. Three lines of feedback for one click — that's UX design, and you're about to write it.</p>
+      <p class="step-intro">This is the main build. When you click the crystal, three things should happen: your total goes up, a sound plays, and the crystal gives a brief colour flash. Three lines of feedback for one click — that's UX design, and you're about to write it.</p>
 
       <div class="callout">
         <span class="tag">WHY IT MATTERS</span>
@@ -610,24 +615,24 @@
           <div class="block hat b-events">when this sprite clicked</div>
           <div class="block b-variables">change Savings by <strong>&nbsp;10</strong></div>
           <div class="block b-sound">play sound <strong>&nbsp;(whatever's on your sprite)</strong></div>
-          <div class="block b-looks">change size by <strong>&nbsp;10</strong></div>
+          <div class="block b-looks">change color effect by <strong>&nbsp;25</strong></div>
           <div class="block b-control">wait <strong>&nbsp;0.1</strong> seconds</div>
-          <div class="block b-looks">change size by <strong>&nbsp;-10</strong></div>
+          <div class="block b-looks">change color effect by <strong>&nbsp;-25</strong></div>
         </div>
       </div>
-      <p style="font-size:13px; color:var(--paper-dim); max-width:60ch; margin-top:-8px;">Why the wait? Without it, the grow and shrink happen back to back so fast that Scratch never actually shows the bigger size — the pulse would be invisible. The 0.1-second pause is what makes the animation something you can actually see.</p>
+      <p style="font-size:13px; color:var(--paper-dim); max-width:60ch; margin-top:-8px;">Why the wait? Without it, the colour shifts on and back off in the same instant, so the flash would be invisible. The 0.1-second pause is what makes it something you can actually see.</p>
 
       <div class="try-it">
-        <strong>Do this:</strong> Build the stack above on your crystal sprite. For the sound block, check its <strong>Sounds</strong> tab first — most library sprites already come with one built in — and pick that, or add any short one from the sound library if it's empty. Six blocks, snapped in order. Click the crystal on the stage to test — watch Savings climb, listen for the sound, and see the little pulse. If nothing happens, check every block is actually snapped together with no gaps.
+        <strong>Do this:</strong> Build the stack above on your crystal sprite. For the sound block, check its <strong>Sounds</strong> tab first — most library sprites already come with one built in — and pick that, or add any short one from the sound library if it's empty. Six blocks, snapped in order. Click the crystal on the stage to test — watch Savings climb, listen for the sound, and see the brief colour flash. If nothing happens, check every block is actually snapped together with no gaps.
       </div>
 
       <details class="stuck">
         <summary>Stuck? Open this</summary>
         <div class="stuck-body">
           <p>This is the fiddliest step in the whole session — everyone slows down here, so don't worry if it's taking longer than Step 3 did.</p>
-          <p>If you're running short on time or patience, it's completely fine to build a smaller version first and come back to the sound and pulse later:</p>
+          <p>If you're running short on time or patience, it's completely fine to build a smaller version first and come back to the sound and flash later:</p>
           <p><code>when this sprite clicked</code><br><code>change Savings by 10</code></p>
-          <p>That's a real, complete, working programme on its own — click the crystal, watch the number go up. Add the sound and pulse back in once that's working, or during Step 5.</p>
+          <p>That's a real, complete, working programme on its own — click the crystal, watch the number go up. Add the sound and flash back in once that's working, or during Step 5.</p>
         </div>
       </details>
 
@@ -670,7 +675,7 @@
 
       <div class="callout">
         <span class="tag">WHY IT MATTERS</span>
-        <p>This is business logic — the same shape as the rules that decide interest, fraud flags, or loan eligibility inside a real financial system: <em>if</em> a condition is true, <em>then</em> do something.</p>
+        <p>This is business logic — the same shape as the rules that decide interest, fraud flags, or loan eligibility inside a real financial system: <em>if</em> a condition is true, <em>then</em> do something. If you've ever written an IF formula in a spreadsheet, this is the identical logic wearing a different outfit.</p>
       </div>
 
       <div class="stack">
@@ -681,7 +686,7 @@
       </div>
 
       <div class="try-it">
-        <strong>Do this:</strong> From <strong>Control</strong>, drag an <strong>if / then</strong> block into the click script, after the pulse. From <strong>Operators</strong>, drag a <strong>&gt;</strong> block into the if's slot, put the <strong>Savings</strong> variable on the left and <strong>100</strong> on the right. Inside the if, add <strong>say ... for 2 seconds</strong> from Looks.
+        <strong>Do this:</strong> From <strong>Control</strong>, drag an <strong>if / then</strong> block into the click script, after the colour flash. From <strong>Operators</strong>, drag a <strong>&gt;</strong> block into the if's slot, put the <strong>Savings</strong> variable on the left and <strong>100</strong> on the right. Inside the if, add <strong>say ... for 2 seconds</strong> from Looks.
       </div>
 
       <label class="mark-done"><input type="checkbox" data-mark="6"> Mark this step done</label>
@@ -703,7 +708,7 @@
         </div>
         <div class="ext-card">
           <div class="title">Real compound interest</div>
-          <div class="desc">Add a second script: <code>forever</code> → <code>wait 2 seconds</code> → <code>change Savings by (Savings × 0.01)</code>. Now Savings grows on its own, 1% at a time — the thing this whole project is named after.</div>
+          <div class="desc">Add a second script: <code>forever</code> → <code>wait 2 seconds</code> → <code>change Savings by (Savings × 0.01)</code>. Now Savings grows on its own, 1% at a time — the thing this whole project is named after. If you've ever built a self-updating spreadsheet formula, this will click fast.</div>
           <div class="uses">USES: CONTROL, OPERATORS</div>
         </div>
         <div class="ext-card">
@@ -754,7 +759,7 @@
         <div class="card"><div class="k">Sprites &amp; costumes</div><div class="v">→ UI components: the buttons and screens in every app</div></div>
         <div class="card"><div class="k">Variables</div><div class="v">→ app "state" — your bank balance is a variable somewhere</div></div>
         <div class="card"><div class="k">Event blocks</div><div class="v">→ every button you've ever tapped is wired to a handler like this</div></div>
-        <div class="card"><div class="k">Sound &amp; animation</div><div class="v">→ UX design — telling the user something happened</div></div>
+        <div class="card"><div class="k">Sound &amp; visual feedback</div><div class="v">→ UX design — telling the user something happened</div></div>
         <div class="card"><div class="k">If / then</div><div class="v">→ business logic — the rules behind interest, fraud checks, eligibility</div></div>
       </div>
 

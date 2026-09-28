@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Facilitator Prep — The Compound Click</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #171310;
+    --panel: #211B16;
+    --panel-2: #2A231C;
+    --hairline: #3D332A;
+    --paper: #EFEAE2;
+    --paper-dim: #B7A995;
+    --rust: #E2733A;
+    --rust-dim: #8C4A25;
+    --amber: #E8B34A;
+    --teal: #4FA88F;
+    --purple: #8D7CDB;
+    --pink: #C56AAE;
+
+    --c-events: #E8B34A;
+    --c-variables: #E2733A;
+    --c-looks: #8D7CDB;
+    --c-sound: #C56AAE;
+    --c-control: #D9922E;
+    --c-motion: #5C8FE0;
+    --c-operators: #6FB86A;
+    --c-sensing: #5CB1D6;
+
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:70px;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--serif); font-weight:600; margin:0; color:#FBF7F1;}
+  p{margin:0 0 1em 0; color:var(--paper-dim);}
+  a{color:var(--rust);}
+  code{font-family:var(--mono); background:var(--panel-2); padding:1px 6px; border-radius:4px; font-size:0.92em; color:#FBF7F1;}
+
+  .staff-banner{
+    background:var(--rust);
+    color:#241105;
+    text-align:center;
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.05em;
+    padding:9px 16px;
+  }
+
+  .wrap{ max-width:920px; margin:0 auto; padding:0 24px 100px 24px; }
+
+  header.hero{ padding:48px 0 36px 0; border-bottom:1px solid var(--hairline); }
+  .eyebrow{ font-family:var(--mono); font-size:12px; color:var(--teal); letter-spacing:.04em; margin-bottom:12px;}
+  header.hero h1{ font-size:clamp(28px,4vw,42px); line-height:1.1; max-width:18ch;}
+  header.hero .sub{ max-width:64ch; font-size:16px; margin-top:14px;}
+
+  nav.toc{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-top:24px;
+  }
+  nav.toc a{
+    font-family:var(--mono); font-size:12px;
+    color:var(--paper-dim);
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:20px;
+    padding:6px 13px;
+    text-decoration:none;
+  }
+  nav.toc a:hover{ color:var(--paper); border-color:var(--rust-dim); }
+
+  section{ padding:44px 0; border-bottom:1px solid var(--hairline); scroll-margin-top:70px; }
+  section:last-of-type{ border-bottom:none; }
+  section h2{ font-size:23px; margin-bottom:6px; }
+  .section-sub{ max-width:66ch; font-size:14.5px; margin-top:10px; }
+
+  /* ---------- Editor map ---------- */
+  .editor-map{
+    margin-top:26px;
+    display:grid;
+    grid-template-columns: 130px 1fr 200px;
+    gap:8px;
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:12px;
+    padding:14px;
+  }
+  .map-region{
+    border:1.5px dashed var(--hairline);
+    border-radius:8px;
+    padding:8px;
+    background:var(--panel-2);
+    cursor:pointer;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--paper-dim);
+    text-align:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:44px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .map-region:hover, .map-region.active{
+    border-color:var(--rust);
+    border-style:solid;
+    background:rgba(226,115,58,0.12);
+    color:#FBF7F1;
+  }
+  .map-col{ display:flex; flex-direction:column; gap:8px; }
+  .map-palette{ grid-row: 1 / 3; }
+  .map-tabs{ grid-column: 2 / 4; }
+  .map-code{ min-height:150px; }
+  .map-stage{ min-height:90px; }
+  .map-sprites{ min-height:56px; }
+
+  .map-detail{
+    margin-top:16px;
+    background:var(--panel-2);
+    border:1px solid var(--rust-dim);
+    border-radius:10px;
+    padding:16px 18px;
+    font-size:14px;
+    min-height:24px;
+  }
+  .map-detail .region-name{ font-family:var(--mono); font-size:11px; color:var(--rust); letter-spacing:.04em; margin-bottom:6px; }
+  .map-detail p{ margin:0; color:#E4DACB; }
+  .map-hint{ font-size:12.5px; color:var(--paper-dim); margin-top:10px; font-style:italic; }
+
+  /* ---------- vocab grid ---------- */
+  .vocab-grid{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px,1fr));
+    gap:10px;
+  }
+  .vocab-card{
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .vocab-card .term{ font-family:var(--serif); font-size:16px; color:#FBF7F1; margin-bottom:5px;}
+  .vocab-card .def{ font-size:13px; color:var(--paper-dim); }
+
+  /* ---------- category chips ---------- */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .chip{
+    font-family:var(--mono); font-size:12px;
+    padding:6px 12px; border-radius:20px;
+    color:#1A1408;
+    display:flex; align-items:center; gap:6px;
+  }
+  .chip.dim{ opacity:0.4; }
+  .chip .dot{ width:8px; height:8px; border-radius:50%; background:currentColor; }
+
+  /* ---------- build walkthrough ---------- */
+  .walk-step{
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-top:12px;
+  }
+  .walk-step .wnum{ font-family:var(--mono); font-size:11px; color:var(--rust); letter-spacing:.04em; margin-bottom:6px;}
+  .walk-step h3{ font-size:16px; margin-bottom:8px;}
+  .walk-step .looks-right{ font-size:13.5px; margin-bottom:8px; }
+  .walk-step .looks-right strong{ color:#FBF7F1; }
+  .watch-for{
+    background:rgba(226,115,58,0.08);
+    border:1px solid rgba(226,115,58,0.3);
+    border-radius:8px;
+    padding:10px 13px;
+    font-size:13px;
+    margin-top:8px;
+  }
+  .watch-for .lbl{ font-family:var(--mono); font-size:10.5px; color:var(--rust); letter-spacing:.04em; display:block; margin-bottom:4px;}
+  .watch-for p{ margin:0; color:#E4DACB; font-size:13px; }
+
+  /* ---------- primer accordion ---------- */
+  details.primer{
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    margin-top:10px;
+    overflow:hidden;
+  }
+  details.primer summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px 18px;
+    font-family:var(--serif);
+    font-size:16px;
+    color:#FBF7F1;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  details.primer summary::-webkit-details-marker{ display:none; }
+  details.primer summary::before{ content:"+"; font-family:var(--mono); color:var(--rust); font-size:16px; }
+  details.primer[open] summary::before{ content:"–"; }
+  details.primer .primer-body{ padding:0 18px 16px 18px; font-size:14px; }
+  details.primer .primer-body p{ color:#E4DACB; }
+
+  /* ---------- troubleshooting ---------- */
+  .filter-bar{
+    margin-top:22px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .filter-input{
+    flex:1;
+    min-width:220px;
+    font-family:var(--sans);
+    font-size:14px;
+    padding:11px 14px;
+    border-radius:8px;
+    border:1px solid var(--hairline);
+    background:var(--panel);
+    color:var(--paper);
+  }
+  .filter-input::placeholder{ color:var(--paper-dim); }
+  .filter-input:focus{ outline:none; border-color:var(--rust); }
+  .filter-count{ font-family:var(--mono); font-size:12px; color:var(--paper-dim); align-self:center; white-space:nowrap; }
+
+  .trouble-list{ margin-top:16px; display:flex; flex-direction:column; gap:8px; }
+  .trouble-item{
+    background:var(--panel);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:14px 18px;
+  }
+  .trouble-item .symptom{ font-family:var(--serif); font-size:15.5px; color:#FBF7F1; margin-bottom:6px; }
+  .trouble-item .fix{ font-size:13.5px; color:var(--paper-dim); }
+  .trouble-item .tag{
+    display:inline-block;
+    font-family:var(--mono); font-size:10px; letter-spacing:.03em;
+    color:var(--teal);
+    margin-bottom:6px;
+  }
+  .trouble-item.hidden{ display:none; }
+  .no-results{ font-size:13.5px; color:var(--paper-dim); padding:14px 0; display:none; }
+  .no-results.show{ display:block; }
+
+  .verified-note{
+    margin-top:26px;
+    font-size:12.5px;
+    color:var(--paper-dim);
+    border-top:1px solid var(--hairline);
+    padding-top:14px;
+  }
+
+  footer{ padding:36px 0 10px 0; font-family:var(--mono); font-size:11px; color:var(--paper-dim); }
+
+  @media (max-width:720px){
+    .editor-map{ grid-template-columns: 1fr; }
+    .map-palette{ grid-row:auto; }
+    .map-tabs{ grid-column:auto; }
+  }
+
+  @media print{
+    .staff-banner{ background:#E2733A; color:#241105; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="staff-banner">FACILITATOR / STAFF COPY — NOT SHOWN TO PARTICIPANTS</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">THE COMPOUND CLICK · FACILITATOR PREP</div>
+    <h1>Scratch basics, and what tends to go wrong</h1>
+    <p class="sub">Everything else about running this session — timetable, script, room setup — lives in the main facilitator guide. This page is narrower and more practical: it's for getting comfortable with Scratch itself if you haven't used it before, and for looking something up fast while you're mid-session and someone's hand is up.</p>
+    <nav class="toc">
+      <a href="#map">Editor map</a>
+      <a href="#vocab">Vocabulary</a>
+      <a href="#primer">15-minute primer</a>
+      <a href="#walkthrough">The build, step by step</a>
+      <a href="#trouble">Troubleshooting</a>
+    </nav>
+  </header>
+
+  <section id="map">
+    <h2>The editor, mapped</h2>
+    <p class="section-sub">Click a region below to see what it's for. This is the layout you'll be looking at (and looking over shoulders at) all session.</p>
+
+    <div class="editor-map">
+      <div class="map-region map-palette" data-region="palette">Block<br>Palette</div>
+      <div class="map-col">
+        <div class="map-region map-tabs" data-region="tabs">Code · Costumes · Sounds (tabs)</div>
+        <div class="map-region map-code" data-region="code">Code Area<br>(scripts go here)</div>
+      </div>
+      <div class="map-col">
+        <div class="map-region map-stage" data-region="stage">Stage<br>+ green flag / stop</div>
+        <div class="map-region map-sprites" data-region="sprites">Sprite &amp; backdrop pane</div>
+      </div>
+    </div>
+
+    <div class="map-detail" id="mapDetail">
+      <div class="region-name">TAP A REGION ABOVE</div>
+      <p>The layout is roughly three columns: the block palette on the left, the code area in the middle where scripts get built, and the stage with the sprite pane underneath it on the right.</p>
+    </div>
+    <p class="map-hint">This is a simplified layout, not a screenshot — open Scratch alongside this page once to match it up for real.</p>
+  </section>
+
+  <section id="vocab">
+    <h2>Vocabulary in one page</h2>
+    <p class="section-sub">The handful of words that cover almost everything you'll need to explain.</p>
+
+    <div class="vocab-grid">
+      <div class="vocab-card"><div class="term">Sprite</div><div class="def">Any character or object in the project — the crystal, in this build. Each one has its own costumes, sounds, and scripts.</div></div>
+      <div class="vocab-card"><div class="term">Costume</div><div class="def">One of a sprite's possible looks. Sprites can have several; switching between them is how simple animation works.</div></div>
+      <div class="vocab-card"><div class="term">Backdrop</div><div class="def">The background image behind everything on the stage. The stage itself can hold multiple backdrops and its own scripts.</div></div>
+      <div class="vocab-card"><div class="term">Block</div><div class="def">One instruction — "change Savings by 10," "play sound," and so on. Colour-coded by category.</div></div>
+      <div class="vocab-card"><div class="term">Script / stack</div><div class="def">Several blocks snapped together vertically. A sprite can hold more than one separate script.</div></div>
+      <div class="vocab-card"><div class="term">Hat block</div><div class="def">The rounded block that starts a script and can't have anything snapped above it — "when green flag clicked," "when this sprite clicked."</div></div>
+      <div class="vocab-card"><div class="term">Event</div><div class="def">A trigger. Every hat block is an event: a click, a key press, the green flag, a received message.</div></div>
+      <div class="vocab-card"><div class="term">Variable</div><div class="def">A named value the programme remembers and can change — <code>Savings</code>, in this build.</div></div>
+    </div>
+
+    <p class="section-sub" style="margin-top:24px;">Block categories used in this specific session (there are more in Scratch overall — Motion, Sensing and Operators don't come up in the core build):</p>
+    <div class="chip-row">
+      <span class="chip" style="background:var(--c-events);"><span class="dot"></span>Events</span>
+      <span class="chip" style="background:var(--c-variables);"><span class="dot"></span>Variables</span>
+      <span class="chip" style="background:var(--c-looks);"><span class="dot"></span>Looks</span>
+      <span class="chip" style="background:var(--c-sound);"><span class="dot"></span>Sound</span>
+      <span class="chip" style="background:var(--c-control);"><span class="dot"></span>Control</span>
+      <span class="chip dim" style="background:var(--c-motion);"><span class="dot"></span>Motion (not used)</span>
+      <span class="chip dim" style="background:var(--c-operators);"><span class="dot"></span>Operators (extensions only)</span>
+    </div>
+  </section>
+
+  <section id="primer">
+    <h2>Never used Scratch? 15 minutes, start to finish</h2>
+    <p class="section-sub">If you're prepping cold, work through these in order with Scratch open in another window. Each one is something you'll watch a participant do on the day, so doing it yourself first is the fastest way to be ready for their questions.</p>
+
+    <details class="primer">
+      <summary>1. Open a blank project and find your way around</summary>
+      <div class="primer-body">
+        <p>Go to <code>scratch.mit.edu/projects/editor/</code> — no account needed, you'll get a blank project with a cat sprite already on the stage. Spend a minute just looking: the block palette (left), the code area (middle, currently empty), and the stage with the sprite pane underneath it (right).</p>
+      </div>
+    </details>
+
+    <details class="primer">
+      <summary>2. Drag a block and watch it snap</summary>
+      <div class="primer-body">
+        <p>Open the <strong>Motion</strong> category (blue) and drag "move 10 steps" into the code area. Click the block itself — it runs immediately, no green flag needed for a single click-to-test. Drag a "say Hello! for 2 seconds" block from <strong>Looks</strong> (purple) underneath it — feel it snap into place when the edges line up. Click the stack to run both.</p>
+      </div>
+    </details>
+
+    <details class="primer">
+      <summary>3. Add an event so it runs on its own</summary>
+      <div class="primer-body">
+        <p>From <strong>Events</strong> (gold), drag "when green flag clicked" above your stack — hat blocks always go on top. Click the green flag above the stage to run it. This is the pattern behind every script in the actual session: an event on top, actions underneath.</p>
+      </div>
+    </details>
+
+    <details class="primer">
+      <summary>4. Make a variable and change it</summary>
+      <div class="primer-body">
+        <p>Open <strong>Variables</strong>, click "Make a Variable," call it anything, and tick its checkbox so it shows on stage. Drag out "change [variable] by 1" and click it a few times — watch the number on stage move. This is exactly what participants do with <code>Savings</code>.</p>
+      </div>
+    </details>
+
+    <details class="primer">
+      <summary>5. Try deleting something and undoing it</summary>
+      <div class="primer-body">
+        <p>Delete a block by dragging it back onto the palette (or right-click it → Delete Block). Then right-click an empty part of the code area and choose <strong>Undo</strong> — or press <strong>Ctrl+Z</strong> (Cmd+Z on a Mac). Getting comfortable with this now means you won't hesitate when a participant panics about "breaking" something.</p>
+      </div>
+    </details>
+
+    <details class="primer">
+      <summary>6. Add a sprite and a sound</summary>
+      <div class="primer-body">
+        <p>Click <strong>Choose a Sprite</strong> below the stage (right side) and add anything. Click its <strong>Sounds</strong> tab (top of the middle panel) — most library sprites already have one sound loaded. Drag a "play sound" block from the <strong>Sound</strong> category (pink) into a script and click to hear it. Check your laptop volume first if nothing happens.</p>
+      </div>
+    </details>
+  </section>
+
+  <section id="walkthrough">
+    <h2>The build, step by step — what "correct" looks like</h2>
+    <p class="section-sub">A terser version of the participant steps, written for glancing at someone's screen and knowing instantly whether they're on track. Full teaching script and timings are in the main facilitator guide.</p>
+
+    <div class="walk-step">
+      <div class="wnum">STEP 1</div>
+      <h3>Clear the stage</h3>
+      <p class="looks-right"><strong>Correct:</strong> cat sprite gone, <strong>Crystal</strong> sprite showing in the sprite pane and on stage, any backdrop applied.</p>
+      <div class="watch-for"><span class="lbl">WATCH FOR</span><p>Someone deletes the cat but never adds Crystal, and is now looking at a totally blank stage assuming something's broken.</p></div>
+    </div>
+
+    <div class="walk-step">
+      <div class="wnum">STEP 2</div>
+      <h3>Give it a memory</h3>
+      <p class="looks-right"><strong>Correct:</strong> a variable named <code>Savings</code> exists (Variables category), its checkbox is ticked, and a "Savings: 0" monitor is visible on the stage.</p>
+      <div class="watch-for"><span class="lbl">WATCH FOR</span><p>The variable exists but its checkbox got unticked at some point — the build still works, they just can't see the number changing, which reads as "broken" to a beginner.</p></div>
+    </div>
+
+    <div class="walk-step">
+      <div class="wnum">STEP 3</div>
+      <h3>Start at zero — and add an explicit reset</h3>
+      <p class="looks-right"><strong>Correct:</strong> two separate two-block scripts on the Crystal sprite — <code>when green flag clicked → set Savings to 0</code>, and <code>when key r pressed → set Savings to 0</code>.</p>
+      <div class="watch-for"><span class="lbl">WATCH FOR</span><p>The key-press block still says "space" (its default) rather than "r" — easy to drag the block and forget to change its dropdown.</p></div>
+    </div>
+
+    <div class="walk-step">
+      <div class="wnum">STEP 4</div>
+      <h3>Make it respond</h3>
+      <p class="looks-right"><strong>Correct:</strong> a six-block script on Crystal — <code>when this sprite clicked → change Savings by 10 → play sound → change color effect by 25 → wait 0.1 seconds → change color effect by -25</code>.</p>
+      <div class="watch-for"><span class="lbl">WATCH FOR</span><p>This is the step people stall on. The single most common issue is a gap between two blocks that looks snapped but isn't — drag the lower block slightly and re-seat it. Second most common: they're clicking the crystal while a <em>different</em> sprite (or the Stage) is selected in the sprite pane, so the script they built never runs.</p></div>
+    </div>
+
+    <div class="walk-step">
+      <div class="wnum">STEP 5</div>
+      <h3>Make it yours</h3>
+      <p class="looks-right"><strong>Correct:</strong> anything changed from the default — backdrop, costume, or the "10" in "change Savings by 10." There's no single right answer here.</p>
+      <div class="watch-for"><span class="lbl">WATCH FOR</span><p>Nothing to watch for — this step is deliberately low-stakes. If someone's anxious about "doing it wrong," that's your cue to say there isn't a wrong answer here.</p></div>
+    </div>
+
+    <div class="walk-step">
+      <div class="wnum">STEP 6 / EXTENSIONS</div>
+      <h3>Stretch goal and beyond</h3>
+      <p class="looks-right"><strong>Correct:</strong> an <code>if Savings &gt; 100 then</code> block wrapped around a "say" block, added after the colour-flash blocks in the Step 4 script. Extensions build further from here — see the main guide.</p>
+      <div class="watch-for"><span class="lbl">WATCH FOR</span><p>The <code>&gt;</code> (greater than) block from Operators has to go inside the if-block's hexagonal slot, with <code>Savings</code> dragged in from Variables on its left — a fiddly three-block nesting that's easy to get the order wrong on.</p></div>
+    </div>
+  </section>
+
+  <section id="trouble">
+    <h2>Troubleshooting reference</h2>
+    <p class="section-sub">Searchable — type a keyword and only matching rows stay visible. Meant for a quick lookup mid-session, not reading top to bottom.</p>
+
+    <div class="filter-bar">
+      <input type="text" class="filter-input" id="troubleFilter" placeholder="Search — try &quot;sound&quot;, &quot;sprite&quot;, &quot;variable&quot;, &quot;laptop&quot;…">
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+
+    <div class="trouble-list" id="troubleList">
+
+      <div class="trouble-item">
+        <div class="tag">BLOCKS</div>
+        <div class="symptom">Two blocks look snapped together but the script doesn't run properly</div>
+        <div class="fix">There's almost always a small gap. Drag the lower block a few pixels and let go near the one above it — it should visibly click into place. If unsure, drag the whole stack slightly; a script that's actually one piece moves as one piece.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">BLOCKS</div>
+        <div class="symptom">Accidentally deleted or moved a block</div>
+        <div class="fix">Right-click an empty part of the code area and choose <strong>Undo</strong>, or press Ctrl+Z (Cmd+Z on a Mac) — this reverts the last change to the script. Works for most in-script accidents.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">BLOCKS</div>
+        <div class="symptom">Blocks have scattered or gone off-screen</div>
+        <div class="fix">Right-click an empty part of the code area and choose <strong>Clean up Blocks</strong> — it neatly re-stacks every script vertically with space between them.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">SPRITE</div>
+        <div class="symptom">Accidentally deleted the wrong sprite</div>
+        <div class="fix">There's no confirmed one-click way to bring back a deleted sprite specifically — just re-add Crystal from the library. Takes seconds, no real harm done.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">SPRITE</div>
+        <div class="symptom">Clicking the crystal on stage does nothing</div>
+        <div class="fix">Check three things in order: (1) the "when this sprite clicked" hat block is actually on top of the stack, not buried under something else; (2) all six blocks are genuinely snapped, no gaps; (3) the Crystal sprite — not the Stage or another sprite — is the one selected (highlighted) in the sprite pane, since the script only lives on whichever sprite was selected when it was built.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">VARIABLE</div>
+        <div class="symptom">Can't find "Make a Variable"</div>
+        <div class="fix">It's a button at the top of the Variables category in the block palette, above the actual variable blocks — easy to scroll straight past.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">VARIABLE</div>
+        <div class="symptom">Savings variable exists but the number never shows on stage</div>
+        <div class="fix">The checkbox next to the variable's name in the Variables category needs to be ticked — it's unticked by default when a variable is first created in some flows.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">VARIABLE</div>
+        <div class="symptom">Two "Savings" variables somehow exist, and only one updates</div>
+        <div class="fix">Usually happens if "Make a Variable" was clicked twice. Right-click the unused one in the palette and delete it, then make sure every block in every script references the same one — check the dropdown on each "change"/"set" block.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">SOUND</div>
+        <div class="symptom">No sound plays when clicking</div>
+        <div class="fix">Check laptop/system volume first (most common cause by far), then headphones aren't half-unplugged, then that the sprite actually has a sound assigned — open its <strong>Sounds</strong> tab and confirm one is listed.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">RESET</div>
+        <div class="symptom">Pressing R doesn't reset Savings to 0</div>
+        <div class="fix">The key-press hat block defaults to "space" when first dragged out — check its dropdown was actually changed to "r," not left on the default.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">RESET</div>
+        <div class="symptom">Green flag doesn't reset Savings either</div>
+        <div class="fix">Confirm the "when green flag clicked" + "set Savings to 0" script exists and is snapped together — it's easy to build the key-press reset and assume the flag reset is still there from Step 3 when it was never finished.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">EXTENSION</div>
+        <div class="symptom">The if/then block (Step 6) doesn't seem to do anything</div>
+        <div class="fix">Check the greater-than block is actually seated inside the if-block's hexagonal condition slot (not just floating near it), and that Savings is dragged into its left side with 100 typed into the right. All three pieces have to be properly nested, not just adjacent.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">LAPTOP</div>
+        <div class="symptom">scratch.mit.edu won't load, or loads very slowly</div>
+        <div class="fix">Likely venue wifi contention with everyone connecting at once, or a network filter blocking the site. Fall back to the offline Scratch Desktop editor if you installed it ahead of time (see the main guide's setup checklist) — it works with no internet at all once installed.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">LAPTOP</div>
+        <div class="symptom">Everything on screen looks tiny or huge compared to your laptop</div>
+        <div class="fix">That's the browser's zoom level, not Scratch itself — Ctrl+0 (Cmd+0 on a Mac) resets browser zoom to 100%. Separately, the code area has its own small zoom controls in its bottom-left corner if the blocks themselves need resizing.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">LAPTOP</div>
+        <div class="symptom">The stage suddenly fills the whole screen and the blocks have disappeared</div>
+        <div class="fix">A full-screen stage toggle near the top of the stage was likely clicked by accident. Look for the same control to shrink it back to the normal three-panel view.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">PACING</div>
+        <div class="symptom">Someone is well ahead of the room</div>
+        <div class="fix">Point them to the extension menu on the participant site, or suggest they help a neighbour — both are good outcomes and neither needs you to intervene. This is common with participants who are confident with logical or structured tools (spreadsheet-heavy roles, for instance) even with zero coding background — naming the "real compound interest" extension directly to them tends to land well, since it maps almost exactly onto a self-updating spreadsheet formula.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">PACING</div>
+        <div class="symptom">Someone is well behind the room</div>
+        <div class="fix">Don't stall the whole group for one person. Offer the two-block fallback from Step 4 (click → change Savings by 10, nothing else) so they have a complete working thing, and circle back with a helper once the room moves to Step 5.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="tag">PACING</div>
+        <div class="symptom">Someone hesitates before clicking or dragging anything, or apologises a lot ("sorry, silly question")</div>
+        <div class="fix">This is nerves about the computer, not the content — reassurance beats more explanation. A quick "you genuinely can't break anything here, everything's undoable" tends to unstick people faster than walking through the block again.</div>
+      </div>
+
+    </div>
+
+    <div class="no-results" id="noResults">Nothing matches that search — try a shorter or different word.</div>
+  </section>
+
+  <div class="verified-note">
+    A note on accuracy: the sprite used in this session (Crystal), the sprite-library and sound-library search boxes, the sprite pane's position below the stage, the Undo / Clean up Blocks / Redo options in the code area's right-click menu and their keyboard shortcuts, and the "change [ ] effect by" block are all confirmed against Scratch's own documentation and current editor. A few smaller UI details (the exact zoom controls, the full-screen toggle's precise position) are described generally rather than pinned down precisely — worth a two-minute look at the real editor before the day if you want to see them yourself first.
+  </div>
+
+  <footer>The Compound Click — facilitator prep, internal use only.</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Editor map hotspots ----------
+  var regions = {
+    palette: {
+      name: "Block Palette",
+      text: "The library of every block, grouped into colour-coded categories (Motion, Looks, Sound, Events, Control, Sensing, Operators, Variables). Click a category name to jump the palette to it. This session only uses five of these categories — see the vocabulary section below."
+    },
+    tabs: {
+      name: "Code / Costumes / Sounds tabs",
+      text: "These three tabs sit above the code area and switch what you're editing for the currently selected sprite: its scripts (Code), its images (Costumes), or its audio (Sounds). Easy to forget which tab you're on — if the palette looks unfamiliar, check you're still on Code."
+    },
+    code: {
+      name: "Code Area",
+      text: "Where blocks get dragged in and snapped together into scripts. Right-clicking empty space here brings up Undo, Redo, Clean up Blocks, Add Comment and Delete Blocks — genuinely useful, not just decorative menu items."
+    },
+    stage: {
+      name: "Stage",
+      text: "Where the running project actually shows and plays. The green flag (run) and stop sign sit just above it. The stage itself can also hold backdrops and its own scripts, separately from any sprite's."
+    },
+    sprites: {
+      name: "Sprite & backdrop pane",
+      text: "Sits below the stage. Shows every sprite in the project as a thumbnail — click one to select it and edit its scripts, costumes and sounds. The 'Choose a Sprite' and 'Choose a Backdrop' buttons that add new ones live right here too."
+    }
+  };
+
+  var mapRegions = document.querySelectorAll('.map-region');
+  var mapDetail = document.getElementById('mapDetail');
+
+  mapRegions.forEach(function(el){
+    el.addEventListener('click', function(){
+      mapRegions.forEach(function(r){ r.classList.remove('active'); });
+      el.classList.add('active');
+      var key = el.getAttribute('data-region');
+      var info = regions[key];
+      if (info){
+        mapDetail.innerHTML = '<div class="region-name">' + info.name.toUpperCase() + '</div><p>' + info.text + '</p>';
+      }
+    });
+  });
+
+  // ---------- Troubleshooting filter ----------
+  var filterInput = document.getElementById('troubleFilter');
+  var items = document.querySelectorAll('.trouble-item');
+  var filterCount = document.getElementById('filterCount');
+  var noResults = document.getElementById('noResults');
+
+  function updateCount(visible, total){
+    filterCount.textContent = visible === total ? (total + ' items') : (visible + ' of ' + total);
+  }
+
+  function applyFilter(){
+    var q = filterInput.value.trim().toLowerCase();
+    var visible = 0;
+    items.forEach(function(item){
+      var text = item.textContent.toLowerCase();
+      var match = q === '' || text.indexOf(q) !== -1;
+      item.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    noResults.classList.toggle('show', visible === 0);
+    updateCount(visible, items.length);
+  }
+
+  filterInput.addEventListener('input', applyFilter);
+  applyFilter();
+
+})();
+</script>
+
+</body>
+</html>
