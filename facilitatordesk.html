@@ -276,28 +276,19 @@ a.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
 <script>
 "use strict";
 const MODES=["Full","Core","Express"];
-const TOTALS=[110,90,72];
+const TOTALS=[97,82,67];
 const SEGS=[
-{id:"mf",name:"MindForge and arrival",kind:"self",dur:[10,8,5],goal:"People arrive, sit, and start solving small puzzles on their own. Energy up, nerves down. You say almost nothing yet.",
- steps:[
- {n:"Doors open, greet, settle",d:[3,3,2],say:["Hello, come in, pick any seat. Open the first screen and press Start. Nothing in here can break."],
-  do:["Helpers greet every person by name and point at the screen.","Check every laptop has 01 MindForge open. Sound low or off.","Facilitator stays at the front, smiling, and does not start talking yet."],
-  watch:["Anyone standing at the edge of the room and not clicking. A helper sits beside them for one minute.","Shared machines: earlier progress can appear. It is only a score, ignore it."]},
- {n:"Self-paced play",d:[7,5,3],say:["Play whatever you like. There is no order and no score to beat. If a puzzle feels easy, try the harder level. If it feels hard, skip to another.","(At one minute left) One more minute. Finish the puzzle you are on."],
-  do:["Helpers circulate. Point out harder levels for fast people (Sequence Sense has difficulty tiers).","No answers are needed for MindForge. The point is warm-up, not marking.","At the end, ask two people what they liked. Applaud."],
-  watch:["Do not let this run over. Stop at the planned end even if people are enjoying it.","If a person is frustrated, say: 'Skipping is allowed. Every good programmer skips and comes back.'"]}
- ]},
 {id:"welcome",name:"Welcome and ground rules",kind:"group",dur:[4,3,2],goal:"Set the tone: it is fun, it is safe, it is a taster. Name the three rules and the four parts of today.",
  steps:[
  {n:"Hook and promise",d:[1,1,1],say:["Welcome to Pivot into Tech. In the next {TOTAL} minutes you will break a rollercoaster, crack a vault and build a small app.","Nobody here needs any coding experience. Nobody will be tested. You keep everything you make."],
-  do:["Stand still. Speak slowly. Look at the whole room.","If remote: confirm the room can hear and see you. Ask a helper to give you a thumbs up."]},
+  do:["Stand still. Speak slowly. Look at the whole room.","MindForge has been the afternoon starter. Thank people for playing and tell them it stays open on their laptop for later.","If remote: confirm the room can hear and see you. Ask a helper to give you a thumbs up."]},
  {n:"Ground rules",d:[2,1,1],say:["Three rules. One: it is fine to stop early. Two: it is fine to ask a helper, and helpers will point, not click for you. Three: if you are lost for a minute, that is normal. Being lost and then finding the way is what coding feels like for everyone.","Today is a taster. It does not promise a job. It shows you what the work feels like, so you can decide if you want more."],
   do:["Point to the helpers and ask them to wave.","Say once, clearly, where the toilets and exits are."],
   watch:["Career anxiety in the room (near retirement, redundancy worries). Keep the tone honest and warm. Do not promise outcomes."]},
- {n:"Map of the session",d:[1,1,0],say:["First: MindForge, done. Second: LoomSTEM, where we build with blocks together. Third: the Vault, a heist where you learn to code your way out. Last: you build your own small app."],
+ {n:"Map of the session",d:[1,1,0],say:["First: LoomSTEM, where we build with blocks together. Second: the Vault, a heist where you learn to code your way out. Last: you build your own small app. MindForge stays open on your laptop all afternoon, so play it whenever you like."],
   do:["Optional: show the agenda slide. Skip it in Express."]}
  ]},
-{id:"loom",name:"LoomSTEM, group-run",kind:"group",dur:[28,22,15],slack:2,goal:"Everyone drags blocks together. They see physics react to what they build. Then the reveal: the language they just used is our own.",
+{id:"loom",name:"LoomSTEM, group-run",kind:"group",dur:[25,22,15],slack:2,goal:"Everyone drags blocks together. They see physics react to what they build. Then the reveal: the language they just used is our own.",
  steps:[
  {n:"Open and orient",d:[1,1,1],say:["Open 02 LoomSTEM. Choose Rollercoaster. You will drag blocks into the grey box. When I say run, press Run."],
   do:["Helpers check every screen shows the Rollercoaster and not the hub.","Show how to drag: click, hold, move, let go. Say it out loud."],
@@ -318,16 +309,13 @@ const SEGS=[
   say:["Change the number of points, the drop each time, and the climb at the end. If the climb is as big as the whole drop, the cart cannot get there. Try to make it stall on purpose."],
   do:["Rule: the cart stalls when the final climb is equal to or larger than the total drop (iterations times step)."],
   watch:[]},
- {n:"Chemistry demo: mix two substances",d:[3,0,0],ans:"ans-ph",
-  say:["Same language, different subject. Pick two things from your kitchen and mix them. The result is not a simple average. pH works on a scale that multiplies by ten each step, so a strong one beats a mild one."],
-  do:["Facilitator demo on screen. Try lemon juice and bleach: about 12.65. Vinegar and ammonia: exactly 7, neutral."]},
  {n:"The reveal: our own language",d:[4,4,4],ans:"ans-reveal",
   say:["Hands off the mouse for a moment. Click the tab that says Real Code.","Everything you dragged is a line of text. Read the first line: @engine colon physics. This is not Scratch. It is not Python. This is a programming language we built ourselves. It is called LoomScript. It has its own parser and its own rules. Nobody else in the world has it. And you just used it.","Now watch. In the engine box, choose chemistry and press Run. (Let them see the red message.) The language refuses to run a physics command in a chemistry program. That is a real rule, enforced by a real language. You did not know you were writing code twenty minutes ago."],
   do:["Say it slowly. After the line 'you just used it', stay silent for five seconds.","Then invite three people to tell the room what the error says in their own words.","Link to careers: banks build small languages like this for trading rules and risk checks. People who understand how languages work are hired for that."],
   moment:"Land the reveal, then pause. Let the room react before you say anything else.",
   watch:["Some people will think it is a gimmick. Show the Real Code tab and the error again. It is a real interpreter.","Yuki and Chidinma may need the sentence repeated in simpler words: 'We made this language. You used it.'"]},
  {n:"Wrap and breathe",d:[2,2,3],say:["Well done. You just used variables, loops and events. Those three ideas are in every programming language. Stand up, stretch, get water in a minute."],
-  do:["Tell early finishers to try Build an Adventure (10 steps) or wait. Answers are on the Answers card.","Helpers open 03 Vault on every laptop during the breather."]}
+  do:["Optional, and nothing you need to cover: early finishers can try Build an Adventure (10 steps) or the chemistry mix. Answers are on the Answers card.","Helpers open 03 Vault on every laptop during the breather."]}
  ]},
 {id:"br1",name:"Breather",kind:"break",dur:[3,2,0],goal:"Let people breathe. Do not skip it in Full or Core.",
  steps:[{n:"Stand, drink, one question",d:[3,2,0],say:["Stand up. Stretch. Get some water. One question from anyone before we start the heist?"],do:["Helpers switch every laptop to 03 Vault and make sure the sound is on low.","Check the projector or the remote screen share is showing the Vault start screen."],watch:["If someone is confused about LoomSTEM, a helper sits with them now, not during the Vault."]}]},
@@ -414,7 +402,6 @@ const SEGS=[
 ];
 
 const CUTS=[
- {seg:"loom",label:"Skip the chemistry demo",mins:[3,0,0]},
  {seg:"vault",label:"Skip the Vault quiz, go straight to the certificate",mins:[1,1,0]},
  {seg:"loom",label:"Skip Rollercoaster Part 2 (loops)",mins:[9,7,0]},
  {seg:"vault",label:"Skip the routing code",mins:[3,2,3]},
@@ -422,7 +409,7 @@ const CUTS=[
  {seg:"close",label:"One volunteer only in the showcase",mins:[1,1,1]},
  {seg:"br1",label:"Shorten the first breather to one minute",mins:[2,1,0]}
 ];
-const EXTRAS=["Loom: Build an Adventure (10 steps), for early finishers, about 8 minutes","Quantum Playground, seven mini-labs, about 10 minutes for keen people","Compound Click extensions: random returns, compound interest, expenses, milestone broadcast"];
+const EXTRAS=["LoomSTEM: Build an Adventure (10 steps). Optional. Never needed, no need to mention it.","LoomSTEM: the chemistry mix (pH). Optional. Not part of the session.","Quantum Playground, seven mini-labs. Optional, only for keen people who finish early.","Compound Click extensions: random returns, compound interest, expenses, milestone broadcast."];
 function store(k,v){try{localStorage.setItem("ptt_"+k,JSON.stringify(v))}catch(e){}}
 function load(k,d){try{const v=localStorage.getItem("ptt_"+k);return v===null?d:JSON.parse(v)}catch(e){return d}}
 function segDur(s){return s.dur[S.mode]+(S.remote&&s.slack?s.slack:0)}
@@ -694,7 +681,7 @@ const FIX=[
 ["Vault","The red button does nothing","Modal already open, or a pop-up blocker or an old cached page.","Refresh the page and press again. On touch, tap once and wait for the confirmation."],
 ["Vault","No sound, no hum","Sound is muted, or the browser needs a click first.","Click anywhere on the page, then hover or touch the button. The visuals work without sound. Do not delay the session for audio."],
 ["Vault","The static burst is too intense","Some people are sensitive to flashing.","Warn before pressing. Offer: look away for two seconds. The Vale call follows."],
-["Vault","Someone has progressed far ahead","They are a fast learner.","Point them to the Quantum Playground or ask them to help a neighbour. Do not let them press the button early: ask them to wait for the countdown."],
+["Vault","Someone has progressed far ahead","They are a fast learner.","Point them to the optional Quantum Playground or ask them to help a neighbour. Do not let them press the button early: ask them to wait for the countdown."],
 ["Vault","Someone is a whole scene behind","They are stuck or slow.","A helper sits with them. The group waits at the next flashback screen. If they are far behind, let them watch the group screen for the button, then return later."],
 ["Compound Click","Scratch will not load or is blocked","The network blocks scratch.mit.edu.","Fallback: facilitator demos on screen and people follow along on paper. Or pre-install the Scratch desktop app. Tell people they can finish at home."],
 ["Compound Click","Blocks will not snap together","There is a small gap between blocks.","Drag the lower block until its top edge touches the block above and clicks in."],
@@ -781,9 +768,9 @@ function renderTeam(){
    CHECKLISTS
    ============================================================ */
 const CHK=[
-["The day before",["Open all four resources on a test laptop. Confirm they load and the buttons work.","Check the Scratch site loads on the venue network, with no sign-in.","Confirm the number of laptops, the number of helpers and where they stand.","Brief the helpers with the Helper briefing page (Your team card). Agree the helper signals.","Decide the mode: Full 110, Core 90 or Express 72. Set it on the Run the session card.","Fill in the details below for the closing."]],
+["The day before",["Open all four resources on a test laptop. Confirm they load and the buttons work.","Check the Scratch site loads on the venue network, with no sign-in.","Confirm the number of laptops, the number of helpers and where they stand.","Brief the helpers with the Helper briefing page (Your team card). Agree the helper signals.","Decide the mode: Full 97, Core 82 or Express 67. Set it on the Run the session card.","Fill in the details below for the closing."]],
 ["60 to 30 minutes before",["Laptops on charge and logged in. Fresh browser tab for each resource.","On shared machines, clear site data for MindForge so old scores do not appear.","Sound on low. Speakers tested for the button hum.","Projector or remote share tested. Fonts and colours readable from the back.","Water, pens and paper for the fallback.","Certificate print or screenshot plan agreed."]],
-["10 minutes before (remote: also do the tech check)",["Camera and sound checked both ways with the room helper.","This desk open on a second screen or phone. Clock at 00:00.","Helpers know their spots. Doors ready to open.","Every laptop is on 01 MindForge."]],
+["10 minutes before (remote: also do the tech check)",["Camera and sound checked both ways with the room helper.","This desk open on a second screen or phone. Clock at 00:00 for the start of the block.","Helpers know their spots. Doors ready to open.","Every laptop is on 01 MindForge."]],
 ["During: quick cues",["Start the clock at doors open.","Press Next segment as you move on.","Say the clock line before the Vault starts: it never runs out.","Warn about the static before the button.","Pause after the reveal. Pause after the button.","Call the Compound Click checkpoints at +5 and +10 minutes."]],
 ["After the session",["Thank everyone. Give the follow-up link.","Take a photo of the board or the room if allowed.","Note what ran long and what worked.","Note any questions you could not answer and pass them on.","Reset laptops: close tabs, clear scores if shared.","Tell the organiser about anything that broke."]]
 ];
@@ -896,7 +883,7 @@ function renderPanic(){
     <li><b>Never cut</b> the reveal, the red button or the showcase.</li></ol>
     <p class="sub" style="margin-top:10px">It is fine to say: 'I do not know. I will find out and tell you.'</p></div>
    <div class="card"><h3>Smallest thing that still works</h3><ul class="tight">
-    <li><b>Running late:</b> skip the chemistry demo, the loops, the quiz or the routing code. See Today, 'Running late or early?'.</li>
+    <li><b>Running late:</b> skip the loops, the quiz or the routing code. See Today, 'Running late or early?'.</li>
     <li><b>Vault will not load:</b> demo the red button on your own screen. Read the button script from the Answers card.</li>
     <li><b>Scratch blocked:</b> demo on the big screen. Tell people they can finish at home.</li>
     <li><b>Projector or link fails:</b> use a helper's laptop as the shared screen.</li>
@@ -944,7 +931,7 @@ CARD 4: SIGNALS
 Thumbs up: ready. Two hands up: slow down. Tap wrist: behind. Point: this person needs help.
 
 CARD 5: THE SESSION (Core)
-00:00 MindForge. 00:11 LoomSTEM. 00:35 The Vault. 01:09 Compound Click. 01:30 Close.
+MindForge runs all afternoon before this. Then: 00:00 Welcome. 00:03 LoomSTEM. 00:27 The Vault. 01:01 Compound Click. 01:18 Close.
 Protect: the reveal, the red button, the showcase.`;
 function renderBriefing(){
   const el=document.createElement("div");
@@ -1000,7 +987,7 @@ const MSG_JOIN=`Subject: Pivot into Tech: what to expect
 Thanks for signing up. Here is what to know before you come.
 
 - You do not need any coding or technology experience.
-- It is a hands-on taster of about 90 minutes. Nobody will be tested.
+- MindForge puzzles are open all afternoon as a starter. The main session after it is about 80 minutes. Nobody will be tested.
 - We will break a rollercoaster, crack a vault and build a small app.
 - Please bring nothing, or a laptop if we have asked you to.
 - It is fine to stop early and fine to ask for help.
@@ -1082,11 +1069,12 @@ function renderPlan(){
   const el=document.createElement("div");
   const P=[0,1,2].map(m=>{let t=0;return SEGS.map(s=>{const d=s.dur[m];const o={s,start:t,d};t+=d;return o})});
   el.innerHTML=`<div class="h-row"><div><h2>Session plan</h2><p class="sub">Why it is built the way it is.</p></div></div>
-  <div class="card" style="margin-bottom:14px"><h3>How long it needs</h3><p>The full content needs about 110 minutes. To fit a 60 to 90 minute slot there are three modes: <b>Full</b> (about 110), <b>Core</b> (about 90, the recommended default) and <b>Express</b> (about 72). Choose it on the Run the session card, before you press start.</p>
-   <ul class="tight"><li>MindForge is an arrival activity, so it costs almost no facilitated time.</li><li>LoomSTEM and the Vault are group-run. The reveal and the red button each get room to land.</li><li>Compound Click starts together and then goes self-paced. It has a take-home fallback.</li><li>Breathers are protected: about 7 minutes across the session in Full.</li><li>Remote facilitator: add 5 minutes and a 10 minute tech check beforehand.</li></ul></div>
+  <div class="card" style="margin-bottom:14px"><h3>How long it needs</h3><p>With everything in it, the session needs about 97 minutes. To fit a 60 to 90 minute slot there are three modes: <b>Full</b> (about 97), <b>Core</b> (about 82, the recommended default) and <b>Express</b> (about 67). Choose it on the Run the session card, before you press start.</p>
+   <ul class="tight"><li>MindForge is the starter activity for the whole afternoon. It sits outside this session and is not timed.</li><li>Optional and not covered: Quantum Playground, LoomSTEM Build an Adventure and LoomSTEM chemistry. Nobody needs them.</li><li>LoomSTEM and the Vault are group-run. The reveal and the red button each get room to land.</li><li>Compound Click starts together and then goes self-paced. It has a take-home fallback.</li><li>Breathers are protected: about 7 minutes across the session in Full.</li><li>Remote facilitator: add 5 minutes and a 10 minute tech check beforehand.</li></ul></div>
   <div class="tw"><table><thead><tr><th>Segment</th><th>Full</th><th>Core</th><th>Express</th></tr></thead><tbody>
   ${SEGS.map((s,i)=>`<tr><td><b>${esc(s.name)}</b></td>${[0,1,2].map(m=>`<td class="num">${hm(P[m][i].start)} (${P[m][i].d})</td>`).join("")}</tr>`).join("")}
-  <tr><td><b>Total</b></td><td class="num">110</td><td class="num">90</td><td class="num">72</td></tr></tbody></table></div>
+  <tr><td><b>Total</b></td><td class="num">97</td><td class="num">82</td><td class="num">67</td></tr></tbody></table></div>
+  <div class="card" style="margin-bottom:14px"><h3>Optional extras: nobody needs these</h3><ul class="tight">${EXTRAS.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
   <div class="note ok"><b>The three moments never to squeeze:</b> the reveal at the end of LoomSTEM, the red button in the Vault, and the showcase. Cut anything else first.</div>
   <p class="sub">Times show start (minutes in brackets). The full analysis and the persona walkthrough are also in the Session Analysis doc: see Files and links.</p>`;
   return el;
@@ -1125,7 +1113,7 @@ const AREAS=[
  {id:"plan",t:"Plan and files",d:"Timings, the persona walkthrough and your downloads.",ico:"file"}
 ];
 const SUBS={
- answers:[["mf","MindForge","Nothing to look up"],["coaster","Rollercoaster","LoomSTEM, first ride"],["loops","Loops","LoomSTEM, part 2"],["ph","Chemistry mix","The pH demo"],["reveal","The reveal","What to click and say"],["adv","Build an Adventure","Optional extra"],["vault","The Vault","Every puzzle"],["button","The red button","Sequence and the worry"],["cc","Compound Click","Scratch, step by step"]],
+ answers:[["mf","MindForge","The afternoon starter. Nothing to look up"],["coaster","Rollercoaster","LoomSTEM, first ride"],["loops","Loops","LoomSTEM, part 2"],["ph","Chemistry mix","Optional. Not covered"],["reveal","The reveal","What to click and say"],["adv","Build an Adventure","Optional. Not covered"],["vault","The Vault","Every puzzle"],["button","The red button","Sequence and the worry"],["cc","Compound Click","Scratch, step by step"]],
  help:[["panic","Panic card","Read this if it is going wrong"],["questions","Questions","What people will ask"],["fixes","Fixes","Tech problems, fast"],["gloss","Glossary","Plain-English words"]],
  team:[["helpers","Helpers and remote","Who does what"],["briefing","Helper briefing","Huddle script and cue cards"],["people","People and access","Who is in the room"]],
  prep:[["checks","Checklists","What to do, in order"],["rehearsal","Rehearsal","About 75 minutes"],["kit","Kit and room","What to bring"],["messages","Messages","Ready to send"]],
@@ -1259,7 +1247,7 @@ function stepHTML(){
   <p class="hint">Tip: on a laptop the left and right arrow keys work too.</p>`;
 }
 
-const MODEINFO=[["Full","110","Everything, with room to breathe."],["Core","90","The recommended run. Balanced."],["Express","72","Tightest. Skips loops, chemistry and both breathers."]];
+const MODEINFO=[["Full","97","Everything in the session, with room to breathe. A little over 90."],["Core","82","The recommended run. Balanced."],["Express","67","Tightest. Skips the loops and both breathers."]];
 function readyHTML(){
   const tot=total();
   return `<article class="stage">
@@ -1269,9 +1257,9 @@ function readyHTML(){
    <div class="setrow"><label><input type="checkbox" id="remoteChk" ${S.remote?"checked":""}> Someone is dialling in remotely (adds 5 minutes)</label>
     <label>Doors open at <input type="time" id="doorsIn" value="${esc(S.doors)}"></label></div>
    <div class="summary">${MODES[S.mode]} takes ${tot} minutes${S.remote?" with the remote buffer":""}.${/^\d\d:\d\d$/.test(S.doors)?` You finish at about ${wall(tot)}.`:" Add the time the doors open and every part shows real clock times."}</div>
-   <div class="blk dob"><span class="lbl">Before you press start</span><ol class="dolist"><li><span>Helpers are on the floor and every laptop shows 01 MindForge.</span></li><li><span>The projector or screen share is on and the sound is low.</span></li><li><span>You have water, and you have read the Panic card once.</span></li></ol></div>
+   <div class="blk dob"><span class="lbl">Before you press start</span><ol class="dolist"><li><span>Helpers are on the floor and people are already playing MindForge, the afternoon starter.</span></li><li><span>The projector or screen share is on and the sound is low.</span></li><li><span>You have water, and you have read the Panic card once.</span></li></ol></div>
   </article>
-  <div class="actbar"><button class="back" type="button" data-browse>Browse without the clock</button><button class="next" type="button" data-next><b>${S.started?"CONTINUE \u203a":"START THE SESSION \u203a"}</b><small>${S.started?"Carry on where you left off":"The clock starts at 00:00 and Part 1 opens"}</small></button></div>`;
+  <div class="actbar"><button class="back" type="button" data-browse>Browse without the clock</button><button class="next" type="button" data-next><b>${S.started?"CONTINUE \u203a":"START THE SESSION \u203a"}</b><small>${S.started?"Carry on where you left off":"The clock starts at 00:00 when the block starts, after the MindForge starter"}</small></button></div>`;
 }
 function doneHTML(){
   return `<article class="stage"><p class="eyebrow">Finished</p><h1 class="stepname">That is a wrap. Well done.</h1>
