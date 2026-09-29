@@ -274,6 +274,10 @@ h3{font-size:1.05rem;font-weight:700;margin-bottom:7px}
    is real extra practice but never blocks anything, to keep the time cost
    bounded on a build that's tuned to run tight. ── */
 .fb-primm{margin:2px 0 16px;padding:14px 15px;border-radius:12px;background:rgba(0,0,0,.32);border:1px solid var(--edge-2)}
+.btn.gate-wait{opacity:.5;box-shadow:none}
+.btn.gate-wait:active{transform:scale(.97)}
+@keyframes primmNudge{0%,100%{box-shadow:0 0 0 0 rgba(245,196,81,0)}30%{box-shadow:0 0 0 6px rgba(245,196,81,.35)}}
+.fb-primm.nudge{animation:primmNudge .6s ease}
 .fb-primm-step{display:none}
 .fb-primm-step.on{display:block;animation:insightIn .35s ease both}
 .fb-primm-step + .fb-primm-step{margin-top:16px;padding-top:16px;border-top:1px dashed var(--edge-2)}
@@ -3180,13 +3184,21 @@ $('#fbPrimm').addEventListener('click', e => {
   reveal.innerHTML = s.reveal;
   reveal.classList.add('on');
   if (kind === 'predict'){
-    $('#fbBack').disabled = false;
+    fbGated = false;
+    $('#fbBack').classList.remove('gate-wait');
     const modStep = $('.fb-primm-step[data-step="modify"]');
     if (modStep) modStep.classList.add('on');
   }
 });
 
 let fbBack = null;
+// True while a PRIMM flashback is waiting on its predict answer. Deliberately
+// NOT a native `disabled` button for this: a disabled button gives zero
+// feedback when tapped — no click, no shake, nothing — which is exactly what
+// reads as "broken" to someone who hasn't spotted the question above. Keeping
+// the button live and intercepting the click instead means a tap always does
+// something: it points at what's being asked for.
+let fbGated = false;
 function flashback(o){
   const forward = o.variant === 'forward';
   $('#fbVeil').classList.toggle('q', forward);
@@ -3207,14 +3219,15 @@ function flashback(o){
   moreToggle.textContent = '🔍 Tell me more'; moreToggle.setAttribute('aria-expanded', 'false');
   $('#fbMoreWrap').style.display = o.more ? 'block' : 'none';
   renderPrimm(o.primm || null);
-  // A PRIMM flashback opens with "Back to the job" disabled — the player
-  // has to commit to one predict guess (any guess; there's no wrong answer
-  // here, this isn't graded) before moving on, which is the one mechanic
-  // the whole predict-before-you're-shown method depends on. Modifying
-  // afterwards is real, worthwhile extra practice, but doesn't gate — the
-  // core benefit is already banked by the time predict is answered, and
-  // gating twice in a row would cost more time than it earns back.
-  $('#fbBack').disabled = !!o.primm;
+  // A PRIMM flashback opens "gated" — the player has to commit to one
+  // predict guess (any guess; there's no wrong answer here, this isn't
+  // graded) before moving on, which is the one mechanic the whole
+  // predict-before-you're-shown method depends on. Modifying afterwards is
+  // real, worthwhile extra practice, but doesn't gate — the core benefit is
+  // already banked by the time predict is answered, and gating twice in a
+  // row would cost more time than it earns back.
+  fbGated = !!o.primm;
+  $('#fbBack').classList.toggle('gate-wait', fbGated);
   $('#fbBack').textContent = o.back || 'Back to the job →';
   fbBack = o.onBack || null;
   const total = o.total || 4, idx = o.index || 1;
@@ -3231,6 +3244,13 @@ function flashback(o){
   checkCue();
 }
 $('#fbBack').addEventListener('click', () => {
+  if (fbGated){
+    const primmEl = $('#fbPrimm');
+    primmEl.scrollIntoView({ behavior:'smooth', block:'center' });
+    primmEl.classList.remove('nudge'); void primmEl.offsetWidth; primmEl.classList.add('nudge');
+    toast('Answer the question above first →');
+    return;
+  }
   $('#fbVeil').classList.remove('on', 'typing');
   clearInterval(fbTypeTimer);
   $('#fbTop').style.height = '0'; $('#fbBot').style.height = '0';
