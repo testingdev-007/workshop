@@ -4143,7 +4143,7 @@ function finish(){
       const b = document.createElement('button');
       b.className = 'btn ghost'; b.style.marginTop = '0';
       b.style.fontSize = '.9rem'; b.style.padding = '11px 13px'; b.style.textAlign = 'left';
-      b.textContent = txt;
+      b.innerHTML = txt;
       b.addEventListener('click', () => {
         if (c.dataset.answered) return;
         c.dataset.answered = '1'; quizDone++;
