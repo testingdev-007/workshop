@@ -23,7 +23,12 @@
   --r:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{font-size:17px;scroll-behavior:smooth}
+html{font-size:17px;scroll-behavior:smooth;
+  /* Keeps anything scrolled-to (a quiz answer, a focused field) clear of the
+     fixed Glossary tab parked at the bottom of the viewport — otherwise a
+     browser's "scroll this into view" can land a tap target flush behind it. */
+  scroll-padding-bottom:72px;
+}
 @media(min-width:800px){html{font-size:18px}}
 body{
   background:var(--ink); color:var(--txt); font-family:var(--fd);
@@ -1021,6 +1026,7 @@ body.realm-visual .atmos::before{
 .realmstage{
   position:fixed; inset:0; z-index:5; overflow-y:auto; -webkit-overflow-scrolling:touch;
   animation:realmstageIn .5s cubic-bezier(.16,.9,.24,1) both;
+  scroll-padding-bottom:72px; /* same Glossary-tab clearance as the main scroller */
 }
 @keyframes realmstageIn{from{opacity:0}to{opacity:1}}
 .realmstage::before{
@@ -1272,6 +1278,71 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
   .valeDrawer{width:100vw;border-left:none}
 }
 
+/* ── Glossary: a plain-English reference, pulled up from the bottom.
+   Deliberately NOT part of the Vale/heist system — it stays visible on
+   every scene, s00 included and the untimed Quantum Playground included,
+   because it's a lookup tool a player might need before they've chosen a
+   path, not a piece of the story. Violet, not cyan or gold, so it reads
+   as "reference" rather than "message from Vale" or "primary action." ── */
+.glossaryTab{
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%) translateY(0);
+  z-index:340;display:flex;align-items:center;gap:7px;
+  background:linear-gradient(180deg,var(--ink-3),var(--ink-2));
+  border:1px solid var(--edge-2);border-bottom:none;
+  border-radius:14px 14px 0 0;padding:9px 18px;cursor:pointer;
+  font-family:var(--fm);font-weight:800;font-size:.68rem;letter-spacing:.1em;
+  color:var(--violet);box-shadow:0 -6px 24px rgba(0,0,0,.45);
+}
+.glossaryTab:hover{filter:brightness(1.25)}
+.glossaryTabIcon{font-size:1.05rem;line-height:1}
+.glossaryScrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:349;
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s;
+}
+.glossaryScrim.on{opacity:1;visibility:visible;transition:opacity .3s}
+.glossaryDrawer{
+  position:fixed;left:0;right:0;bottom:0;max-height:78vh;z-index:350;
+  background:linear-gradient(180deg,var(--ink-2),var(--ink));
+  border-top:1px solid var(--edge-2);box-shadow:0 -16px 50px rgba(0,0,0,.55);
+  border-radius:18px 18px 0 0;
+  transform:translateY(100%);transition:transform .38s cubic-bezier(.2,1,.3,1);
+  display:flex;flex-direction:column;
+}
+.glossaryDrawer.open{transform:translateY(0)}
+.glossaryDrawerHead{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:16px 16px 10px;border-bottom:1px solid var(--edge);flex:0 0 auto;
+}
+.glossaryDrawerHead .t{font-family:var(--fm);font-weight:800;letter-spacing:.08em;color:var(--violet);font-size:.88rem}
+.glossaryDrawerHead .s{display:block;font-family:var(--fd);font-weight:400;letter-spacing:0;color:var(--txt-3);font-size:.78rem;margin-top:4px;line-height:1.4}
+.glossaryDrawerClose{
+  background:none;border:none;color:var(--txt-3);font-size:1.2rem;cursor:pointer;
+  padding:2px 6px;line-height:1;flex:0 0 auto;
+}
+.glossaryDrawerClose:hover{color:var(--txt)}
+.glossaryDrawerBody{
+  flex:1 1 auto;overflow-y:auto;padding:4px 16px 24px;
+  -webkit-overflow-scrolling:touch;
+}
+.glossGroup{margin-top:18px}
+.glossGroup:first-child{margin-top:8px}
+.glossGroupLab{
+  font-family:var(--fm);font-weight:800;font-size:.66rem;letter-spacing:.14em;
+  color:var(--txt-3);margin-bottom:6px;
+}
+.glossItem{padding:9px 0;border-bottom:1px solid var(--edge)}
+.glossItem:last-child{border-bottom:none}
+.glossItem .term{font-weight:800;color:#fff;font-size:.92rem;margin-bottom:3px}
+.glossItem .term .sym{color:var(--violet);font-family:var(--fm);margin-right:7px}
+.glossItem .def{color:var(--txt-2);font-size:.86rem;line-height:1.52}
+@media (max-height:560px){
+  .glossaryDrawerHead{padding:10px 14px 8px}
+  .glossaryDrawerBody{padding:2px 12px 18px}
+}
+@media (max-width:420px){
+  .glossaryDrawer{border-radius:16px 16px 0 0}
+}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
   .atmos .grain{display:none}
@@ -1324,6 +1395,26 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
     <button class="valeDrawerClose" id="valeDrawerClose" type="button" aria-label="Close">✕</button>
   </div>
   <div class="valeDrawerBody" id="valeDrawerBody"></div>
+</div>
+
+<!-- Glossary: a plain-English reference of every coding and quantum word
+     used anywhere in this build. Always on screen, on every scene —
+     unlike Vale, it isn't part of the story, so it isn't switched off
+     for the untimed Quantum Playground or hidden until the heist starts. -->
+<button class="glossaryTab" id="glossaryTab" type="button" aria-label="Open the glossary">
+  <span class="glossaryTabIcon">📖</span>
+  <span>GLOSSARY</span>
+</button>
+<div class="glossaryScrim" id="glossaryScrim"></div>
+<div class="glossaryDrawer" id="glossaryDrawer" aria-hidden="true">
+  <div class="glossaryDrawerHead">
+    <div>
+      <div class="t">📖 GLOSSARY</div>
+      <span class="s">Every coding and quantum word used in this build, in plain English — no jargon assumed.</span>
+    </div>
+    <button class="glossaryDrawerClose" id="glossaryDrawerClose" type="button" aria-label="Close">✕</button>
+  </div>
+  <div class="glossaryDrawerBody" id="glossaryDrawerBody"></div>
 </div>
 
 <div class="shell">
@@ -1681,8 +1772,8 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
   <div class="card">
     <div class="slug" id="roomSlug">ACT THREE · ROOM TWO</div>
     <h2 id="roomTitle">Sixteen boxes</h2>
-    <p class="lede" id="roomLede">Four times the wall. One at a time would work &mdash; but you already know a
-    faster shape for it.</p>
+    <p class="lede" id="roomLede">Sixteen boxes this time, not four. The shape of the code doesn't change
+    &mdash; only the number does.</p>
 
     <div class="wall" id="wallR" style="grid-template-columns:repeat(4,1fr)"></div>
     <div class="odds">
@@ -1697,7 +1788,7 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
     </div>
     <div class="picker">
       <div class="pick-grp">
-        <div class="pick-lab" id="repBatchLab">BATCHES OF FOUR</div>
+        <div class="pick-lab" id="repBatchLab">PICK A COUNT</div>
         <div class="opts" id="repOpts"></div>
       </div>
       <div class="term" id="repTerm">Pick a number, then run it.</div>
@@ -1720,7 +1811,7 @@ details.more .b{font-size:.9rem;line-height:1.6;color:var(--txt-2);padding-top:8
     <div class="vs" id="vsR" style="display:none">
       <div class="vs-side classic"><div class="k">WRITTEN OUT BY HAND</div><div class="n" id="vsCR">16</div><div class="s">lines, one per box</div></div>
       <div class="vs-mid">VS</div>
-      <div class="vs-side good"><div class="k">THE LOOP</div><div class="n" id="vsQR">4</div><div class="s">repeats, one line each</div></div>
+      <div class="vs-side good"><div class="k">THE LOOP</div><div class="n" id="vsQR">2</div><div class="s">lines, however big the wall gets</div></div>
     </div>
   </div>
 </section>
@@ -3010,6 +3101,96 @@ function valeTimeCheck(){
 $('#valeTab').addEventListener('click', openValeDrawer);
 $('#valeDrawerClose').addEventListener('click', closeValeDrawer);
 $('#valeScrim').addEventListener('click', closeValeDrawer);
+
+/* ═══════════════ GLOSSARY ═══════════════
+   One reference list covering every coding and quantum word used
+   anywhere in the build — written in the same plain-English, real-world-
+   analogy voice as the inline .gloss tooltips and the quantum-button
+   taster's own glossary blocks (so a term never quietly means two
+   different things in two different places), but collected in one spot
+   a player can reach from anywhere, rather than only where the term
+   first happens to appear. Unlike Vale, this isn't part of the story —
+   see the CSS comment above .glossaryTab for why it stays on screen
+   everywhere, s00 and the untimed Quantum Playground included. */
+const GLOSSARY = [
+  // ── coding words (The Heist) ──
+  { group:'Coding words', term:'Algorithm',
+    def:'A set of exact steps, written down so anyone — or anything — can follow them without guessing. A recipe is an algorithm. So is a knitting pattern. Not the same thing as "the algorithm" that picks what shows up in a social feed — that\'s one huge, constantly-changing example of the idea, not what the word means on its own.' },
+  { group:'Coding words', term:'Variable', sym:'name = value',
+    def:'A named box that holds a value you can change. The name is a label on the box, not a clue about what\'s inside — change what\'s in the box any time, the label stays the same.' },
+  { group:'Coding words', term:'Loop',
+    def:'An instruction that repeats, so nobody has to write it out by hand over and over. Comes in two shapes in this build — a counted loop and an until loop, below.' },
+  { group:'Coding words', term:'Counted loop', sym:'repeat N times:',
+    def:'A loop that knows up front exactly how many times to run — "do this 16 times" — then stops, whether or not the job actually got done.' },
+  { group:'Coding words', term:'Until loop', sym:'until …:',
+    def:'A loop that doesn\'t know the number in advance. It just keeps going until something becomes true, however many tries that takes, then stops the moment it succeeds.' },
+  { group:'Coding words', term:'Conditional', sym:'if …:',
+    def:'A yes/no question the program asks about one thing at a time, then acts on the answer. "If this is true, then do that" — nothing happens if the answer is no.' },
+  { group:'Coding words', term:'Linear search',
+    def:'Checking one at a time, from the top, until you find what you\'re looking for. No shortcuts, no skipping ahead — the fallback every computer uses when there\'s no quicker way in.' },
+  { group:'Coding words', term:'=, ==, and !=',
+    def:'A single = is a label-maker — it puts a value into something and changes it. == and != don\'t change anything at all; they just ask a yes/no question (are these the same? are these different?). Only the question kind belongs after an if.' },
+  { group:'Coding words', term:'Remainder', sym:'%',
+    def:'In code, % means "remainder" — what\'s left over after dividing. 15 % 12 is 3, the same way 15 o\'clock wraps round to 3 o\'clock on an ordinary clock.' },
+  // ── quantum words (The Quantum Playground) ──
+  { group:'Quantum words', term:'Classical (computer)',
+    def:'An ordinary computer — the kind in a phone or laptop. "Classical" just means "not quantum" here, doing the same job as saying "regular" or "normal."' },
+  { group:'Quantum words', term:'Qubit',
+    def:'The quantum version of a bit. An ordinary (classical) bit is either a 0 or a 1. A qubit can be a blend of both at once, right up until it\'s measured.' },
+  { group:'Quantum words', term:'Superposition',
+    def:'Holding many possible values at once, instead of just one — until something measures it, which is the moment it snaps down to a single value.' },
+  { group:'Quantum words', term:'Quantum register',
+    def:'A row of qubits treated as one unit — like an ordinary row of bits, except each qubit in it can hold a blend of 0 and 1 at the same time.' },
+  { group:'Quantum words', term:'Oracle',
+    def:'A rule that recognises the right answer the instant it sees it. A quantum search uses it to steer straight toward that answer instead of checking everything one by one.' },
+  { group:'Quantum words', term:'Amplifying / amplification',
+    def:'Nudging the right answer\'s odds up and the wrong ones down, a little at a time — like tuning a radio dial a touch closer to a station with every pass, rather than jumping straight there.' },
+  { group:'Quantum words', term:'Grover\'s algorithm',
+    def:'A real, named quantum algorithm for searching — the thing actually running every time this build says "quantum search." Its moves get plain-English names here: spin, mark, boost, look.' },
+  { group:'Quantum words', term:'Shor\'s algorithm',
+    def:'A real, named quantum algorithm for finding a hidden repeating pattern inside a number — the one that can eventually crack the kind of encryption protecting things like card payments online.' },
+  { group:'Quantum words', term:'Period',
+    def:'How many steps it takes before a repeating pattern comes back round to exactly where it started — like timing one full lap of a running track.' },
+  { group:'Quantum words', term:'Brute force',
+    def:'Trying every single possibility, one at a time, with no shortcuts — the plain, honest, classical fallback whenever there\'s no cleverer way in.' },
+  { group:'Quantum words', term:'Worst case',
+    def:'The unluckiest possible outcome — the answer sitting right at the very end, so everything else has to be checked first before it turns up.' },
+  { group:'Quantum words', term:'Factor / factoring', sym:'91 = 7 × 13',
+    def:'Splitting a number into the smaller numbers that multiply together to make it — nothing else, other than 1 and the number itself, divides in evenly.' },
+  { group:'Quantum words', term:'Cipher',
+    def:'A way of scrambling a message so it only reads back correctly once you know the trick used to scramble it. Here, that trick is always the same: every letter shifted along the alphabet by a fixed amount.' },
+];
+function renderGlossary(){
+  const body = $('#glossaryDrawerBody');
+  const groups = [...new Set(GLOSSARY.map(g => g.group))];
+  body.innerHTML = groups.map(group => `
+    <div class="glossGroup">
+      <div class="glossGroupLab">${group.toUpperCase()}</div>
+      ${GLOSSARY.filter(g => g.group === group).map(g => `
+        <div class="glossItem">
+          <div class="term">${g.sym ? `<span class="sym">${g.sym}</span>` : ''}${g.term}</div>
+          <div class="def">${g.def}</div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+renderGlossary();
+let glossaryOpen = false;
+function openGlossaryDrawer(){
+  glossaryOpen = true;
+  $('#glossaryDrawer').classList.add('open');
+  $('#glossaryDrawer').setAttribute('aria-hidden', 'false');
+  $('#glossaryScrim').classList.add('on');
+}
+function closeGlossaryDrawer(){
+  glossaryOpen = false;
+  $('#glossaryDrawer').classList.remove('open');
+  $('#glossaryDrawer').setAttribute('aria-hidden', 'true');
+  $('#glossaryScrim').classList.remove('on');
+}
+$('#glossaryTab').addEventListener('click', openGlossaryDrawer);
+$('#glossaryDrawerClose').addEventListener('click', closeGlossaryDrawer);
+$('#glossaryScrim').addEventListener('click', closeGlossaryDrawer);
+
 function beat(id){ const e = $('#' + id); if (e) e.classList.add('on'); }
 function unbeat(id){ const e = $('#' + id); if (e) e.classList.remove('on'); }
 
@@ -3441,7 +3622,7 @@ $('#runLoop').addEventListener('click', async () => {
     cost(10); $('#runLoop').disabled = false; return;
   }
 
-  let k = 1, found = 0;
+  let k = 1, found = 0, lastK = 1;
   while (k <= 25){
     const guess = shiftWord(cipher, -k);
     const hit = guess === INNER;
@@ -3451,11 +3632,16 @@ $('#runLoop').addEventListener('click', async () => {
     log.scrollTop = log.scrollHeight;
     await sleep(90);
     if (hit && f.test === 'it_is_a_word'){ found = k; break; }
+    lastK = k;
     k += step;
   }
   cost(6);
   if (f.test === 'shift == 25'){
-    log.innerHTML += `<span class="err">stopped at 25. Did it work? The loop has no idea.</span>`;
+    // lastK, not a hardcoded 25: with step 5 the loop's last actual try is
+    // 21 (1, 6, 11, 16, 21 — the next would be 26), so a message that
+    // always said "stopped at 25" was flatly wrong for that combination,
+    // contradicting the log directly above it.
+    log.innerHTML += `<span class="err">stopped at ${lastK}. Did it work? The loop has no idea.</span>`;
     beat('bLoopCount');
     loopSpec.say('It ran out rather than succeeded. Change the test.', 'err');
     $('#runLoop').disabled = false; return;
@@ -3564,9 +3750,9 @@ $('#cont2r').addEventListener('click', () => {
         opts:['1','3','However many boxes there are'],
         reveal:'<b>3.</b> Same as writing check() three separate times — just written once, with the count said out loud.' },
       modify:{ label:'✏️ NOW MODIFY IT',
-        q:'The next room needs six checks, not three. What\'s the smallest change to make that happen?',
-        opts:['Write check() six times','Change the 3 to a 6','Add a whole new repeat block'],
-        reveal:'<b>Change the 3 to a 6.</b> One character, same program. That\'s the entire point of writing the instruction once and saying how many times — the room can double in size and you barely notice.' }
+        q:'The next room needs sixteen checks, not three. What\'s the smallest change to make that happen?',
+        opts:['Write check() sixteen times','Change the 3 to a 16','Add a whole new repeat block'],
+        reveal:'<b>Change the 3 to a 16.</b> One edit, same program. That\'s the entire point of writing the instruction once and saying how many times — the room can grow from three to sixteen and you barely notice.' }
     },
     back:'Room two →',
     onBack: () => { go('s3'); enterRoom(0); }
@@ -3574,16 +3760,26 @@ $('#cont2r').addEventListener('click', () => {
 });
 
 /* ═══════════════ ACT 3 — ROOMS TWO AND THREE ═══════════════ */
+/* Each cycle checks exactly one box — this matches the code actually shown
+   on screen (`repeat N times: check(next_box)`, singular) and the counted-
+   loop flashback immediately before this room, which both teach a strict
+   1-for-1 correspondence between N and the number of things checked. An
+   earlier version of this room had each cycle silently check a "batch" of
+   several boxes at once (so the "correct" N was smaller than the box
+   count) — that was never reflected in the code shown or in what the
+   flashback taught, so it read as inconsistent/wrong. unitCost scales the
+   clock cost per cycle so an exact run costs roughly what it always has,
+   now that there are more, smaller cycles rather than fewer, bigger ones. */
 const ROOMS = [
-  { n:16, cols:4, batch:4, slug:'ACT THREE · ROOM TWO', title:'Sixteen boxes',
-    lede:'Four times the wall. One at a time would work — but you already know a faster shape for it.',
-    opts:['2','3','4','6'] },
-  { n:64, cols:8, batch:8, slug:'ACT THREE · ROOM THREE', title:'Sixty-four boxes',
+  { n:16, cols:4, unitCost:2, slug:'ACT THREE · ROOM TWO', title:'Sixteen boxes',
+    lede:'Sixteen boxes this time, not four. The shape of the code doesn\'t change — only the number does.',
+    opts:['8','12','16','24'] },
+  { n:64, cols:8, unitCost:1, slug:'ACT THREE · ROOM THREE', title:'Sixty-four boxes',
     lede:'Sixteen times room one. Work out how many cycles it needs yourself this time — nobody is going to tell you.',
-    opts:['4','6','8','12'] }
+    opts:['32','48','64','96'] }
 ];
 let roomIx = 0, roomPrize = 0, roomReps = null, roomDone = false;
-let handTotal = 0, stepTotal = 0;
+let handTotal = 0;
 
 function enterRoom(ix){
   dismissToast();
@@ -3602,14 +3798,13 @@ function enterRoom(ix){
   }
   setOdds('#oddsR', '#fillR', 0);
   $('#oddsRL').textContent = 'of the wall checked, so far';
-  $('#repBatchLab').textContent = `BATCHES OF ${r.batch}`;
   const blank = $('#repCode').querySelector('.blank[data-slot="reps"]');
   blank.className = 'blank sel'; blank.textContent = 'how many';
   $('#repOpts').innerHTML = r.opts.map(o =>
     `<span class="opt num" data-k="reps" data-v="${o}">${o}</span>`).join('');
   $('#repTerm').textContent = ix === 0
-    ? `Each cycle checks ${r.batch} boxes at once. Pick how many cycles to run.`
-    : `Same idea, bigger wall. Pick how many cycles clear it.`;
+    ? 'Each cycle checks one box. Pick how many cycles it takes to check them all.'
+    : 'Same idea, bigger wall. Pick how many cycles clear it.';
   $('#btnRunRoom').disabled = true;
   $('#btnNextRoom').disabled = true;
   unbeat('bRepOver'); unbeat('bRepUnder');
@@ -3623,22 +3818,35 @@ function enterRoom(ix){
 }
 
 $('#btnRunRoom').addEventListener('click', async () => {
+  // Once this room is already open, picking a different number and running
+  // again should do nothing — otherwise each extra "correct" re-run kept
+  // adding r.n to the hand-written tally a second (or third...) time, the
+  // same inflation bug as a failed run used to cause before the fix above,
+  // just triggered by repeated successes instead of repeated failures.
+  if (roomDone) return;
   const r = ROOMS[roomIx];
   $('#btnRunRoom').disabled = true;
   const boxes = $$('#wallR .bx');
   boxes.forEach(b => { b.className = 'bx'; b.textContent = '?'; });
   await sleep(150);
   let covered = 0;
+  // Pace adapts to how many cycles were picked so the animation takes a
+  // consistent ~3.5s regardless of room size, rather than crawling through
+  // 60-plus 260ms steps once Room Three's cycles match its 64 boxes 1:1.
+  const pace = Math.max(35, Math.min(260, Math.round(3500 / roomReps)));
   for (let k = 1; k <= roomReps; k++){
-    const from = covered, to = Math.min(covered + r.batch, r.n);
-    for (let i = from; i < to; i++){ boxes[i].className = 'bx shut'; boxes[i].textContent = '✕'; totalChecks++; }
-    covered = to;
+    if (covered < r.n){ boxes[covered].className = 'bx shut'; boxes[covered].textContent = '✕'; totalChecks++; covered++; }
     setOdds('#oddsR', '#fillR', covered / r.n);
     $('#oddsRL').textContent = `after ${k} cycle${k>1?'s':''} — ${covered} of ${r.n} checked`;
-    cost(8); stepTotal++;
-    await sleep(260);
+    await sleep(pace);
   }
-  const exact = r.n / r.batch;
+  // Clock cost is charged once for the whole run rather than once per
+  // cycle — it still scales with how many cycles were picked (so
+  // overshooting still visibly costs more), it just doesn't fire dozens of
+  // separate rescue checks and clock-pulse animations back to back now
+  // that a run can be 60-plus cycles.
+  cost(roomReps * r.unitCost);
+  const exact = r.n;
   const hit = covered >= r.n;
   if (hit){
     roomPrize = Math.floor(Math.random() * r.n);
@@ -3647,14 +3855,23 @@ $('#btnRunRoom').addEventListener('click', async () => {
   if (roomIx === 0) beat('bRep');
   if (roomReps > exact) beat('bRepOver');
   else if (roomReps < exact) beat('bRepUnder');
-  handTotal += r.n;
-  $('#vsR').style.display = 'grid';
-  $('#vsCR').textContent = handTotal;
-  $('#vsQR').textContent = stepTotal;
   $('#repTerm').innerHTML = hit
     ? `<span class="ok">Open. ${roomReps} cycle${roomReps>1?'s':''} covered all ${r.n} boxes — ${exact} would have been exact.</span>`
     : `<span class="err">Stopped short — only ${covered} of ${r.n} boxes checked. It needs at least ${exact} cycles.</span>`;
   if (!hit){ $('#btnRunRoom').disabled = false; cost(20); toast('Wall not fully checked. Pick a bigger number.'); return; }
+  // The comparison panel only reflects a cleared room — not a partial or
+  // failed attempt. Before this fix, handTotal added r.n on every single
+  // click of "Run the program", success or failure, so a couple of wrong
+  // guesses before the right one could leave the "WRITTEN OUT BY HAND"
+  // figure showing a number nowhere close to the real sixteen/sixty-four
+  // (a reviewer caught this: after a wrong guess in the 64-box room, the
+  // panel was showing something like "80" rather than any number that
+  // actually corresponds to what had been checked). A room can only
+  // succeed once (btnRunRoom stays disabled after success), so this still
+  // only ever adds r.n a single time per room.
+  handTotal += r.n;
+  $('#vsR').style.display = 'grid';
+  $('#vsCR').textContent = handTotal;
   roomDone = true;
   $('#btnNextRoom').disabled = false;
   toast(`🔑 Room ${roomIx===0?'two':'three'} open.`);
